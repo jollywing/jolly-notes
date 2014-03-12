@@ -3,6 +3,7 @@
 ** search source
 * tools
 ** git
+*** Usage
 1. create repository jolly-notes on [[https://github.com/][git-hub]]
 2. =git clone https://github.com/jollywing/jolly-notes.git=
 3. change your cotents && commit to local (=git add= and =git commit=)
@@ -11,6 +12,24 @@
    Important! if you skip this step, you'll get error when you push.
    The error is like: "error: The requested URL returned error: 403 while accessing ..."
 6. =git push -u origin master=
+7. In another location, you can  =git pull origin master=
+*** msysgit (Git on Windows)
+When you clone a remote repository, you'll meet a error:
+
+#+BEGIN_EXAMPLE
+$ git clone https://github.com/jollywing/jolly-notes.git
+Initialized empty Git repository in e:/jollywing/jolly-notes/.git/
+error: error setting certificate verify locations:
+  CAfile: /bin/curl-ca-bundle.crt
+  CApath: none
+ while accessing https://github.com/jollywing/jolly-notes.git/info/refs
+
+fatal: HTTP request failed
+#+END_EXAMPLE
+
+Solution:
+: git config --global http.sslcainfo "/e/jollywing/installed/Git/bin/curl-ca-bundle.crt"
+
 ** tomato clock
 ** centOS
 *** time
@@ -20,10 +39,393 @@
 : sudo yum install samba4
 Edit /etc/samba/smb.conf
 : sudo service smb start
-为什么Windows
+*TODO*: Why Windows can not access?
 *** virtual box
-1. get win server 2003 iso
-2. 
+1. download rpm from oracle official website
+2. rpm -i virtualbox.rpm
+3. compile the kernel module.
+   : sudo yum install kernel-devel
+   : sudo /etc/init.d/vboxdrv setup
+4. get win server 2003 iso
+5. install a win 2003 virtual machine.
 
 *** File Manager
 1. bsc : Qt based Total Commander
+*** network
+: vi /etc/sysconfig/network-script/ifcfg-p4p1
+add 
+: BOOTPROTO="dhcp"
+then
+: # service network restart
+*** yum
+yum upgrade
+yum install <pkgname>
+yum remove <pkgname>?
+yum search <str list>
+yum clean all # clear cache
+
+source:
+/etc/yum.repos.d/CentOS-Base.repo
+
+* Someday
+** worktile: 协同工作
+** 机顶盒的结构和原理
+** Firewall traversing
+
+* Notes
+** address
+北京市石景山区石景山路31号盛景国际大厦C座12层  邮编：100043
+** company email
+user: w*j*****
+passwd: j****w***
+question: my good boy?
+answer: 1****6
+** wirless network
+1. apecn-work; passwd: apecn-654
+2. live; passwd: zh***h**f***
+* DRM on android
+** DRM: Digital Rights Management
+*** 产业链
+DRM是一个不易触及的领域。
+由于其安全性高，保密性强，世界上真正掌握DRM核心技术的公司并不多。
+
+DRM产业链中的相关者大概可分为如下三类：
+
+第一类是制定DRM标准的公司或机构，他们掌握DRM的核心技术，对外推广自己的DRM标
+准，为需要搭载DRM的公司提供支持。
+
+第二类是数字内容提供商，他们是最迫切应用DRM来保护自己数字版权的人，他们会向
+提供标准的公司够买DRM技术，在服务器端加密，并制定数字内容的买卖租赁机制以及
+相应的密钥配发原则。
+
+第三类是终端设备制造商，为了让自己的设备具有更广泛的应用性，他们需要搭载主流
+的DRM以适应市场需求，在搭载过程中，他们也需要标准公司的支持，拿到一些有专利
+的代码包，有时还会与内容提供商合作。当然，还有的时候，一家公司会担当其中的两
+个或全部角色，比如亚马逊，他即是内容提供商，提供电子书籍等内容，又是终端设备
+商，出品Kindle Fire这样的终端设备，这样做可以让他把内容和终端更好地整合在一
+起。
+
+*** DRM标准
++ Open Mobile Alliance推出的OMA DRM
++ Marlin Developer Community提出的Marlin DRM
++ Google则通过收购Widevine公司推出了Widevine DRM。
+  Google acquires the Widevine company that provides the DRM support for protecting e.g. the HLS H.264/AAC streams.
+  *Need the player support Widevine DRM*.
+*** DRM supported by Android
+ref: http://blog.csdn.net/innost/article/details/9732847
+
+从Android智能终端来看，Google的原生Android（Android Open Source Project，简称AOSP）系统仅仅集成了OMA DRM V1的一部分功能，它远未构成一个完整的DRM解决方案。
+在这种情况下，设备厂商只能根据情况选择合适的DRM解决方案并集成到Android平台中来。
+例如，手机厂商可以通过Google的授权以获取Widevine DRM对应的软件包从而将Widevine DRM集成到自己的产品中。
+
+DRM Framework API模块是Framework层暴露给App的接口。该模块中最主要的类是DrmManagerClient。
+
+DRM Framework API模块通过Binder机制和位于drmserver进程（以Android 4.1为例，drmserver的代码位于framework/av/drm/drmserver）中的DRM Manager模块通信。DRM Manager加载并管理系统中所有的DRM插件。
+
+DRM Plugins是真正实现权限管理、数字内容解密等工作的模块。
+根据DRM标准的不同，这些Plugins的实现亦不相同。另外，一个手机可能会集成多个DRM Plugin。
+这是因为媒体文件如果采用不同的DRM解决方案进行加密的话，手机在播放它们时，DRM Manager需找到对应的DRM Plugin以进行解密。
+* HLS + AES
+** survey
+ref:
+[[http://www.streamingmedia.com/Articles/Editorial/What-Is-.../What-is-HLS-(HTTP-Live-Streaming)-78221.aspx]]
+
+HLS = Http Live Streaming.
+an HTTP-based media streaming communications protocol implemented by Apple Inc.
+Apple first announced HLS in 2009.
+
+It works by breaking the overall stream into a sequence of small HTTP-based
+file downloads, each download loading one short chunk of an overall
+potentially unbounded transport stream.
+
+Though encoded using the /H.264 video codec/ and /AAC/ audio codec, 
+audio/video streams must be segmented into chunks in an *MPEG-2 transport stream* with a .ts extension. 
+
+** encryption
+*** AES encryption
+ref: http://docs.unified-streaming.com/documentation/protect/hls-with-aes.html
+
+The encryption is applied on-the-fly, so there is no preprocessing involved.
+Enable: The options for enabling encryptions are stored in the server manifest file.
+
+For HLS AES encryption a content_key (the AES encryption key) and a license
+acquisition URL (the location where the player retrieves the key) is
+needed.
+
+You can use openssl for generating a random key:
+: openssl rand 16 > video.key
+
+The file video.key holds the encryption key that will be requested by the player.
+
+Server Manifest
+
+Next is creating a server manfiest file with enabled encryption.
+You need to provide the following options:
+
+1. /hls.content_key/	AES Content Encyption Key (128 bits).
+2. /hls.license_server_url/	The URL used by the player to retrieve the key.
+
+#+BEGIN_SRC
+mp4split -o video.ism \
+  --hls.content_key=`cat video.key | hexdump -e '16/1 "%02x"'` \
+  --hls.license_server_url=http://www.example.com/video/video.key \
+  video.ismv
+#+END_SRC
+
+The generated server manifest file (video.ism) now holds the key
+information. When a client requests an .m3u8 playlist the webserver module
+will automatically insert the proper #EXT-X-KEY tag and requests for the
+MPEG-TS fragments are encrypted on-the-fly.
+
+An example .m3u8 playlist:
+
+#EXTM3U
+#EXT-X-VERSION:1
+#EXT-X-MEDIA-SEQUENCE:0
+#EXT-X-KEY:METHOD=AES-128,URI="http://www.example.com/video/video.key"
+#EXTINF:4, no desc
+video-audio=65000-video=236000-0.ts
+
+Note that you can add PlayReady and Apple HTTP Live Streaming encryption at
+the same time to the server manifest file creation command line. The
+following command creates a server manifest file with the key information
+embedded:
+
+#+BEGIN_SRC
+mp4split -o video.ism \
+  --hls.key_seed=000102030405060708090a0b0c0d0e0f \
+  --hls.license_server_url=https://www.example.com/oceans.key \
+  video.ismv
+#+END_SRC
+
+For *Verimatrix VCAS* support, see below for the documentation.
+Verimatrix VCAS
+USP supports Verimatrix VCAS. To use this you need to use the key_provider and key_provider_url options when creating the server manifest. USP will know how to connect with the Verimatrix server and fetch the keys:
+
+Name	Description
+hls.key_provider	The string verimatrix should be used to indicate Verimatrix as a key provider.
+hls.key_provider_url	The URL used to retrieve the key.
+Example
+The following command creates a server manifest file with the key information embedded:
+
+mp4split -o video.ism \
+  --hls.key_provider=verimatrix \
+  --hls.key_provider_url="http://verimatrix_url/CAB/keyfile?r=MY_ID&t=VOD&c=N" \
+  video.ismv
+Please note that in the above example some dummy values are used, and that you need to provide values for r, t and c. Please consult the Verimatrix documenttion regarding this. Replaced should be:
+
+the string 'verimatrix_url' should be replaced with the url Verimatrix provides
+MY_ID should be replaced with the customer id Verimatrix provides
+VOD can also be another type (see the Verimatrix documentation)
+N is the number of keys you can fetch, set by Verimatrix
+Using SAMPLE-AES (protocol version 5)
+For SAMPLE-AES encryption the setup is similar. Please note that this is for on-the-fly encryption. For file based encryption see HLS packaging.
+
+First we have to create a 128-bit CEK (Content Encryption Key) and 128-bit IV (Initialization Vector). This is just a 32 bytes file with random bytes. You could use for example 'openssl' to create the key.
+
+openssl rand 32 > presentation.key
+The command-lines for creating the server manifest is similar to the above above, except that we need to use different options.
+
+Option	Description
+hls.content_key	The content key used for encryption
+hls.license_server_url	The URL where the key can be fetched
+hls.playout	The string identifier ('sample_aes')
+Example
+#!/bin/bash
+
+CONTENT_KEY=A8FD3449772FA3DD2F1BCE74764A8B46
+
+MP4SPLIT_OPTIONS=
+MP4SPLIT_OPTIONS+="--hls.content_key=$CONTENT_KEY "
+MP4SPLIT_OPTIONS+="--hls.license_server_url=http://example.com/oceans_drm.key "
+MP4SPLIT_OPTIONS+="--hls.no_discontinuities "
+MP4SPLIT_OPTIONS+="--hls.playout=sample_aes "
+
+mp4split -o example.ism $MP4SPLIT_OPTIONS oceans-64k.ismv oceans-250k.ismv
+
+HLS also specifies a standard encryption mechanism using AES and a method
+of secure key distribution using HTTPS with either a device specific realm
+login or HTTP cookie which together provide a simple DRM system.
+*** practice
+yum install openssl
+: openssl rand 16 > video.key
+get mp4split command line tool
+Download the source of the H264 Streaming Module for Lighttpd.
+
+For Lighttpd 1.4.18:
+
+cd ~
+wget http://h264.code-shop.com/download/lighttpd-1.4.18_mod_h264_streaming-2.2.0.tar.gz
+tar -zxvf lighttpd-1.4.18_mod_h264_streaming-2.2.0.tar.gz
+For Lighttpd 1.5.0:
+
+cd ~
+wget http://h264.code-shop.com/download/lighttpd-1.5.0_mod_h264_streaming-2.2.0.tar.gz
+tar -zxvf lighttpd-1.5.0_mod_h264_streaming-2.2.0.tar.gz
+If you plan to play Multi Bit Rate H.264 encoded videos, you will also need the command line tool 'mp4split' to create the Smooth Streaming manifest files.
+
+wget http://h264.code-shop.com/download/mp4split-2.2.0.tar.gz
+tar -zxvf mp4split-2.2.0.tar.gz
+
+server manifest
+
+ismv = ISMV file is an IIS Smooth Streaming Video. 
+ism = IIS Smooth Streaming Server Manifest Data
+
+Try apache multimedia serve
+upload a mp4 file
+download psftp.exe
+> open 192.168.109.50
+user: root; passwd: 123456
+> cd /home/aptv
+> lcd e:/jollywing/documents
+> put gaoyuanlan.mp4
+> bye
+
+start httpd: /etc/init.d/httpd start
+try http://192.168.109.50/gaoyuanlan.mp4
+
+`cat video.key | hexdump -e '16/1 "%02x"'` \
+
+mp4split -o video.ism \
+  --hls.content_key=`cat video.key | hexdump -e '16/1 "%02x"'` \
+  --hls.license_server_url=http://www.example.com/video/video.key \
+  video.ismv
+
+*** 防下载
+动态生成m3u8以及ts切片的地址，在下发到终端之后一定时间内，或下次请求时，改变生成的路径。
+目前所有用HTTP实现视频点播的网站，如果有版权保护（防下载）都是用的这种方法。
+
+*** session encryption
+访问接口要有apikey才能取回m3u8的地址和生成session,然后用带session的m3u8里的
+ts地址去访问具体的ts切片的服务器，ts切片上也带session
+
+** Content Protection/Closed Captions in HLS
+HLS doesn’t natively support digital rights management (DRM) though you
+can encrypt the data and provide key access using HTTPS authentication.
+There are several third-party DRM solutions becoming available, including
+from (1) AuthenTec, (2) SecureMedia, and (3) WideVine. HLS can support
+closed captions included in the MPEG-2 transport stream.
+
+** HTTP Live Streaming client
+Apple recommends using the HTML5 video tag for deploying HLS video on a website.
+
+** android play encrypted hls?
+1. according to http://stackoverflow.com/questions/14235148/how-to-decrypt-ts-files-given-in-a-m3u8-file/14235534#14235534
+   the media framework of android can encrypted hls automatically.
+   =As mentioned in my comment, AES-128 decyption is done automatically on Android 3.x & 4.x devices by the mediaframework.=
+
+   Below a quote from the HLS draft
+
+   EXTINF is a record marker that describes the media file identified by the
+   URI that follows it. Each media file URI MUST be preceded by an EXTINF tag.
+
+2. split mp4 ts.
+
+   : useradd -m -U jolly; passwd jolly; 567890
+
+   install ffmpeg:
+
+   #+BEGIN_SRC sh
+   wget -c http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
+   tar xjvf ffmpeg-snapshot.tar.bz2
+   cd ffmpeg
+   ./configure --disable-yasm
+   make
+   sudo make install
+   #+END_SRC
+
+   : ffmpeg -i gaoyuanlan.mp4 -codec copy -vbsf h264_mp4toannexb -map 0 -f segment -segment_list out.m3u8 -segment_time 10 out%03d.ts
+
+3. Test HLS.
+   mplayer http://192.168.109.50/aes-demo/gaoyuanlan.mp4 OK
+   mplayer http://192.168.109.50/aes-demo/out.m3u8 NOT WORK.
+   vlc http://192.168.109.50/aes-demo/out.m3u8 OK.
+
+4. encryption with aes-128
+
+   openssl encryption:
+   http://stackoverflow.com/questions/3010638/using-openssl-encryption-for-apples-http-live-streaming
+
+   #+BEGIN_SRC sh
+   #!/bin/bash
+   keyfile="video.key"
+   openssl rand 16 > $keyfile
+   hexKey=`cat $keyfile | hexdump -e '16/1 "%02x"'`
+   echo $hexKey
+   hexIV='0'
+   
+   for seg in $(ls *.ts)
+   do
+   echo "Encrypting $seg ..."
+   base="$(basename $seg .ts)"
+   out="${base}-encrypted.ts"
+   openssl aes-128-cbc -e -in $seg -out $out -p -nosalt -iv ${hexIV}  -K ${hexKey}
+   echo "Create $out."
+   done
+   #+END_SRC
+
+   add encrypt hint to m3u8
+   : #EXT-X-KEY:METHOD=AES-128,URI="video.key"
+   before
+   : #EXTINF:10...
+
+   A script for create keys for each ts:
+   #+BEGIN_SRC
+   #!/bin/bash
+   
+   for seg in $(ls *.ts)
+   do
+   echo "Encrypting $seg ..."
+   base="$(basename $seg .ts)"
+   keyfile="${base}.key"
+   openssl rand 16 > $keyfile
+   hexKey=`cat $keyfile | hexdump -e '16/1 "%02x"'`
+   hexIV='0'
+   echo "hexKey: ${hexKey}"
+   out="${base}-encrypted.ts"
+   openssl aes-128-cbc -e -in $seg -out $out -p -nosalt -iv ${hexIV}  -K ${hexKey}
+   echo "Create $out."
+   done
+   #+END_SRC
+
+5. Test.
+   Apple sarafi, OK.
+   Android MxPlayer: http://192.168.1.50/aes-demo/encrypt.m3u8
+
+6. check log of apache
+   : cd /var/log/httpd
+   : vim aptv-access.log
+
+* Emacs
+** make theme
+~/.emacs.d/spring-theme.el
+
+#+BEGIN_SRC elisp
+(deftheme spring
+  "A black on light green theme, to protect your eyes.")
+
+(let ((class '((class color) (min-colors 89))))
+  (custom-theme-set-faces
+   'spring
+   `(default ((,class (:background "#99bb99" :foreground "black"))))
+   ... ...
+  ))
+
+(provide-theme 'spring)
+#+END_SRC
+** gnus
+M-x gnus-other-frame
+* IT News
+1. 2013.4, 百度继收购爱奇艺之后，收购了PPS。
+2. 优酷收购土豆网后成为第一阵营，百度携手爱奇艺、PPS争夺第二阵营，搜狐视频、腾讯视频等都在步步紧逼，抢占视频行业市场。
+
+|   | salary | environment | family | girl | sum |
+| a |      0 |           0 |      3 |    0 | 3   |
+| b |      3 |           1 |      0 |    1 | 5   |
+* BTlive
+* btsync
+ref: http://www.bittorrent.com/sync
+AL32ADHNEBXGOLZVH7QBBNDY5UWREKAWZ
+
+set up linux version
