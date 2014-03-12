@@ -31,7 +31,29 @@ Solution:
 : git config --global http.sslcainfo "/e/jollywing/installed/Git/bin/curl-ca-bundle.crt"
 
 ** tomato clock
+what package include atd service
 ** centOS
+*** xwindow
+In modern linux oses, we should need not create xorg.conf manually.
+However, xserver just cannot start up sometimes.
+Here I got the complainment: /No Screens found/.
+Then I add a /etc/X11/xorg.conf with such contents:
+#+BEGIN_EXAMPLE
+Section "Screen"
+	Identifier     "Default Screen"
+	Device		"Default Video Card"
+	DefaultDepth   24
+EndSection
+
+Section "Device"
+	Identifier	"Default Video Card"
+	Driver      "intel"
+EndSection
+#+END_EXAMPLE
+
+When the Driver is set to mesa, I got the same complainment.
+When I changed the driver to "intel", it works.
+
 *** time
 : # date -s "xyz"
 : # hwclock -uw
@@ -125,6 +147,14 @@ DRM Framework API模块通过Binder机制和位于drmserver进程（以Android 4
 DRM Plugins是真正实现权限管理、数字内容解密等工作的模块。
 根据DRM标准的不同，这些Plugins的实现亦不相同。另外，一个手机可能会集成多个DRM Plugin。
 这是因为媒体文件如果采用不同的DRM解决方案进行加密的话，手机在播放它们时，DRM Manager需找到对应的DRM Plugin以进行解密。
+** Experiment 1
+1. install IIS
+   control panel -> add or remove program -> install windows components
+   -> application server
+2. start a website service
+   control panel -> administration tools -> iis manager
+   In the left tree panel, right click on the website node, new website, follow the wizard and click Ok.
+   On the new website node, right click, start it immediately.
 * HLS + AES
 ** survey
 ref:
