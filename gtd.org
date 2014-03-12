@@ -2,6 +2,15 @@
 * sopcast
 ** search source
 * tools
+** git
+1. create repository jolly-notes on [[https://github.com/][git-hub]]
+2. =git clone https://github.com/jollywing/jolly-notes.git=
+3. change your cotents && commit to local (=git add= and =git commit=)
+4. =git remote add origin https://github.com/jollywing/jolly-notes.git=
+5. =git remote set-url origin https://jollywing@github.com/jollywing/jolly-notes.git=
+   Important! if you skip this step, you'll get error when you push.
+   The error is like: "error: The requested URL returned error: 403 while accessing ..."
+6. =git push -u origin master=
 ** tomato clock
 ** centOS
 *** time
@@ -15,3 +24,6 @@ Edit /etc/samba/smb.conf
 *** virtual box
 1. get win server 2003 iso
 2. 
+
+*** File Manager
+1. bsc : Qt based Total Commander
