@@ -1,0 +1,17 @@
+
+* sopcast
+** search source
+* tools
+** tomato clock
+** centOS
+*** time
+: # date -s "xyz"
+: # hwclock -uw
+*** samba
+: sudo yum install samba4
+Edit /etc/samba/smb.conf
+: sudo service smb start
+为什么Windows
+*** virtual box
+1. get win server 2003 iso
+2. 

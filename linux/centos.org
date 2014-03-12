@@ -1,0 +1,63 @@
+
+* service
+RHEL/CentOS 	Ubuntu
+Display all the available services
+
+/sbin/chkconfig ––list
+
+	N/A
+
+Enable the service
+
+/sbin/chkconfig [name] on
+
+	
+
+/usr/sbin/update-rc.d [name] defaults
+
+
+Disable the service
+
+/sbin/chkconfig [name] off
+
+	
+
+/usr/sbin/update-rc.d -f [name]
+ remove
+
+
+Start the background service
+
+/sbin/service [name] start
+
+	
+
+/usr/sbin/service [name] start
+
+
+Stop the background service
+
+/sbin/service [name] stop
+
+	
+
+/usr/sbin/service [name] stop
+
+
+Restart the background service
+
+/sbin/service [name] restart
+
+	
+
+/usr/sbin/service [name] restart
+
+
+Display the background service status
+
+/sbin/service [name] status
+
+	
+
+/usr/sbin/service [name] status
+
