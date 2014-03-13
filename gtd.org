@@ -1,6 +1,13 @@
 
 * sopcast
 ** search source
+** apk
+** sopcast-player
+self.play_channel
+self.fork_sop
+self.config_manager
+*** experiment 0: run sopclient in APK on android terminal
+failed.
 * tools
 ** git
 *** Usage
@@ -32,64 +39,6 @@ Solution:
 
 ** tomato clock
 what package include atd service
-** centOS
-*** xwindow
-In modern linux oses, we should need not create xorg.conf manually.
-However, xserver just cannot start up sometimes.
-Here I got the complainment: /No Screens found/.
-Then I add a /etc/X11/xorg.conf with such contents:
-#+BEGIN_EXAMPLE
-Section "Screen"
-	Identifier     "Default Screen"
-	Device		"Default Video Card"
-	DefaultDepth   24
-EndSection
-
-Section "Device"
-	Identifier	"Default Video Card"
-	Driver      "intel"
-EndSection
-#+END_EXAMPLE
-
-When the Driver is set to mesa, I got the same complainment.
-When I changed the driver to "intel", it works.
-
-*** time
-: # date -s "xyz"
-: # hwclock -uw
-*** samba
-: sudo yum install samba4
-Edit /etc/samba/smb.conf
-: sudo service smb start
-*TODO*: Why Windows can not access?
-*** virtual box
-1. download rpm from oracle official website
-2. rpm -i virtualbox.rpm
-3. compile the kernel module.
-   : sudo yum install kernel-devel
-   : sudo /etc/init.d/vboxdrv setup
-4. get win server 2003 iso
-5. install a win 2003 virtual machine.
-6. Set Network to general network, then the vm os will get the adress that can be pinged from outside.
-
-*** File Manager
-1. bsc : Qt based Total Commander
-*** network
-: vi /etc/sysconfig/network-script/ifcfg-p4p1
-add 
-: BOOTPROTO="dhcp"
-then
-: # service network restart
-*** yum
-yum upgrade
-yum install <pkgname>
-yum remove <pkgname>?
-yum search <str list>
-yum clean all # clear cache
-
-source:
-/etc/yum.repos.d/CentOS-Base.repo
-
 ** android
 1. the best file manager: es file manager
 2. android terminal emulator.
