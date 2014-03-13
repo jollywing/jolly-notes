@@ -70,6 +70,7 @@ Edit /etc/samba/smb.conf
    : sudo /etc/init.d/vboxdrv setup
 4. get win server 2003 iso
 5. install a win 2003 virtual machine.
+6. Set Network to general network, then the vm os will get the adress that can be pinged from outside.
 
 *** File Manager
 1. bsc : Qt based Total Commander
@@ -89,6 +90,11 @@ yum clean all # clear cache
 source:
 /etc/yum.repos.d/CentOS-Base.repo
 
+** android
+1. the best file manager: es file manager
+2. android terminal emulator.
+   The commands supported:
+   https://github.com/jackpal/Android-Terminal-Emulator/wiki/Android-Shell-Command-Reference
 * Someday
 ** worktile: 协同工作
 ** 机顶盒的结构和原理
@@ -147,14 +153,26 @@ DRM Framework API模块通过Binder机制和位于drmserver进程（以Android 4
 DRM Plugins是真正实现权限管理、数字内容解密等工作的模块。
 根据DRM标准的不同，这些Plugins的实现亦不相同。另外，一个手机可能会集成多个DRM Plugin。
 这是因为媒体文件如果采用不同的DRM解决方案进行加密的话，手机在播放它们时，DRM Manager需找到对应的DRM Plugin以进行解密。
+** How windows Meia Rights Manager Works
 ** Experiment 1
-1. install IIS
+1. install IIS 6.0 on windows server 2003
    control panel -> add or remove program -> install windows components
    -> application server
 2. start a website service
    control panel -> administration tools -> iis manager
    In the left tree panel, right click on the website node, new website, follow the wizard and click Ok.
    On the new website node, right click, start it immediately.
+3. enable ASP extension.
+4. copy the samples of WMRM sdk into your www root directory.
+5. create seed, public key and private key with VBS.
+6. edit global.asa, fill site-url, seed, public key, private key fields.
+7. enable the global.asa: on the iis manager, right click on the `samples' dir, click `properties', *create*, OK.
+   Restart www service: net stop w3svc; net start w3svc.
+
+** experiment 0: let iis support media string
+1. iis can not serve mp4 file.
+2. in the iis manager, right click the local computer, add MIME type. you can find mp2 and mp3, but no mp4. add (mp4, video/mpeg). Then you can play the mp4 video with a player.
+
 * HLS + AES
 ** survey
 ref:
