@@ -1,0 +1,76 @@
+# musca startUp file.
+# musca is a light weight tiling window manager.
+# This file list the commands that you want musca to execute.
+
+#set border_focus gray30
+set border_focus skyblue
+set border_unfocus gray10
+set border_width 1
+
+# make Trayer and Conky not managed by musca.
+#manage off trayer
+manage off Conky
+exec conky
+exec tint2
+#exec trayer --edge top --align Right --widthtype request --height 20 --SetDockType true --transparent true --alpha 255 --tint 0x00ff00
+exec fcitx -d
+
+set window_open_frame empty
+set focus_follow_mouse 0
+
+# patch to musca needs only parameters of dmenu
+#set dmenu /usr/local/bin/dmenu -i -b -fn sans -p $
+set dmenu -i -b -fn sans -p $
+
+bind off all
+bind on Mod4+m command
+bind on Mod4+x shell
+bind on Mod4+c catchall flip
+bind on Mod4+d dedicate flip
+bind on Mod4+r remove
+bind on Mod4+o only
+bind on Mod4+u undo
+bind on Mod4+comma cycle next
+bind on Mod4+period cycle prev
+
+bind on Mod4+h hsplit 55%
+bind on Mod4+v vsplit 55%
+bind on Mod4+Left lfocus
+bind on Mod4+Right rfocus
+bind on Mod4+Up focus up
+bind on Mod4+Down focus down
+bind on Mod4+shift+Left slide left
+bind on Mod4+shift+Right slide right
+bind on Mod4+shift+Up slide up
+bind on Mod4+shift+Down slide down
+bind on Mod4+control+Left resize left
+bind on Mod4+control+Right resize right
+bind on Mod4+control+Up resize up
+bind on Mod4+control+Down resize down
+
+bind on Mod4+s stack flip
+#bind on Mod4+t exec x-terminal-emulator
+bind on Mod4+t exec urxvt
+bind on Mod4+1 use 0
+bind on Mod4+2 use 1
+bind on Mod4+3 use 2
+bind on Mod4+4 use 3
+bind on Mod4+5 use 4
+bind on Mod4+F1 move 0
+bind on Mod4+F2 move 1
+bind on Mod4+F3 move 2
+bind on Mod4+F4 move 3
+bind on Mod4+F5 move 4
+bind on Mod4+g switch group
+
+bind on Mod4+z exec ch-musca-layout
+alias exit run ~/.musca_end
+
+pad 0 0 20 0
+hook on ^(add|use) pad 0 0 20 0
+#name main
+#add fun
+#load blog/bin/musca-layout/fun
+#use 0
+#load blog/bin/musca-layout/write
+
