@@ -96,6 +96,7 @@ self.config_manager
    The error is like: "error: The requested URL returned error: 403 while accessing ..."
 6. =git push -u origin master=
 7. In another location, you can  =git pull origin master=
+8. try *rebase*.
 *** msysgit (Git on Windows)
 When you clone a remote repository, you'll meet a error:
 
@@ -113,6 +114,9 @@ fatal: HTTP request failed
 Solution:
 : git config --global http.sslcainfo "/e/jollywing/installed/Git/bin/curl-ca-bundle.crt"
 
+*** errors
+1. non-fast-forward error, somebody else has commited something to the remote repository,
+   before you push, you nell pull at first.
 ** tomato clock
 what package include atd service
 ** android
@@ -134,7 +138,31 @@ kankan.baidu.com
 产品：摄象头 + android app.
 It costs 600+
 看孩子，看宠物。
-** popcorn
+* popcorn
+** try Linux binary release (failed)
+1. wget -c http://static.cdnjd.com/releases/popcorn/Popcorn-Time-2.7-Linux-64.tgz
+2. mkdir popcorn; cd popcorn;
+3. tar xzvf /path/to/Popcorn-Time-2.7-Linux-64.tgz
+4. run Popcorn.
+   #+BEGIN_EXAMPLE
+   $ ./Popcorn-Time 
+   ./Popcorn-Time: /lib64/libc.so.6: version `GLIBC_2.14' not found (required by ./Popcorn-Time)
+   ./Popcorn-Time: /lib64/libc.so.6: version `GLIBC_2.15' not found (required by ./Popcorn-Time)
+   ./Popcorn-Time: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.15' not found (required by ./Popcorn-Time)
+   #+END_EXAMPLE
+   The /lib64/libc.so.6 and /usr/lib64/libstdc++.so.6 exist, but they are a little old.
+** try windows binary
+1. long long time to connect ...
+** source
+1. grunt: The javascript Task runner
+   link: http://gruntjs.com/
+2. npm: Node Package Manager
+   link: https://www.npmjs.org/
+3. javascript: A new variable without `var' will be regarded as a global variable.
+4. The core is *peerflix* (https://github.com/mafintosh/peerflix).
+5. peerflix uses the streaming torrent engine named *torrent-stream*,
+   https://github.com/mafintosh/torrent-stream.git, also created by https://github.com/mafintosh
+6. https://github.com/feross/webtorrent, a web version of bittorrent
 * Notes
 ** address
 北京市石景山区石景山路31号盛景国际大厦C座12层  邮编：100043
@@ -148,6 +176,8 @@ answer: 1****6
 2. live; passwd: zh***h**f***
 ** sopcast account
 - =jiqing_wu@***.com; t******j=
+** linux
+account:r; 5*****j***y
 * DRM on android
 ** DRM: Digital Rights Management
 *** 产业链
@@ -487,10 +517,11 @@ M-x gnus-other-frame
 * IT News
 1. 2013.4, 百度继收购爱奇艺之后，收购了PPS。
 2. 优酷收购土豆网后成为第一阵营，百度携手爱奇艺、PPS争夺第二阵营，搜狐视频、腾讯视频等都在步步紧逼，抢占视频行业市场。
-
-|   | salary | environment | family | girl | sum |
-| a |      0 |           0 |      3 |    0 | 3   |
-| b |      3 |           1 |      0 |    1 | 5   |
+3. peerflix 为用户交换DVD提供一个平台，peerflix 对每笔交换收取一定的费用。
+4. BAT三巨头: BaiDu, ALi, Tecent.
+5. 阿里巴巴收购高德导航，集成快的打车。
+6. 腾讯开发的英雄联盟是目前全球在线人数最高的游戏，超过了魔兽世界。
+7. 地图是百度的竞争力所在。
 * BTlive
 * btsync
 ref: http://www.bittorrent.com/sync
