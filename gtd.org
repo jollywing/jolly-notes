@@ -44,6 +44,22 @@
    will try to decode the video directly, playbacking wrong content.
 2. *Conclusion*: so they don't support WMRM.
 
+
+* Android
+** apk
+1. /system 系统目录。
+   + app 系统自带的应用程序都在这里。包括apk和odex。ODEX是安卓上的应用程序
+     apk中提取出来的可运行文件，即将APK中的classes.dex文件通过dex优化过程将其优化
+     生成一个.odex文件单独存放，原APK中的classes.dex文件会保留。这样做可以加快软
+     件的启动速度，预先提取，减少对RAM的占用，因为没有odex的话，系统要从apk包中提
+     取dex再运行。
+   + bin和xbin中都是arm binary, shell命令都在这里。
+2. /data user's APP is installed under it.
+   - copy the apk to /data/app
+   - install the dex in apk to /data/dalvik-cache, such as data@app@org.sopcast.android-1.apk@classes.dex, which is executable to dalvik, it is dalvik byte code.
+   - create data directory under /data/data, sopclient is copyed into
+     /data/data/org.sopcast.android/files, the shared libaries are copied
+     into /data/data/org.sopcast.android/lib.
 * sopcast
 ** experiment: run arm binary on android.
 1. Is NDK needed? The NDK is a toolset that allows you to implement parts
@@ -53,7 +69,13 @@
    chmod does not effect.
 4. cp sopclient to /, failed. / is readonly.
 5. cp sopclient to /system, run it, success!
-** try ldd
+** experiment: playback sopcast with terminal
+1. su;
+2. cd /data/data/org.sopcast.android/files;
+3. ./sopclient; you get the help information:
+   : ./sp-sc [-T] [-t seconds] [-u username:password] [-n out:total] [-x suffixname] [-a http://auth_url] [-r num] <sop://url> <localport> <playerport>
+4. =./sopclient sop://broker.sopcast.com:3912/141796 3908 8908=, 141796 is a American channel.
+5. open MxPlayer, play http://127.0.0.1:8908/tv.asf, success!
 ** search source
 ** apk
 *** experiment 0: run sopclient in APK on android terminal
@@ -105,6 +127,14 @@ what package include atd service
 
 ** 科研项目
 1. 国家科技项目申报
+
+** BaiDu KanKan
+kankan.baidu.com
+小度i耳目
+产品：摄象头 + android app.
+It costs 600+
+看孩子，看宠物。
+** popcorn
 * Notes
 ** address
 北京市石景山区石景山路31号盛景国际大厦C座12层  邮编：100043
@@ -435,6 +465,7 @@ Apple recommends using the HTML5 video tag for deploying HLS video on a website.
    : vim aptv-access.log
 
 * Emacs
+** custom emacs home
 ** make theme
 ~/.emacs.d/spring-theme.el
 
