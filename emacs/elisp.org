@@ -1,0 +1,223 @@
+#+TITLE: Elisp 学习笔记
+#+AUTHOR:Jiqing Wu
+#+EMAIL: jiqingwu@gmail.com
+
+* 学习环境
+
+- \*scratch\*缓冲区中，在行尾按C-j，执行当前的语句。
+- 在任何地方，按C-x C-e evaluate 前面的表达式: 变量, 函数等.
+  结果将在mini-buffer中显示.
+  如果要在缓冲区内显示结果, C-u C-x C-e.
+- M-x ielm RET, 将会启动 elisp 的交互环境.
+
+* 数据类型
+
+** 数值
+
+判断是不是整数:
+
+- (integerp 1.)                           ; => t
+- (integerp 1.0)                          ; => nil
+
+判断是不是浮点数:
+
+- (floatp 1.)                             ; => nil
+- (floatp -0.0e+NaN)                      ; => t
+
+判断是不是数字:
+
+- (numberp 1)                             ; => t
+- (numberp ?A)                            ; => t
+- (numberp "hi")                          ; => nil
+
+判断是否为0:
+
+- (zerop -10)  ; => nil
+- (zerop 0)    ; => t
+
+判断是否为非负整数:
+
+- (wholenump 0)         ; => t
+- (wholenump 5)         ; => t
+- (wholenump 10.0)      ; => nil
+- (wholenump -1.1)      ; => nil
+
+数值转换:
+
+- (floor 10.1)            ; => 10, 不比本身大的最接近的整数
+- (ceiling 10.2)          ; => 11, 不比本身小的最接近的整数
+- (round 5.6)             ; => 6, 四舍五入的整数
+
+- random产生随机数, 用 (random t) 产生新的种子, (% (random) 100)
+  可以得到 100 以内的随机数.
+
+
+** 字符和字符串
+
+- char(问号开头): ?a. 字符其实就是一个数字, 如 ?A 就是65.
+- String: "Hello, world!"
+
+** 布尔类型
+- nil: 表示空的list或者false. 也可将 nil 写作 ().
+  elisp中除了nil, 其它都是真.
+- t: true
+
+** 列表
+- list: (1 2 3 4)，list中的元素叫atom
+- car 取列表的第一个元素，(car '(1 2 3)) 得到 1.
+- cdr 取列表的第一个元素后面的剩余部分， (cdr '(1 2 3)) 得到 (2 3).
+- lisp是函数式语言，每个()之间的部分会被认为函数调用。因此list的第一个元素会被认为是函数名。
+  为了防止list被evaluate，在list前加一个 \', 比如 =\'(1 2 3)= 会返回列表本身。
+
+- pair: (apple . 2)
+- alist (associated list):一堆pair的集合，类似Python中的词典。
+- ...: 表示什么呢？应该是什么路径。亦或是省略的意思？
+- 可以用中文字符串作变量名, 如 (setq 个数 10).
+
+* 变量
+
+用 defvar 和 setq 定义的变量都是全局变量.
+
+: (defvar var-name var-value "var-docstring")
+
+用 setq 定义的变量没有文档描述.
+: (setq var-name var-value)
+
+在函数内部通常用 let 定义局部变量.
+#+BEGIN_SRC lisp
+  (let ((var1 value1) var2)
+    (statement1)
+    (statement2)
+  ... ...)
+#+END_SRC
+
+其中, var2 只定义, 没有赋值, 默认值为 nil.
+
+
+* 常用函数
+
+- (number-to-string n): 将数字n转化成字符串，可以是浮点数。
+- (message string): 在echo区显示string。
+  格式化输出的例子:
+  (message "there are %d persons here" var-name),
+  (message "The area is %.2f ." float-var),
+  格式字符串中也可使用 \\n, \\t等转义字符.
+- (message "The name of this buffer is: %s." (buffer-name))
+- (message "The value of fill-column is %d." fill-column)
+- (buffer-name) (buffer-file-name) (current-buffer)
+- (other-buffer) 返回不可见的buffer中最近访问过的buffer。
+- (buffer-size) (point) (point-min) (point-max)
+
+* 函数模板
+
+Elisp中, 函数都是全局的.
+
+函数五部分:
+
+#+BEGIN_SRC lisp
+     (defun FUNCTION-NAME (ARGUMENTS...)
+  		    "OPTIONAL-DOCUMENTATION..."
+	            (interactive ARGUMENT-PASSING-INFO)     ; optional
+		    BODY...)
+#+END_SRC
+
+let语句:
+
+#+BEGIN_SRC lisp
+  (let ((VARIABLE VALUE)
+        (VARIABLE VALUE)
+        ...)
+    BODY...)
+#+END_SRC
+
+save-excursion语句
+将光标位置和当前mark位置保存起来, 以便返回: ::
+
+#+BEGIN_SRC lisp
+  (save-excursion
+    FIRST-EXPRESSION-IN-BODY
+    SECOND-EXPRESSION-IN-BODY
+     ...
+    LAST-EXPRESSION-IN-BODY)
+#+END_SRC
+
+* lambda函数
+
+: (lambda (param-list) "function-doc" body)
+
+匿名函数, 通常在使用的时候临时定义.
+::
+
+  (funcall (lambda (hello-name) "say hello to someone"
+    (message "hello, %s!" hello-name)) "wuchen")
+
+也可以把lambda赋值给一个变量, 再调用:
+#+BEGIN_SRC lisp
+  (setq hello (lambda (hello-name) "say hello to someone"
+    (message "hello, %s!" hello-name)))
+  (funcall hello "wuchen")
+#+END_SRC
+
+* 控制结构
+
+只有在函数内部等环境中, 才能顺序执行多个表达式.
+如果想在函数外部一次 eval 多个表达式, 需要用 progn.
+: (progn A B C ...)
+
+#+BEGIN_SRC lisp
+(progn (setq foo 3)
+(message "%d + 2 = %d" foo (+ foo 2)))
+#+END_SRC
+
+** 分支
+
+if语句:
+
+#+BEGIN_SRC lisp
+  (if TRUE-OR-FALSE-TEST
+      ACTION-TO-CARRY-OUT-IF-TEST-IS-TRUE)
+
+  (if TRUE-OR-FALSE-TEST
+      ACTION-TO-CARRY-OUT-IF-THE-TEST-RETURNS-TRUE
+    ACTION-TO-CARRY-OUT-IF-THE-TEST-RETURNS-FALSE)
+#+END_SRC
+
+cond语句, 相当于 switch/case 结构:
+
+#+BEGIN_SRC lisp
+  (cond (case1 do-something)
+        (case2 do-something)
+        ...
+        (t do-default-things))
+#+END_SRC
+
+例如
+#+BEGIN_SRC lisp
+  (defun guess-sex (name)
+  "guess the person's sex according his name"
+  (cond ((string= name "XiaoMing") (message "%s is a boy." name))
+  ((string= name "XiaoFang") (message "%s is a girl." name))
+  (t (message "I don't know..."))))
+#+END_SRC
+测试.
+
+#+BEGIN_SRC lisp  
+    (guess-sex "XiaoMing")
+    (guess-sex "Fang")
+#+END_SRC
+
+分支结构离不开值的比较.
+
++ 数值比较: =, >, <
++ 字符比较: char-equal
++ 字符串比较: string-equal (string=), string-lessp(string<)
+
+斐波那切数列:
+#+BEGIN_SRC lisp
+  (defun fib (n)
+      (cond ((= n 0) 0)
+            ((= n 1) 1)
+            (t (+ (fib (- n 1)) (fib (- n 2))))))
+  
+  (fib 5)
+#+END_SRC
