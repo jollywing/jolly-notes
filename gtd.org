@@ -44,6 +44,74 @@
    will try to decode the video directly, playbacking wrong content.
 2. *Conclusion*: so they don't support WMRM.
 
+* popcorn
+** try Linux binary release (failed)
+1. wget -c http://static.cdnjd.com/releases/popcorn/Popcorn-Time-2.7-Linux-64.tgz
+2. mkdir popcorn; cd popcorn;
+3. tar xzvf /path/to/Popcorn-Time-2.7-Linux-64.tgz
+4. run Popcorn.
+   #+BEGIN_EXAMPLE
+   $ ./Popcorn-Time 
+   ./Popcorn-Time: /lib64/libc.so.6: version `GLIBC_2.14' not found (required by ./Popcorn-Time)
+   ./Popcorn-Time: /lib64/libc.so.6: version `GLIBC_2.15' not found (required by ./Popcorn-Time)
+   ./Popcorn-Time: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.15' not found (required by ./Popcorn-Time)
+   #+END_EXAMPLE
+   The /lib64/libc.so.6 and /usr/lib64/libstdc++.so.6 exist, but they are a little old.
+** try windows binary
+1. long long time to connect ...
+** source
+1. grunt: The javascript Task runner
+   link: http://gruntjs.com/
+2. npm: Node Package Manager
+   link: https://www.npmjs.org/
+3. javascript: A new variable without `var' will be regarded as a global variable.
+4. The core is *peerflix* (https://github.com/mafintosh/peerflix).
+5. peerflix uses the streaming torrent engine named *torrent-stream*,
+   https://github.com/mafintosh/torrent-stream.git, also created by https://github.com/mafintosh
+6. https://github.com/feross/webtorrent, a web version of bittorrent
+* Node.js
+** introduction
+Node.js 服务端(脱离浏览器环境)的javascript
+Node.js使用了Google的V8虚拟机（Google的Chrome浏览器使用的JavaScript执行环境），
+来解释和执行JavaScript代码。 
+Node.js事实上既是一个运行时环境，同时又是一个库。 
+使用Node.js时，我们不仅仅在实现一个应用，同时还实现了整个HTTP服务器。
+** install
+1. goto http://nodejs.org/download/, download a binary archive.
+2. tar xzvf /path/to/the/nodejs/archive.
+3. add the following code to your .profile.
+   #+BEGIN_SRC sh
+   node_js_path=~/pkgs/node-v0.10.26-linux-x64/bin
+   if [ -d $node_js_path ]
+   then
+   PATH=$PATH:$node_js_path
+   fi
+
+   export PATH
+   #+END_SRC
+4. =\. .profile=, then you can use node and npm
+5. If node complains `can not find module xxx', you need set environment variable NODE_PATH:
+   #+BEGIN_SRC sh
+   node_js_root=~/pkgs/node-v0.10.26-linux-x64
+   NODE_PATH=${node_js_root}/lib/node_modules/npm/lib
+   NODE_PATH=$NODE_PATH:${node_js_root}/lib/node_modules/npm/node_modules
+   export NODE_PATH
+   #+END_SRC
+6. If you import module with absolute path or relative path, node will search the file with same name and with extension .js or json.
+   If you import module without path, it will search node_modules under the same directory.
+   If node can not find node_modules dir, it will goto the parent dir to look for mode_modules until the root `/' is reached.
+   If node can still not find node_modules, it resort to NODE_PATH.
+
+** Tutorial
+1. http://www.nodebeginner.org/index-zh-cn.html Node入门
+   https://github.com/manuelkiessling/NodeBeginnerBook
+** Notes
+1. Node有一些核心模块，被编译进Node的二进制中，如http.
+
+* peerflix
+1. git clone https://github.com/mafintosh/peerflix
+2. setup node.js
+3. node app.js; if node complains /can not find module xxx/, then =npm install xxx=.
 
 * Android
 ** apk
@@ -124,45 +192,6 @@ what package include atd service
 2. android terminal emulator.
    The commands supported:
    https://github.com/jackpal/Android-Terminal-Emulator/wiki/Android-Shell-Command-Reference
-* Someday
-** worktile: 协同工作
-** 机顶盒的结构和原理
-** Firewall traversing
-
-** 科研项目
-1. 国家科技项目申报
-
-** BaiDu KanKan
-kankan.baidu.com
-小度i耳目
-产品：摄象头 + android app.
-It costs 600+
-看孩子，看宠物。
-* popcorn
-** try Linux binary release (failed)
-1. wget -c http://static.cdnjd.com/releases/popcorn/Popcorn-Time-2.7-Linux-64.tgz
-2. mkdir popcorn; cd popcorn;
-3. tar xzvf /path/to/Popcorn-Time-2.7-Linux-64.tgz
-4. run Popcorn.
-   #+BEGIN_EXAMPLE
-   $ ./Popcorn-Time 
-   ./Popcorn-Time: /lib64/libc.so.6: version `GLIBC_2.14' not found (required by ./Popcorn-Time)
-   ./Popcorn-Time: /lib64/libc.so.6: version `GLIBC_2.15' not found (required by ./Popcorn-Time)
-   ./Popcorn-Time: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.15' not found (required by ./Popcorn-Time)
-   #+END_EXAMPLE
-   The /lib64/libc.so.6 and /usr/lib64/libstdc++.so.6 exist, but they are a little old.
-** try windows binary
-1. long long time to connect ...
-** source
-1. grunt: The javascript Task runner
-   link: http://gruntjs.com/
-2. npm: Node Package Manager
-   link: https://www.npmjs.org/
-3. javascript: A new variable without `var' will be regarded as a global variable.
-4. The core is *peerflix* (https://github.com/mafintosh/peerflix).
-5. peerflix uses the streaming torrent engine named *torrent-stream*,
-   https://github.com/mafintosh/torrent-stream.git, also created by https://github.com/mafintosh
-6. https://github.com/feross/webtorrent, a web version of bittorrent
 * Notes
 ** address
 北京市石景山区石景山路31号盛景国际大厦C座12层  邮编：100043
@@ -528,3 +557,18 @@ ref: http://www.bittorrent.com/sync
 AL32ADHNEBXGOLZVH7QBBNDY5UWREKAWZ
 
 set up linux version
+
+* Someday
+** worktile: 协同工作
+** 机顶盒的结构和原理
+** Firewall traversing
+
+** 科研项目
+1. 国家科技项目申报
+
+** BaiDu KanKan
+kankan.baidu.com
+小度i耳目
+产品：摄象头 + android app.
+It costs 600+
+看孩子，看宠物。
