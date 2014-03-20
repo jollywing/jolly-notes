@@ -69,6 +69,11 @@
 5. peerflix uses the streaming torrent engine named *torrent-stream*,
    https://github.com/mafintosh/torrent-stream.git, also created by https://github.com/mafintosh
 6. https://github.com/feross/webtorrent, a web version of bittorrent
+
+* Javascript
+** System Object
+1. process
+2. console
 * Node.js
 ** introduction
 Node.js 服务端(脱离浏览器环境)的javascript
@@ -106,8 +111,9 @@ Node.js事实上既是一个运行时环境，同时又是一个库。
 1. http://www.nodebeginner.org/index-zh-cn.html Node入门
    https://github.com/manuelkiessling/NodeBeginnerBook
 ** Notes
-1. Node有一些核心模块，被编译进Node的二进制中，如http.
-
+1. Node有一些核心模块，被编译进Node的二进制中，如http, child_process, fs (manipulate file system)
+2. npm install numeral; formatting and manipulating numbers.
+3. npm install clivas; A *interesting* library to manipulate terminal as a canvas.
 * peerflix
 1. git clone https://github.com/mafintosh/peerflix
 2. setup node.js
@@ -185,6 +191,9 @@ Solution:
 *** errors
 1. non-fast-forward error, somebody else has commited something to the remote repository,
    before you push, you nell pull at first.
+*** github
+1. delete a repository. Open the repository page, click /settings/ in the
+   right pane, click the button "delete this repository" in the bottom.
 ** tomato clock
 what package include atd service
 ** android
@@ -192,6 +201,12 @@ what package include atd service
 2. android terminal emulator.
    The commands supported:
    https://github.com/jackpal/Android-Terminal-Emulator/wiki/Android-Shell-Command-Reference
+* TODO Some morning is beautiful
+** When I cross the street, I see the west mountain
+** sunshine, hearing birds
+** 柳树\桃花\杨树
+** my youth in my heart went slowly, but still gone.
+Can I write without the mood of sobering.
 * Notes
 ** address
 北京市石景山区石景山路31号盛景国际大厦C座12层  邮编：100043
