@@ -74,6 +74,33 @@
 ** System Object
 1. process
 2. console
+** boolean
+| null           | FALSE |
+| undefined      | FALSE |
+| Object         | TRUE  |
+| function       | TRUE  |
+| 0              | FALSE |
+| 1              | TRUE  |
+| 0、1之外的数字 | TRUE  |
+| 字符串         | TRUE  |
+| ""(空字符串)   | FALSE |
+
+如果&&左侧表达式的值为真值，则返回右侧表达式的值；否则返回左侧表达式的值。
+
+#+BEGIN_EXAMPLE
+var i=""&&"真值";//->i=""  
+i="真值"&&"其他真值";//->i="其他真值"  
+i="真值"&&"";//->i=""  
+#+END_EXAMPLE
+ 
+如果||左侧表达式的值为真值，则返回左侧表达式的值；否则返回右侧表达式的值。
+#+BEGIN_EXAMPLE
+var i=""||"真值";//->i="真值"  
+i="真值"||"其他真值";//->i="真值"  
+i="真值"||"";//->i="真值"  
+#+END_EXAMPLE
+ 
+ 
 * Node.js
 ** introduction
 Node.js 服务端(脱离浏览器环境)的javascript
@@ -195,7 +222,6 @@ Solution:
 1. delete a repository. Open the repository page, click /settings/ in the
    right pane, click the button "delete this repository" in the bottom.
 ** tomato clock
-what package include atd service
 ** android
 1. the best file manager: es file manager
 2. android terminal emulator.
@@ -587,3 +613,20 @@ kankan.baidu.com
 产品：摄象头 + android app.
 It costs 600+
 看孩子，看宠物。
+
+* scratch
+早晨，透过高楼的窗子，望见石景山游乐园里的柳树。只一夜功夫，绿意又浓了不少。
+在一个天气晴朗空气还算清新的初春早晨，溜达着去上班是很惬意的事。
+杨树上的毛毛虫已经落了满地；柳树的绿意还有些透明，如烟似梦。
+在小公园的某处，或是谁家的门前，盛开着一树两树的桃花。
+当我横跨马路，从八角北里走进八角中里，又从八角中里走进八角南里，向右一扭头，就清晰地望见了西山。
+山上零星的房屋也历历在目。
+一个温度适宜、阳光明亮的早晨，一切都是亮的色调，喜鹊的叫声也是明亮的，足够让人心情好起来。
+
+小勇师弟来北京出差。昨夜我们吃过晚饭，又打着黑的，去万达看深夜的电影。
+他端着可乐，我捧着爆米花，看吕克贝松的黑色幽默，有点象基友。
+一不做，二不休，我们回到酒店，一起洗洗睡了，哈哈。
+
+总是在六点左右醒来，然后再不能入睡。
+昨夜睡觉的时候都12点半了，今晨又是不到六点就醒了。
+上班要注意保留气力，多休息。
