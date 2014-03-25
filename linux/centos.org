@@ -62,6 +62,8 @@ yum clean all # clear cache
 source:
 /etc/yum.repos.d/CentOS-Base.repo
 
+rpm -ivh http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
+yum install --enablerepo=rpmforge-extras xyz
 
 * service
 |                                       | RHEL/CentOS                  | Ubuntu                                 |
