@@ -1,0 +1,47 @@
+#+TITLE:FreeBSD notes
+
+* Install
+** install the base system.
+1. burn the freebsd 10 iso to cd. (The open source buring tool *InfraRecorder* is suggested.)
+2. reboot your computer with the cdrom.
+3. Press "Enter" to startup the default multi-user session.
+4. select "Install".
+5. Manual partition. If you has MBR partition table on your harddisk. 
+   You should create a /freebsd/ partition with the freespace,
+   then create freebsd-ufs, freebsd-swap in the freebsd partition.
+   We call them slices. Make sure there is a mountpoint ~/~.
+6. You can use grub of Linux to boot FreeBSD, add the following lines to /menu.lst/.
+   #+BEGIN_EXAMPLE
+   title freebsd
+   rootnoverify (hd0, x)
+   chainloader +
+   #+END_EXAMPLE
+** install pkgs
+*** pkg
+pkgng (ng = next generation) is the next generation replacement for the
+traditional FreeBSD package management tools.
+: # /usr/sbin/pkg
+will download and install /pkgng/.
+
+The default package repository location is defined in /usr/local/etc/pkg.conf or by the PACKAGESITE environment variable
+
+Usage information for pkgng is available in pkg(8) or by running pkg without additional arguments.
+: # pkg help install
+OR
+: # man pkg-install
+: # pkg update
+pkg install icewm
+
+*** ports
+The Ports Collection is a set of Makefiles, patches, and description files stored in /usr/ports.
+: portsnap fetch
+: portsnap extract
+: portsnap update
+
+pkg install xorg-server
+pkg install icewm
+pkg install xinit
+startx
+
+pkg install xf86-input-mouse xf86-input-keyboard
+
