@@ -44,15 +44,27 @@
    will try to decode the video directly, playbacking wrong content.
 2. *Conclusion*: so they don't support WMRM.
 
-
 * vshow source
 1. block size 64 * 1024
 2. TrackerClient, Client, Server
-3. Client add parents
-4. m_connected_peers
-* Compare streamer
-** tribler
-** Goalbit
+3. Client add parents, add standby peers according to segments.
+4. add_todo_jobs, assign_job(schedule algorithm).
+5. rank parents according their contribution.
+6. TrackerClient sends keep_alive to server.
+7. Peer Server supports service. []
+8. Player Server.
+* Goalbit
+** survey
+1. Goalbit Media Player
+With the Goalbit Media Player (desktop and browser plug-in editions) you
+can play and record video streams from the web, and you can live broadcast
+yourself with a home Internet connection.
+
+2. Also, you will need the Starter
+Suite in order to distribute GoalBit channels in the Web, and in order to
+do a web broadcast from the GoalBit Media Player browser plug-in.
+
+** install
 1. git clone git://git.code.sf.net/p/goalbit/code goalbit-code
 2. No configure file; autoconf -v; 
    #+BEGIN_EXAMPLE
@@ -79,6 +91,8 @@
 8. you must provide a gme-tree.
    /gme-tree/: It is a very rare game format, so, skip it
    GME is a library to parse various file formats, especially from old games.
+* Compare streamer
+** tribler
 ** peer streamer
 ** myseelite
 ** p2pcenter
