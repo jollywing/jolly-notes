@@ -91,6 +91,11 @@ do a web broadcast from the GoalBit Media Player browser plug-in.
 8. you must provide a gme-tree.
    /gme-tree/: It is a very rare game format, so, skip it
    GME is a library to parse various file formats, especially from old games.
+
+** code
+1. What is SCRAPE. A client scrapes in order to determine whether or not to
+   send an /announce/ requesting more peers. Sending a scrape result is
+   usually less bandwidth consuming than sending a list of peers.
 * Compare streamer
 ** tribler
 ** peer streamer

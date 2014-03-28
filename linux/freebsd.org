@@ -23,15 +23,79 @@ traditional FreeBSD package management tools.
 : # /usr/sbin/pkg
 will download and install /pkgng/.
 
+: # pkg2ng
+convert the old pkg format.
+
 The default package repository location is defined in /usr/local/etc/pkg.conf or by the PACKAGESITE environment variable
+
+run =pkg= to see help info.
 
 Usage information for pkgng is available in pkg(8) or by running pkg without additional arguments.
 : # pkg help install
 OR
 : # man pkg-install
 : # pkg update
-pkg install icewm
 
+* XWindow
+
+#+BEGIN_EXAMPLE
+pkg install xorg
+pkg install icewm
+pkg install xinit
+echo 'exec icewm-session' > .xinitrc
+startx
+#+END_EXAMPLE
+
+mouse or keyboard not work?
+pkg install xf86-input-mouse
+pkg install xf86-input-keyboard
+
+
+* locale
+: locale -a
+list all supported locales
+
+: locale
+check the current locale
+
+* network
+** DHCP
+add
+: ifconfig_dc0="DHCP"
+to ~/etc/rc.conf~.
+
+** static
+add
+: ifconfig_dc0="inet 192.168.1.3 netmask 255.255.255.0"
+: defaultrouter="192.168.1.1"
+to ~/etc/rc.conf~
+
+add
+: nameserver 192.168.110.109
+to  ~/etc/resolv.conf~
+
+then
+: service netif restart
+
+* sudo
+su: sorry
+# pw usermod jolly -g wheel
+only the users who belongs wheel group can execute `su'
+
+sudo
+pkg install sudo
+: # visudo
+uncomment the `%wheel ALL=(ALL) NOPASSWD: ALL'
+
+* at
+at: you do not have permission to use this program
+check for /var/at.allow, then check /var/at.deny
+sudo touch /var/at/at.deny
+you can use at
+
+sudo service atd start
+atd does not exist in /etc/rc.d or the local startup
+directories (/usr/local/etc/rc.d)
 *** ports
 The Ports Collection is a set of Makefiles, patches, and description files stored in /usr/ports.
 : portsnap fetch
