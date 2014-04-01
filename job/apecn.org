@@ -1,0 +1,566 @@
+* log
+** 2014-04-01 Tue
+1. try opentracker, =1=
+2. make install goalbit on freeBSD, =2=
+* Goalbit
+** survey
+1. Goalbit Media Player
+With the Goalbit Media Player (desktop and browser plug-in editions) you
+can play and record video streams from the web, and you can live broadcast
+yourself with a home Internet connection.
+
+2. Also, you will need the Starter
+Suite in order to distribute GoalBit channels in the Web, and in order to
+do a web broadcast from the GoalBit Media Player browser plug-in.
+
+** make install on centOS
+1. git clone git://git.code.sf.net/p/goalbit/code goalbit-code
+2. No configure file; autoconf -v; 
+   #+BEGIN_EXAMPLE
+   configure.ac:446: error: m4_undefine: undefined macro: AC_DEPLIBS_CHECK_METHOD
+   configure.ac:446: the top level
+   autom4te: /usr/bin/m4 failed with exit status: 1
+   #+END_EXAMPLE
+3. ./bootstrap; 
+   #+BEGIN_EXAMPLE
+   configure.ac:5366: error: possibly undefined macro: AM_PATH_LIBGCRYPT
+      If this token and others are legitimate, please use m4_pattern_allow.
+      See the Autoconf documentation.
+   autoreconf: /usr/bin/autoconf failed with exit status: 1
+   #+END_EXAMPLE
+4. yum install libgcrypt-devel; ./bootstrap; SUCCESS!
+   Now we have configure.
+5. libmtp-devel
+6. libcddb, require libcdio.so.7, but there is only libcdio.so.10, so I downloaded the sourcecode.
+   wget -c http://prdownloads.sourceforge.net/libcddb/libcddb-1.3.2.tar.bz2
+   tar xjvf libcddb-1.3.2.tar.bz2
+   cd libcddb-1.3.2; ./configure; make; make install; make clean; *sudo ldconfig*
+7. configure: error: Could not find libmad on your system: you may get it from http://www.underbit.com/products/mad/. Alternatively you can use --disable-mad to disable the mad plugin.
+   mad = mpeg audio decoding library. sudo yum install libmap-devel.
+8. you must provide a gme-tree.
+   /gme-tree/: It is a very rare game format, so, skip it
+   GME is a library to parse various file formats, especially from old games.
+9. Give up, change to FreeBSD.
+
+
+** make install on freeBSD
+1. sudo pkg install autoconf; ./bootstrap;
+   #+BEGIN_EXAMPLE
+   autoreconf-2.69: failed to run aclocal: No such file or directory
+   #+END_EXAMPLE
+2. =sudo pkg install automake=, run ./bootstrap again.
+   #+BEGIN_EXAMPLE
+   configure.ac:446: error: m4_undefine: undefined macro: AC_DEPLIBS_CHECK_METHOD
+   configure.ac:446: the top level
+   autom4te-2.69: /usr/local/bin/gm4 failed with exit status: 1
+   aclocal-1.14: error: echo failed with exit status: 1
+   autoreconf-2.69: aclocal failed with exit status: 1
+   #+END_EXAMPLE
+3. It's because libtool missing. =sudo pkg install libtool=, then run ./bootstrap again.
+4. =./configure=.
+5. =./compile=.
+   #+BEGIN_EXAMPLE
+   /usr/local/bin/ld: cannot find -ldl
+   #+END_EXAMPLE
+   The dlopen/dlsym functions are built into libc on FreeBSD, so there's no need for a libdl
+   : sudo ln -s /usr/lib/libc.so /usr/lib/libdl.so
+** code
+1. What is SCRAPE. A client scrapes in order to determine whether or not to
+   send an /announce/ requesting more peers. Sending a scrape result is
+   usually less bandwidth consuming than sending a list of peers.
+
+
+** try with opentracker
+1. under "./modules/bittorrent/goalbit/btv_tracker/", is /open-tracker/.
+
+* Review vshow source
+1. block size 64 * 1024
+2. TrackerClient, Client, Server, PlayerServer
+3. Client add parents, add standby peers according to segments.
+4. add_todo_jobs, assign_job(schedule algorithm).
+5. rank parents according their contribution.
+6. TrackerClient sends keep_alive to server.
+
+* Sopcast
+** experiment: run arm binary on android.
+1. Is NDK needed? The NDK is a toolset that allows you to implement parts
+   of your app using native-code languages such as C and C++.
+2. ./sopclient, I got the answer: permission Denied.
+3. =chmod 777 sopclient=, no effect. I found /sdcard is a fat32 fs, so
+   chmod does not effect.
+4. cp sopclient to /, failed. / is readonly.
+5. cp sopclient to /system, run it, success!
+** experiment: playback sopcast with terminal
+1. su;
+2. cd /data/data/org.sopcast.android/files;
+3. ./sopclient; you get the help information:
+   : ./sp-sc [-T] [-t seconds] [-u username:password] [-n out:total] [-x suffixname] [-a http://auth_url] [-r num] <sop://url> <localport> <playerport>
+4. =./sopclient sop://broker.sopcast.com:3912/141796 3908 8908=, 141796 is a American channel.
+5. open MxPlayer, play http://127.0.0.1:8908/tv.asf, success!
+** search source
+** apk
+*** experiment 0: run sopclient in APK on android terminal
+failed.
+** sopcast-player front end
+1. self.play_channel call the commond line binary.
+** requirement
+1. 流媒体服务器源码。（不要源码的话，有软件包应该也可以）。
+2. Tracker Server源码。理由：我们需定制服务器日志，做客户群和服务器性能的监控。
+3. Peer端的源代码（包括服务模块、请求模块、和Tracker Server交互的模块）。理由：我们需要定制客户端应用，便于客户服务质量的统计分析。
+4. 如果存在superPeer, 我们也superPeer的源码。
+
+* Android
+** apk
+1. /system 系统目录。
+   + app 系统自带的应用程序都在这里。包括apk和odex。ODEX是安卓上的应用程序
+     apk中提取出来的可运行文件，即将APK中的classes.dex文件通过dex优化过程将其优化
+     生成一个.odex文件单独存放，原APK中的classes.dex文件会保留。这样做可以加快软
+     件的启动速度，预先提取，减少对RAM的占用，因为没有odex的话，系统要从apk包中提
+     取dex再运行。
+   + bin和xbin中都是arm binary, shell命令都在这里。
+2. /data user's APP is installed under it.
+   - copy the apk to /data/app
+   - install the dex in apk to /data/dalvik-cache, such as data@app@org.sopcast.android-1.apk@classes.dex, which is executable to dalvik, it is dalvik byte code.
+   - create data directory under /data/data, sopclient is copyed into
+     /data/data/org.sopcast.android/files, the shared libaries are copied
+     into /data/data/org.sopcast.android/lib.
+
+* popcorn
+** try Linux binary release (failed)
+1. wget -c http://static.cdnjd.com/releases/popcorn/Popcorn-Time-2.7-Linux-64.tgz
+2. mkdir popcorn; cd popcorn;
+3. tar xzvf /path/to/Popcorn-Time-2.7-Linux-64.tgz
+4. run Popcorn.
+   #+BEGIN_EXAMPLE
+   $ ./Popcorn-Time 
+   ./Popcorn-Time: /lib64/libc.so.6: version `GLIBC_2.14' not found (required by ./Popcorn-Time)
+   ./Popcorn-Time: /lib64/libc.so.6: version `GLIBC_2.15' not found (required by ./Popcorn-Time)
+   ./Popcorn-Time: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.15' not found (required by ./Popcorn-Time)
+   #+END_EXAMPLE
+   The /lib64/libc.so.6 and /usr/lib64/libstdc++.so.6 exist, but they are a little old.
+** DONE try windows binary
+   CLOSED: [2014-03-31 Mon 09:03]
+1. long long time to connect ...
+2. It's OK with vpn
+** source
+1. grunt: The javascript Task runner
+   link: http://gruntjs.com/
+2. npm: Node Package Manager
+   link: https://www.npmjs.org/
+3. javascript: A new variable without `var' will be regarded as a global variable.
+4. The core is *peerflix* (https://github.com/mafintosh/peerflix).
+5. peerflix uses the streaming torrent engine named *torrent-stream*,
+   https://github.com/mafintosh/torrent-stream.git, also created by https://github.com/mafintosh
+6. https://github.com/feross/webtorrent, a web version of bittorrent
+
+** peerflix
+1. git clone https://github.com/mafintosh/peerflix
+2. setup node.js
+3. node app.js; if node complains /can not find module xxx/, then =npm install xxx=.
+
+** BT protocol
+*** Bencode
+1. string [n: xyz...]. For example, =2: at= and =5: Hello=
+2. integer, starts with 'i', ends with 'e', for example, =i-10e= represents
+   -10, =i23e= represents 23, =i0e= represents 0, but =i-0e= is illegal.
+3. list, starts with 'l', ends with 'e', for example: =li10e4:dogse=
+   represents [10, "dogs"]; =l5:hellol3:the5:worldee= represents ["hello",
+   ["the", "world"]]
+4. dict. =d<key><value><key><value>...e=, key must be string, for example
+   =d4:name5:jolly3:agei33ee= represents {"name"=> "jolly", "age"=>33}
+*** torrent
+A torrent file is a dict encoded with /bencode/.
+#+BEGIN_EXAMPLE
+{
+  length: integer,
+  md5sum: string (32 chars)
+  name: string (file name)
+  chunklength: integer (in general, 256KB, 512KB, or 1MB)
+  chunks: {
+    string (20chars, sha-1 result),
+    string (20chars, sha-1 result),
+    string (20chars, sha-1 result),
+    ... ...
+  }
+  publish: string (server url)
+  date: string (optional)
+  comment: string (optional)
+  author: string (optional)
+}
+#+END_EXAMPLE
+*** http[s] protocol
+Generally BitTorrent Client listen on ports 6881 - 6889.
+connections: 30 - 50
+*** scrape
+Ask server what torrents it is handling.
+
+* DRM on android
+** DRM: Digital Rights Management
+*** 产业链
+DRM是一个不易触及的领域。
+由于其安全性高，保密性强，世界上真正掌握DRM核心技术的公司并不多。
+
+DRM产业链中的相关者大概可分为如下三类：
+
+第一类是制定DRM标准的公司或机构，他们掌握DRM的核心技术，对外推广自己的DRM标
+准，为需要搭载DRM的公司提供支持。
+
+第二类是数字内容提供商，他们是最迫切应用DRM来保护自己数字版权的人，他们会向
+提供标准的公司够买DRM技术，在服务器端加密，并制定数字内容的买卖租赁机制以及
+相应的密钥配发原则。
+
+第三类是终端设备制造商，为了让自己的设备具有更广泛的应用性，他们需要搭载主流
+的DRM以适应市场需求，在搭载过程中，他们也需要标准公司的支持，拿到一些有专利
+的代码包，有时还会与内容提供商合作。当然，还有的时候，一家公司会担当其中的两
+个或全部角色，比如亚马逊，他即是内容提供商，提供电子书籍等内容，又是终端设备
+商，出品Kindle Fire这样的终端设备，这样做可以让他把内容和终端更好地整合在一
+起。
+
+*** DRM标准
++ Open Mobile Alliance推出的OMA DRM
++ Marlin Developer Community提出的Marlin DRM
++ Google则通过收购Widevine公司推出了Widevine DRM。
+  Google acquires the Widevine company that provides the DRM support for protecting e.g. the HLS H.264/AAC streams.
+  *Need the player support Widevine DRM*.
+*** DRM supported by Android
+ref: http://blog.csdn.net/innost/article/details/9732847
+
+从Android智能终端来看，Google的原生Android（Android Open Source Project，简称AOSP）系统仅仅集成了OMA DRM V1的一部分功能，它远未构成一个完整的DRM解决方案。
+在这种情况下，设备厂商只能根据情况选择合适的DRM解决方案并集成到Android平台中来。
+例如，手机厂商可以通过Google的授权以获取Widevine DRM对应的软件包从而将Widevine DRM集成到自己的产品中。
+
+DRM Framework API模块是Framework层暴露给App的接口。该模块中最主要的类是DrmManagerClient。
+
+DRM Framework API模块通过Binder机制和位于drmserver进程（以Android 4.1为例，drmserver的代码位于framework/av/drm/drmserver）中的DRM Manager模块通信。DRM Manager加载并管理系统中所有的DRM插件。
+
+DRM Plugins是真正实现权限管理、数字内容解密等工作的模块。
+根据DRM标准的不同，这些Plugins的实现亦不相同。另外，一个手机可能会集成多个DRM Plugin。
+这是因为媒体文件如果采用不同的DRM解决方案进行加密的话，手机在播放它们时，DRM Manager需找到对应的DRM Plugin以进行解密。
+** How windows Meia Rights Manager Works
+** How does Drm10 work?
+* DONE DRM 10
+  CLOSED: [2014-03-31 Mon 09:02]
+** Experiment 0: let iis support media string
+1. iis can not serve mp4 file.
+2. in the iis manager, right click the local computer, add MIME type. you can find mp2 and mp3, but no mp4. add (mp4, video/mpeg). Then you can play the mp4 video with a player.
+
+** Experiment 1: package media with DRM10
+1. install IIS 6.0 on windows server 2003
+   control panel -> add or remove program -> install windows components
+   -> application server
+2. start a website service
+   control panel -> administration tools -> iis manager
+   In the left tree panel, right click on the website node, new website, follow the wizard and click Ok.
+   On the new website node, right click, start it immediately.
+3. enable ASP extension.
+4. copy the samples of WMRM sdk into your www root directory.
+5. create seed, public key and private key with VBS.
+6. edit global.asa, fill site-url, seed, public key, private key fields.
+   *Note:* the site-url do not use `localhost', otherwise the player on
+   another machine will request license from localhost, it must fail.
+7. enable the global.asa: on the iis manager, right click on the `samples' dir, click `properties', *create*, OK.
+   Restart www service: net stop w3svc; net start w3svc.
+8. goto http://licenseserver.windowsmedia.com to complete enrollment and to download the latest license server.
+   /Note/: you should proceed this step on the windows machine with wmdm sdk installed.
+9. access http://localhost/samples/package.asp, package a file.
+   If you got a error code: 0xC0042918, it indicates that your file is not a windows media file.
+   Windows media formats: Audio(.wav .wma), Video(avi, wm, wmv)
+10. If you got a error code: 0xC0042919, that indicates that your file
+    format is supported, but the file is bad encoded.
+11. If all are Ok, you will see: =status: The media file has been successfully packaged=
+12. play the url with /Windows Media Player/, set tools::options, disselect
+    播放受保护的内容时自动获取证书, thus when a file is protected, it will
+    popup a dialog, waiting for your confrimation to get license.
+** Experiment 2: support DRM 10
+1. register sopcast.
+2. register channel and join a channel group
+   id: 151273
+   program name: streaming of minds
+   channel group
+3. play my channel from another machine. If I issue a DRM10 encrypted video, it will try to acquire license.
+4. *Conclusion*: sopcast support DRM10.
+** Experiment 3: Does android support DRM10?
+1. play the url with other players, including the player on android, they
+   will try to decode the video directly, playbacking wrong content.
+2. *Conclusion*: so they don't support WMRM.
+
+* DONE HLS + AES
+** survey
+ref:
+[[http://www.streamingmedia.com/Articles/Editorial/What-Is-.../What-is-HLS-(HTTP-Live-Streaming)-78221.aspx]]
+
+HLS = Http Live Streaming.
+an HTTP-based media streaming communications protocol implemented by Apple Inc.
+Apple first announced HLS in 2009.
+
+It works by breaking the overall stream into a sequence of small HTTP-based
+file downloads, each download loading one short chunk of an overall
+potentially unbounded transport stream.
+
+Though encoded using the /H.264 video codec/ and /AAC/ audio codec, 
+audio/video streams must be segmented into chunks in an *MPEG-2 transport stream* with a .ts extension. 
+
+** encryption
+*** AES encryption
+ref: http://docs.unified-streaming.com/documentation/protect/hls-with-aes.html
+
+The encryption is applied on-the-fly, so there is no preprocessing involved.
+Enable: The options for enabling encryptions are stored in the server manifest file.
+
+For HLS AES encryption a content_key (the AES encryption key) and a license
+acquisition URL (the location where the player retrieves the key) is
+needed.
+
+You can use openssl for generating a random key:
+: openssl rand 16 > video.key
+
+The file video.key holds the encryption key that will be requested by the player.
+
+Server Manifest
+
+Next is creating a server manfiest file with enabled encryption.
+You need to provide the following options:
+
+1. /hls.content_key/	AES Content Encyption Key (128 bits).
+2. /hls.license_server_url/	The URL used by the player to retrieve the key.
+
+#+BEGIN_SRC
+mp4split -o video.ism \
+  --hls.content_key=`cat video.key | hexdump -e '16/1 "%02x"'` \
+  --hls.license_server_url=http://www.example.com/video/video.key \
+  video.ismv
+#+END_SRC
+
+The generated server manifest file (video.ism) now holds the key
+information. When a client requests an .m3u8 playlist the webserver module
+will automatically insert the proper #EXT-X-KEY tag and requests for the
+MPEG-TS fragments are encrypted on-the-fly.
+
+An example .m3u8 playlist:
+
+#EXTM3U
+#EXT-X-VERSION:1
+#EXT-X-MEDIA-SEQUENCE:0
+#EXT-X-KEY:METHOD=AES-128,URI="http://www.example.com/video/video.key"
+#EXTINF:4, no desc
+video-audio=65000-video=236000-0.ts
+
+Note that you can add PlayReady and Apple HTTP Live Streaming encryption at
+the same time to the server manifest file creation command line. The
+following command creates a server manifest file with the key information
+embedded:
+
+#+BEGIN_SRC
+mp4split -o video.ism \
+  --hls.key_seed=000102030405060708090a0b0c0d0e0f \
+  --hls.license_server_url=https://www.example.com/oceans.key \
+  video.ismv
+#+END_SRC
+
+For *Verimatrix VCAS* support, see below for the documentation.
+Verimatrix VCAS
+USP supports Verimatrix VCAS. To use this you need to use the key_provider and key_provider_url options when creating the server manifest. USP will know how to connect with the Verimatrix server and fetch the keys:
+
+Name	Description
+hls.key_provider	The string verimatrix should be used to indicate Verimatrix as a key provider.
+hls.key_provider_url	The URL used to retrieve the key.
+Example
+The following command creates a server manifest file with the key information embedded:
+
+mp4split -o video.ism \
+  --hls.key_provider=verimatrix \
+  --hls.key_provider_url="http://verimatrix_url/CAB/keyfile?r=MY_ID&t=VOD&c=N" \
+  video.ismv
+Please note that in the above example some dummy values are used, and that you need to provide values for r, t and c. Please consult the Verimatrix documenttion regarding this. Replaced should be:
+
+the string 'verimatrix_url' should be replaced with the url Verimatrix provides
+MY_ID should be replaced with the customer id Verimatrix provides
+VOD can also be another type (see the Verimatrix documentation)
+N is the number of keys you can fetch, set by Verimatrix
+Using SAMPLE-AES (protocol version 5)
+For SAMPLE-AES encryption the setup is similar. Please note that this is for on-the-fly encryption. For file based encryption see HLS packaging.
+
+First we have to create a 128-bit CEK (Content Encryption Key) and 128-bit IV (Initialization Vector). This is just a 32 bytes file with random bytes. You could use for example 'openssl' to create the key.
+
+openssl rand 32 > presentation.key
+The command-lines for creating the server manifest is similar to the above above, except that we need to use different options.
+
+Option	Description
+hls.content_key	The content key used for encryption
+hls.license_server_url	The URL where the key can be fetched
+hls.playout	The string identifier ('sample_aes')
+Example
+#!/bin/bash
+
+CONTENT_KEY=A8FD3449772FA3DD2F1BCE74764A8B46
+
+MP4SPLIT_OPTIONS=
+MP4SPLIT_OPTIONS+="--hls.content_key=$CONTENT_KEY "
+MP4SPLIT_OPTIONS+="--hls.license_server_url=http://example.com/oceans_drm.key "
+MP4SPLIT_OPTIONS+="--hls.no_discontinuities "
+MP4SPLIT_OPTIONS+="--hls.playout=sample_aes "
+
+mp4split -o example.ism $MP4SPLIT_OPTIONS oceans-64k.ismv oceans-250k.ismv
+
+HLS also specifies a standard encryption mechanism using AES and a method
+of secure key distribution using HTTPS with either a device specific realm
+login or HTTP cookie which together provide a simple DRM system.
+*** practice
+yum install openssl
+: openssl rand 16 > video.key
+get mp4split command line tool
+Download the source of the H264 Streaming Module for Lighttpd.
+
+For Lighttpd 1.4.18:
+
+cd ~
+wget http://h264.code-shop.com/download/lighttpd-1.4.18_mod_h264_streaming-2.2.0.tar.gz
+tar -zxvf lighttpd-1.4.18_mod_h264_streaming-2.2.0.tar.gz
+For Lighttpd 1.5.0:
+
+cd ~
+wget http://h264.code-shop.com/download/lighttpd-1.5.0_mod_h264_streaming-2.2.0.tar.gz
+tar -zxvf lighttpd-1.5.0_mod_h264_streaming-2.2.0.tar.gz
+If you plan to play Multi Bit Rate H.264 encoded videos, you will also need the command line tool 'mp4split' to create the Smooth Streaming manifest files.
+
+wget http://h264.code-shop.com/download/mp4split-2.2.0.tar.gz
+tar -zxvf mp4split-2.2.0.tar.gz
+
+server manifest
+
+ismv = ISMV file is an IIS Smooth Streaming Video. 
+ism = IIS Smooth Streaming Server Manifest Data
+
+Try apache multimedia serve
+upload a mp4 file
+download psftp.exe
+> open 192.168.109.50
+user: root; passwd: 123456
+> cd /home/aptv
+> lcd e:/jollywing/documents
+> put gaoyuanlan.mp4
+> bye
+
+start httpd: /etc/init.d/httpd start
+try http://192.168.109.50/gaoyuanlan.mp4
+
+`cat video.key | hexdump -e '16/1 "%02x"'` \
+
+mp4split -o video.ism \
+  --hls.content_key=`cat video.key | hexdump -e '16/1 "%02x"'` \
+  --hls.license_server_url=http://www.example.com/video/video.key \
+  video.ismv
+
+*** 防下载
+动态生成m3u8以及ts切片的地址，在下发到终端之后一定时间内，或下次请求时，改变生成的路径。
+目前所有用HTTP实现视频点播的网站，如果有版权保护（防下载）都是用的这种方法。
+
+*** session encryption
+访问接口要有apikey才能取回m3u8的地址和生成session,然后用带session的m3u8里的
+ts地址去访问具体的ts切片的服务器，ts切片上也带session
+
+** Content Protection/Closed Captions in HLS
+HLS doesn’t natively support digital rights management (DRM) though you
+can encrypt the data and provide key access using HTTPS authentication.
+There are several third-party DRM solutions becoming available, including
+from (1) AuthenTec, (2) SecureMedia, and (3) WideVine. HLS can support
+closed captions included in the MPEG-2 transport stream.
+
+** HTTP Live Streaming client
+Apple recommends using the HTML5 video tag for deploying HLS video on a website.
+
+** TODO android play encrypted hls?
+1. according to http://stackoverflow.com/questions/14235148/how-to-decrypt-ts-files-given-in-a-m3u8-file/14235534#14235534
+   the media framework of android can encrypted hls automatically.
+   =As mentioned in my comment, AES-128 decyption is done automatically on Android 3.x & 4.x devices by the mediaframework.=
+
+   Below a quote from the HLS draft
+
+   EXTINF is a record marker that describes the media file identified by the
+   URI that follows it. Each media file URI MUST be preceded by an EXTINF tag.
+
+2. split mp4 ts.
+
+   : useradd -m -U jolly; passwd jolly; 567890
+
+   install ffmpeg:
+
+   #+BEGIN_SRC sh
+   wget -c http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
+   tar xjvf ffmpeg-snapshot.tar.bz2
+   cd ffmpeg
+   ./configure --disable-yasm
+   make
+   sudo make install
+   #+END_SRC
+
+   : ffmpeg -i gaoyuanlan.mp4 -codec copy -vbsf h264_mp4toannexb -map 0 -f segment -segment_list out.m3u8 -segment_time 10 out%03d.ts
+
+3. Test HLS.
+   mplayer http://192.168.109.50/aes-demo/gaoyuanlan.mp4 OK
+   mplayer http://192.168.109.50/aes-demo/out.m3u8 NOT WORK.
+   vlc http://192.168.109.50/aes-demo/out.m3u8 OK.
+
+4. encryption with aes-128
+
+   openssl encryption:
+   http://stackoverflow.com/questions/3010638/using-openssl-encryption-for-apples-http-live-streaming
+
+   #+BEGIN_SRC sh
+   #!/bin/bash
+   keyfile="video.key"
+   openssl rand 16 > $keyfile
+   hexKey=`cat $keyfile | hexdump -e '16/1 "%02x"'`
+   echo $hexKey
+   hexIV='0'
+   
+   for seg in $(ls *.ts)
+   do
+   echo "Encrypting $seg ..."
+   base="$(basename $seg .ts)"
+   out="${base}-encrypted.ts"
+   openssl aes-128-cbc -e -in $seg -out $out -p -nosalt -iv ${hexIV}  -K ${hexKey}
+   echo "Create $out."
+   done
+   #+END_SRC
+
+   add encrypt hint to m3u8
+   : #EXT-X-KEY:METHOD=AES-128,URI="video.key"
+   before
+   : #EXTINF:10...
+
+   A script for create keys for each ts:
+   #+BEGIN_SRC
+   #!/bin/bash
+   
+   for seg in $(ls *.ts)
+   do
+   echo "Encrypting $seg ..."
+   base="$(basename $seg .ts)"
+   keyfile="${base}.key"
+   openssl rand 16 > $keyfile
+   hexKey=`cat $keyfile | hexdump -e '16/1 "%02x"'`
+   hexIV='0'
+   echo "hexKey: ${hexKey}"
+   out="${base}-encrypted.ts"
+   openssl aes-128-cbc -e -in $seg -out $out -p -nosalt -iv ${hexIV}  -K ${hexKey}
+   echo "Create $out."
+   done
+   #+END_SRC
+
+5. Test.
+   Apple sarafi, OK.
+   Android MxPlayer: http://192.168.1.50/aes-demo/encrypt.m3u8
+
+6. check log of apache
+   : cd /var/log/httpd
+   : vim aptv-access.log
+
+* DONE BaiDu KanKan
+  CLOSED: [2014-03-20]
+kankan.baidu.com
+小度i耳目
+产品：摄象头 + android app.
+It costs 600+
+看孩子，看宠物。
+
