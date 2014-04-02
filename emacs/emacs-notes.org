@@ -641,20 +641,6 @@ C-h m 列出目前的mode的特殊说明。
   C-c C-n SPC会输入 ``&nbsp;`` ，C-c C-n < 会输入 ``&lt;`` 。
 - C-c DEL     删除光标所在的标签，包括与之配对的标签。
 
-** Python模式
-
-- M-TAB   符号补全
-- C-c C-c 运行当前缓冲区中的python代码
-- C-c C-z 切换到Python解释器
-- C-c C-k 标记光标所在的代码块
-- C-c C-u 找到代码块的开始
-- C-c C-f 如果你安装了pythonDoc，可以程序中某个符号的帮助文档。
-- C-M-a   移动到一个函数或类定义的开始，你可以按ESC C-a来得到这个按键
-  序列。
-- C-M-e   移动到一个函数或类定义的结束。
-- Python代码的 *折叠显示* 。C-u 4 C-x $ ，只显示缩进级别小于4的
-  行；C-u 8 C-x $ ，只显示缩进级别小于8的行； C-x $ ，显示所有行。
-
 ** Outline模式
 
 - C-c C-n  移动到下一个可见的标题
@@ -714,19 +700,35 @@ C-h m 列出目前的mode的特殊说明。
 
 
 * 编程
+** 一些编程模式下通用按键
+*** 快速移动
+- C-M-a (M-x beginning-of-defun) 到当前或上一个函数定义的开始处。
+- C-M-e (M-x end-of-defun) 到当前或下一个函数定义的开始处。
+- C-M-h (M-x mark-defun) 选中当前或下一个函数。
+- C-M-u (M-x backward-list) 到当前程序块的开始
+- C-M-n (M-x forward-list) 到下一个程序块的开始，或是当前程序块的结束。
+- C-M-f 向前匹配括号；C-M-b 向后匹配括号。
 
+*** 缩进
 - ESC C-\\ 选中区域的每行都缩进。 (M-x indent-region)
+- C-M-\\: indent-region
+- C-c C-q: 缩进当前函数。
+- `C-c . <RET> STYLE <RET>' Select a predefined style STYLE (`c-set-style').
+
+*** 注释
 - =ESC ;= 或 =M-;=    在当前行右边注释。如果选中区域，则注释/反注释选中的区域。
 - M-x uncomment-region  取消选中区域的注释
-- M-x ff-find-other-file 打开和源文件对应的头文件，或者相反。
+
 - M-x hs-minor-mode     打开折叠模式，然后可以使用hs-show-block,
   hide-hide-block, hs-show-all, hs-hide-all等命令
-- C-M-\\: indent-region
-- C-M-f 向前匹配括号；C-M-b 向后匹配括号。
+
+** CC-Mode
 - C-c C-a或M-x c-toggle-auto RET，打开或关闭C模式的自动状态（输入
   分号自动换行并缩进）。
+- M-x ff-find-other-file 打开和源文件对应的头文件，或者相反。
 
-针对条件编译指令的快捷键(c-mode && c++-mode)
+
+针对条件编译指令的快捷键(c-mode && c++-mode):
 - C-c C-u: c-up-conditional, 回到 ~#if~ 的开始处
 - C-c C-n: c-forward-conditional, 移动光标到当前或下一个 条件编译 的结束处。
 - C-c C-p: c-backward-conditional, 移动光标到当前或上一个 条件编译 的开始处。
@@ -734,6 +736,7 @@ C-h m 列出目前的mode的特殊说明。
   C-s 显示隐藏的 ifdef block. 你还可以用 C-c @ d 指定要 ifdef block 是关于哪
   个宏的，然后你可以用 C-c @ h 和 C-c @ s 来隐藏和显示关于这个宏的 ifdef
   block. 你可以按 C-c @ u 取消已指定的宏。
+
 ** 编译
 
 - M-x compile：编译。
@@ -769,6 +772,20 @@ global相当于ctags + cscope。
 + 然后 =M-x gtags-visit-rootdir= 
 + 就可以使用 =M-.= 定位tag，使用 =M-*= 返回
 + 而且可以通过 =M-x gtags-find-rtag= 定位tag被访问的位置
+
+** Python模式
+
+- M-TAB   符号补全
+- C-c C-c 运行当前缓冲区中的python代码
+- C-c C-z 切换到Python解释器
+- C-c C-k 标记光标所在的代码块
+- C-c C-u 找到代码块的开始
+- C-c C-f 如果你安装了pythonDoc，可以程序中某个符号的帮助文档。
+- C-M-a   移动到一个函数或类定义的开始，你可以按ESC C-a来得到这个按键
+  序列。
+- C-M-e   移动到一个函数或类定义的结束。
+- Python代码的 *折叠显示* 。C-u 4 C-x $ ，只显示缩进级别小于4的
+  行；C-u 8 C-x $ ，只显示缩进级别小于8的行； C-x $ ，显示所有行。
 
 * 会话管理
 
