@@ -2,6 +2,22 @@
 ** 2014-04-01 Tue
 1. try opentracker, =1=
 2. make install goalbit on freeBSD, =2=
+* ffmpeg
+ref: http://dranger.com/ffmpeg/tutorial01.html
+Movie file is a container. such as AVI and Quicktime.
+In this container, there are a bunch of streams, such as audio stream and video stream.
+A data element in a stream is called *frame*.
+Examples of codecs are DivX and MP3.
+Packets are read from stream.
+For our purposes, each packet contains a complete frame or multiple frames as for audio.
+#+BEGIN_EXAMPLE
+10 OPEN video_stream FROM video.avi
+20 READ packet FROM video_stream INTO frame
+30 IF frame NOT COMPLETE GOTO 20
+40 DO SOMETHING WITH frame
+50 GOTO 20
+#+END_EXAMPLE
+
 * Goalbit
 ** survey
 1. Goalbit Media Player
@@ -13,6 +29,10 @@ yourself with a home Internet connection.
 Suite in order to distribute GoalBit channels in the Web, and in order to
 do a web broadcast from the GoalBit Media Player browser plug-in.
 
+3. VLC = Video Lan Client.
+VideoLAN是一个开发通过局域网（LAN）播放视频及其他媒体格式的软件的计划。最初
+开发了两个媒体流媒体程序VideoLAN Client（VLC）及VideoLAN Server（VLS），然而
+大部分的VLS功能都逐渐整合進VLC，所以就將VLC改名為VLC media player。
 ** make install on centOS
 1. git clone git://git.code.sf.net/p/goalbit/code goalbit-code
 2. No configure file; autoconf -v; 

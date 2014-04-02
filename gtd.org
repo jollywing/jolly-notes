@@ -115,6 +115,10 @@ Solution:
 2. android terminal emulator.
    The commands supported:
    https://github.com/jackpal/Android-Terminal-Emulator/wiki/Android-Shell-Command-Reference
+** automake
+1. Makefile.am is the input file of /automake/. /automake/ handle a
+   Makefile.am, will create Makefile.in, which will be used by /configure/
+   to create Makefile.
 * Notes
 ** address
 北京市石景山区石景山路31号盛景国际大厦C座12层  邮编：100043

@@ -36,6 +36,9 @@ OR
 : # man pkg-install
 : # pkg update
 
+pkg stats, list how many packages installed.
+
+pkg query '%Fp' <pkgname> list all files of <pkgname>
 * XWindow
 
 #+BEGIN_EXAMPLE
