@@ -38,7 +38,11 @@ OR
 
 pkg stats, list how many packages installed.
 
-pkg query '%Fp' <pkgname> list all files of <pkgname>
+=pkg query '%Fp' <pkgname>= list all installed files of <pkgname>
+
+: pkg rquery %c <pkgname>
+Even though you did not install the pkg, you can check its comment with this.
+
 * XWindow
 
 #+BEGIN_EXAMPLE
@@ -53,7 +57,7 @@ mouse or keyboard not work?
 pkg install xf86-input-mouse
 pkg install xf86-input-keyboard
 
-
+* hardware
 * locale
 : locale -a
 list all supported locales

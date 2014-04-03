@@ -2,7 +2,10 @@
 ** 2014-04-01 Tue
 1. try opentracker, =1=
 2. make install goalbit on freeBSD, =2=
+** 2014-04-03 Thu
+sign up fosshub: github account
 * ffmpeg
+** ffmpeg player
 ref: http://dranger.com/ffmpeg/tutorial01.html
 Movie file is a container. such as AVI and Quicktime.
 In this container, there are a bunch of streams, such as audio stream and video stream.
@@ -17,6 +20,22 @@ For our purposes, each packet contains a complete frame or multiple frames as fo
 40 DO SOMETHING WITH frame
 50 GOTO 20
 #+END_EXAMPLE
+
+YUV = YCbCr
+YUV is an analog format and YCbCr is a digital format.
+is a way of storing raw image data like RGB.
+Y is the brightness (or "luma") component, and U and V are the color components.
+** compile a ffmpeg with old api
+The avio.h from release 0.5 defined URLContext.
+
+1. download or git clone FFmpeg-release-0.5;
+2. ./configure --prefix=/home/jolly/job/ffmpeg-dev-0.5
+3. make (!! if you are using unix, you need use *gmake*)
+   : /usr/include/sys/soundcard.h:981:2: error: unknown type name 'u_char'
+   I need include <sys/types.h> in the source file.
+   and reconfig with ./configure --prefix=/home/jolly/job/ffmpeg-dev-0.5 --extra-cflags="-D__BSD_VISIBLE"
+   then gmake again.
+
 
 * Goalbit
 ** survey
@@ -84,6 +103,9 @@ VideoLAN是一个开发通过局域网（LAN）播放视频及其他媒体格式
    #+END_EXAMPLE
    The dlopen/dlsym functions are built into libc on FreeBSD, so there's no need for a libdl
    : sudo ln -s /usr/lib/libc.so /usr/lib/libdl.so
+6. add ffmpeg-release-0.5
+7. =error: implicit declaration of function= the function did not declared in header.
+
 ** code
 1. What is SCRAPE. A client scrapes in order to determine whether or not to
    send an /announce/ requesting more peers. Sending a scrape result is
