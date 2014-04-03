@@ -540,7 +540,7 @@ C-SPC在全局的标记位置内跳转。
 - C-h w   查看对应某个命令的键绑定是什么。对应的是 where-is 命令。
 - C-h d   查看匹配给定模式的关于变量和命令的文档.
 - C-h v   查看某个变量的含义和它的值。
-- C-h e   显示 \*Message\* buffer.
+- C-h e   显示 \*Messages\* buffer.
 - C-h m   描述当前的模式。
 - C-h l 查看我最后敲的100个字符是什么。等同于 M-x view-lossage,最
   后键入的100个键盘输入称为 Lossage。有什么实际用途呢？

@@ -1,0 +1,264 @@
+#+TITLE: Android开发日志2013
+#+OPTIONS: toc:1
+
+* Android开发之Eclipse环境搭建
+#+begin_quote
+TAG: android, eclipse, ADT\\
+DATE: 2013-08-12
+#+end_quote
+
+** install Eclipse.
+
+You can install eclipse from software repository, which is an
+easy way. If you are using Debian/Ubuntu, you can:
+: # apt-get install eclipse
+Or you can download the tar.gz package from IBM website.
+However, this may result in some errors.
+
+For example, I download the JDK6 from oracle website. The
+setup only in a local directory. I need config the environment
+variable manually. But this has some problems, I can't run
+Java gui program. My eclipse also can't startup.
+
+I had to install jdk6 from the source repository, then I can
+run java gui program without problem. But the eclipse can't
+startup after a splash yet.
+
+the content of the log file: 
+
+#+BEGIN_EXAMPLE
+ !SESSION 2012-04-29 20:26:28.692 -----------------------------------------------
+ eclipse.buildId=M20120208-0800
+ java.version=1.6.0_26
+ java.vendor=Sun Microsystems Inc.
+ BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=zh_CN
+ Command-line arguments:  -os linux -ws gtk -arch x86_64 -clean
+ 
+ !ENTRY org.eclipse.osgi 4 0 2012-04-29 20:26:29.713
+ !MESSAGE Application error
+ !STACK 1
+ java.lang.IllegalStateException: Unable to acquire application service. Ensure that the org.eclipse.core.runtime bundle is resolved and started (see config.ini).
+ 	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:74)
+ 	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:344)
+ 	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:179)
+ 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+ 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+ 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+ 	at java.lang.reflect.Method.invoke(Method.java:597)
+ 	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:622)
+ 	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:577)
+ 	at org.eclipse.equinox.launcher.Main.run(Main.java:1410)
+ 	at org.eclipse.equinox.launcher.Main.main(Main.java:1386)
+#+END_EXAMPLE
+
+There are many people confront with similar problem. They get around it
+with various methods. But they are all invalid for me.
+
+I suddenly think that maybe the old jdk messed up the eclipse. so I =rm -r
+eclipse= and =tar xzvf /path/to/eclipse.tar.gz=. The new eclipse works.
+
+** Install android sdk
+
+The problems may appear on 64bit OS.
+
+1. =emulator -avd xxx=, produces an error:
+   SDL init failure, reason is: No available video device.
+   This is due to emulator can not find the 32bit libraries of SDL.
+   Solution: =# apt-get install ia32-libs lib32stdc++6=
+2. If ~adb~ doesn't work, or compiling fails.
+   try =apt-get install g++-multilib= .
+
+** Install apache ant
+
+To support build apk, you need **ant 1.8.0** or later.
+
+** Install ADT plugin for Eclipse.
+
+* 在Eclipse下开发Android程序
+
+** How to Create a Project in Eclipse?
+   Menu: New => Android Project, fill in APP Name, Package Name,
+   select target, push /Finish/.
+
+** How to Run Android Project in Eclipse?
+   Right click your project in left navagation pane.
+   Select "Run As ..." in the context menu.
+   Then select "Android Application" in the popup menu.
+
+** Error of Debug Certificate expired
+
+   What's mean the error:
+   Error generating final archive: Debug Certificate expired?
+
+   android要求所有的程序必须有签名，否则就不会安装该程序。在我们开
+   发过程中，adt使用debug keystore，在preference->android->buid中
+   设置。debug.keystore默认有效期为一年，如果你是从一年前开始玩
+   android程序，那么在一年后导入这个app的时候很可能出现debug
+   keystore过期，导致你无法生成 apk文件。此时你只要删除debug
+   keystore就行，系统又会为你生成有效期为一年的私钥。
+   
+   解决方法：
+   进入C:\Documents and Settings\Administrator\.android(windows)
+   或 ~/.android (Linux)  删除路径下的debug.keystore及 ddms.cfg。
+   （不同环境下的目录可能略有不同，可在eclipse中查找此路径：
+   Window->Preferences->Android->Build下Default debug keystore）
+   然后重新启动Eclipse即可.
+
+* 用命令行开发android程序
+#+begin_quote
+TAG: android, shell, project\\
+DATE: 2013-08-12
+#+end_quote
+** 搭建环境
+1. 安装 /JDK/.
+2. 安装 /Apache Ant/.
+3. 下载 /Android sdk/, 解压，配置好环境变量。
+4. 在命令行运行 ~android~ ，会启动 /android sdk and avd manager/ ，通过它可以建立虚拟设备，管理API。
+** 创建工程
+: android create project --name little_game --activity SimpleGame --path ./ --package game.simple --target 2
+
++ --name 配置工程名字，如果--path没有指定目录，将以工程名字创建新的目录。
++ --activity 工程的主类，会生成 src/${package}/${activity}.java
++ --path 如果指定的目录存在，则不创建新的目录。
++ --package 指定包名。
++ --target id。如果不知道id的值是什么，可以 ~android list targets~.
+** 构建工程
+*建立一个用debug key签名的应用*
+: ant debug
+
+*建立软件的正式版本*
+: ant release
+
+*编译java类*
+: ant compile
+
+*清理编译结果*
+: ant clean
+
+** 测试工程
+*配置模拟器*
+1. 创建模拟器avd(android virtual device)。
+   : android create avd -n HTC -t 3
+   -n 指定avd的名字。-t 指定平台的版本。
+2. 查看可用的avd
+   : android list avd
+3. 启动avd
+   : emulator -avd <avdname>
+   模拟器启动后，可以按 Ctrl-F11 在横屏和竖屏之间切换。
+
+*安装应用到模拟器*
+: ant install
+
+*卸载应用*
+: ant uninstall
+
+* [转]Android屏幕分辨率详解
+#+begin_quote
+TAG: android, vga, hvga, wvga, qvga\\
+DATE: 2013-08-12
+#+end_quote
+
+这些术语都是指屏幕的分辨率。 
++ VGA：Video Graphics Array，即：显示绘图矩阵，相当于640×480 像素； 
++ HVGA：Half-size VGA；即：VGA的一半，分辨率为480×320； 
++ QVGA：Quarter VGA；即：VGA的四分之一，分辨率为320×240； 
++ WVGA：Wide Video Graphics Array；即：扩大的VGA，分辨率为800×480像素； 
++ WQVGA：Wide Quarter VGA；即：扩大的QVGA，分辨率比QVGA高，比VGA低，一般是：400×240，480×272； 
+
+
+发展历程不一样，wm的手机一开始作为商务机，分辨率就是320*240，后边提高到640*480，再到后来的800*480。HVGA没有作为wm手机的重点，或者说基本忽略了在这个分辨率级别。 
+再谈谈android，我个人认为安卓是效仿iphone的设计思路。 
+
++ HVGA基本上属于性价比比较好的方案。分辨率适中，不像320*240的颗粒感那样严重。
+  因为如果提高分辨率就要提高机器的图像处理组件，也就是对硬件的要求相应提高，
+  价格自然是不低。
++ 谷歌手机一开始推广就是用这个分辨率，例如G1，G2等都是采用HVGA的分辨率。 
++ 现在android的软件基本上都会自动适应HVGA（还包含别的，例如VGA,WVGA等，这个就要看软件作者的了）
+
+* Android程序的调试
+
+当模拟器启动后，通过命令行启动 =ddms= 。
+
+在程序中用 =android.util.Log= 类来输出调试信息：
+- Log.v(String tag, String msg); 输出细节信息
+- Log.d(String tag, String msg); 输出调试信息
+- Log.i(String tag, String msg); 输出普通信息
+- Log.w(String tag, String msg); 输出警告信息
+- Log.e(String tag, String msg); 输出错误信息
+
+在 =ddms= 可以过滤 =Tag= 来查看正在调试程序的输出。
+
+* Android程序UI设计
+** 横屏程序的实现
+1. 如果不理会设备的旋转，让程序始终横屏，可以修改 AndroidManifest.xml，在activity中添加
+   : android:screenOrientation="landscape"
+   如果想让程序始终竖屏，添加
+   : android:screenOrientation="portrait"
+   如：
+   #+BEGIN_SRC xml
+   <activity android:name="SwordGirl"
+             android:label="@string/app_name"
+             android:screenOrientation="landscape">
+   #+END_SRC
+** How to set Layout margin for containers?
+
+   margin control the distance between this view and other views.
+   If there is only one view, margin control the distance to the screen borders.
+   padding set the area that contain components for the container.
+
+   If you want set margin or padding, you need append "dip" to digital number.
+
+   What is `dip`?
+   在android上开发的程序将会在不同分辨率的手机上运行。
+   为了让程序外观不至于相差太大，所以引入了dip的概念。
+   比如定义一个矩形10 x 10dip. 在分辨率为160dpi 的屏上，比如G1，正好是10 x 10像素。
+   而在240 dpi 的屏，则是15 x 15 像素.
+   换算公式为 pixs = dips * (density/160). density 就是屏的分辨率
+
+** 有没有类似下拉列表的控件?
+   Yes, try ``Spinner``.
+
+* Android资源目录
+#+BEGIN_QUOTE
+TAGS: android, res, resource\\
+CREATE: 2013-09-12 Thu
+#+END_QUOTE
+
+android的res目录是固定的，只能是下面的几种，如果加了其他的目录，它会报
+=invalid resource directory name= 的错误，其实加了其它系统不认的目录，系统也
+不能提供相应的象Resources.getDrawable() and Resources.getColor(),
+Resources.openRawResource() 去引用资源。
+
++ anim 
++ drawable 
++ layout 
++ values 
++ xml 
++ raw 
++ color 
+
+此外，是不是能采用子目录的方式呢？这样编辑器是可以通过的，不会报错。
+注：采用子目录的方式可以编译通过，但是通过R无法找到子目录和子目录中的资源
+
+关于 =drawable= 目录， 在android sdk 1.5之前只有 =drawable= 一个目录，对其他
+的目录，它是不认的； 在1.6以后将 =drawable= 目录分解为
+drawable-mdpi、drawable-ldpi、drawable-hdpi 三个目录。
+ 
+drawable-mdpi、drawable-ldpi、drawable-hdpi三个，这三个主要是为了支持多分辨率。
+区别如下：
+
++ drawable-hdpi里面存放高分辨率的图片,如WVGA (480x800),FWVGA (480x854)
++ drawable-mdpi里面存放中等分辨率的图片,如HVGA (320x480)
++ drawable-ldpi里面存放低分辨率的图片,如QVGA (240x320)
+
+系统会根据机器的分辨率来分别到这几个文件夹里面去找对应的图片。
+
+*Notice!* 资源文件名也只限于出现如下字符： [a-z0-9_.]
+
+怎么打开 raw 目录里的文本文件呢？
+#+BEGIN_SRC java
+InputStream stream = getResources().openRawResource(R.raw.file);
+BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+#+END_SRC
+
+

@@ -1,0 +1,84 @@
+#+TITLE: 版本控制
+#+OPTIONS: toc:2
+
+* Git
+** 远程仓库
+github is but one solution to host your public, "on-the-cloud",
+repository for git push to work with. In reality, the destination
+of git push can be any git repository. It can be on your own
+local hard drive in another directory (git remote add clone
+~/proj/clone.git; git push clone master or git push
+~/proj/clone.git master, for example), or a git repository that
+your own host serves.
+** 设置代理
+连接外国网站, 下载太慢. 如果不设置代理, 
+可能不能完成clone, pull等操作.
+
+Git可以使用两种协议，git协议和http，
+如果是后者，那么办法跟HG一样，
+=export http_proxy=http://<用户名>:<密码>@<ip>:<端口>=
+
+如果是git，比较麻烦，但也不是不可解决：
+先去下载一个协议转换小工具：
+http://www.meadowy.org/~gotoh/ssh/connect.c
+编译之：gcc -o connect connect.c
+将生成的connect放到可执行文件路径中，如/usr/bin
+
+然后创建一个使用代理的脚本，假设是http-proxy-gw，注意加上可执行属性，内容如下：
+#!/bin/sh
+# Filename: ~/bin/http-proxy-gw
+# This ｓｃｒｉｐｔ connects to an HTTP proxy using connect.c
+connect -H http://yourproxyaddress:proxyport $@
+connect这个小程序还支持socket代理，用法是connect -S host:port 
+
+最后，配置git：
+git config --global core.gitproxy "http-proxy-gw
+for xxx.yyy"
+
+后面的xxx.yyy是域名后缀，比如，下载linux源码就可以是设
+置为kernel.org
+
+
+
+
+2，SVN
+SVN比较方便，编辑~/.subversion/servers文件即可：
+[global]
+http-proxy-host = <代理的ip或域名>
+http-proxy-port = <代理端口>
+http-proxy-username = <用户名，如果需要的话>
+http-proxy-password = <密码，如果需要的话>
+
+3，HG
+HG更简单，因为它使用的是http协议，一个命令解决：
+export http_proxy=http://<用户名>:<密码>@<ip>:<端口>
+
+
+* Mercurial
+** What is Mercurial?
+** How to setup Mercurial?
+** Setting
+1. where is the configure file? (TAG: hg, config)
+
+   On Linux, it's =~/.hgrc=;
+   On Windows, it's =%USERPROFILE%\Mercurial.ini=.
+
+** create a local repository?
+: hg init
+ 
+
+** How to cooperate with others through remote repositories on Internet?
+1. Clone the repositories.
+   : hg clone http://username@website/project-name [local-repo-name]
+
+2. How to list all branches.
+   : hg branches
+   or
+   : hg heads
+   The latter showes more details.
+
+3. How to switch to a brach?
+   : hg update <branch-name>
+
+4. Sync with the remote repository.
+   : hg pull [remote-repo-name]
