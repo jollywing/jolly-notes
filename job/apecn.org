@@ -105,6 +105,18 @@ VideoLAN是一个开发通过局域网（LAN）播放视频及其他媒体格式
    : sudo ln -s /usr/lib/libc.so /usr/lib/libdl.so
 6. add ffmpeg-release-0.5
 7. =error: implicit declaration of function= the function did not declared in header.
+8. USING gmake INSTEAD OF make.
+9. sed on linux and sed on unix are different.
+   Hack the goalbit-0.7.7/modules/gui/goalbit/qtgb/Makefile
+   #+BEGIN_EXAMPLE
+   ifeq ($(findstring freebsd,$(host_os)),freebsd)
+       sed 's/QT_BEGIN_MOC_NAMESPACE/ /g' $@ > $@
+       sed 's/QT_END_MOC_NAMESPACE/ /g' $@ > $@
+   else
+       sed -i 's/QT_BEGIN_MOC_NAMESPACE/ /g' $@
+       sed -i 's/QT_END_MOC_NAMESPACE/ /g' $@
+   endif
+   #+END_EXAMPLE
 
 ** code
 1. What is SCRAPE. A client scrapes in order to determine whether or not to

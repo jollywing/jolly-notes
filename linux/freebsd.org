@@ -116,3 +116,5 @@ startx
 
 pkg install xf86-input-mouse xf86-input-keyboard
 
+* advanced
+=man re-format=, check the syntax of regular expressions.
