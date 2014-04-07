@@ -8,7 +8,16 @@
 - 在任何地方，按C-x C-e evaluate 前面的表达式: 变量, 函数等.
   结果将在mini-buffer中显示.
   如果要在缓冲区内显示结果, C-u C-x C-e.
+- 你还可以选中一段 elisp 代码, ~M-x eval-region~.
 - M-x ielm RET, 将会启动 elisp 的交互环境.
+
+* Hello, world
+: (message "Hello, world!")
+
+- (message "Her age is: %d" 16)        ; %d is for number
+- (message "Her name is: %s" "Vicky")  ; %s is for string
+- (message "My list is: %S" (list 8 2 3))  ; %S is for any lisp expression
+  This will get the same result: (message "my list is: %S" '(8 2 3))
 
 * 数据类型
 
@@ -51,16 +60,65 @@
 - random产生随机数, 用 (random t) 产生新的种子, (% (random) 100)
   可以得到 100 以内的随机数.
 
+*算术运算*
+
+#+BEGIN_SRC lisp
+(+ 4 5 9)
+(- 9 18)
+(- 9 4 5)
+(* 9 9)
+(/ 7 2) ;; 3
+(/ 7 2.0) ;; 3.5
+(% 7 4) ;; 3
+(expt 2 3) ;; 2^3 = 8
+#+END_SRC
+
+数值比较
+#+BEGIN_SRC lisp
+(< 3 4) ; less than
+(> 3 4) ; greater than
+(<= 3 4) ; less or equal to
+(>= 3 4) ; greater or equal to
+
+(= 3 3)   ; ⇒ t
+(= 3 3.0) ; ⇒ t
+
+(/= 3 4) ; not equal. ⇒ t
+#+END_SRC
+
+和字符串的转换
+
+#+BEGIN_SRC lisp
+(string-to-number "3")
+(number-to-string 3)
+#+END_SRC
 
 ** 字符和字符串
 
 - char(问号开头): ?a. 字符其实就是一个数字, 如 ?A 就是65.
 - String: "Hello, world!"
 
+字符串比较
+
+(string-equal "this" "this") ; ⇒ t. 
+(string-equal "This" "this") ; => nil.
+(not (string-equal "sun" "Sunny")) => t
+
+通用比较用 equal, 查看是否有相同的数据类型和值。
+
+(equal 3 3.0) ; => nil, different data type.
+(equal 'abc 'abc); => t, same symbol.
+(not (equal 3 4)) ; =>t
+
 ** 布尔类型
 - nil: 表示空的list或者false. 也可将 nil 写作 ().
-  elisp中除了nil, 其它都是真.
-- t: true
+  elisp中除了nil, 其它都是真. 所以, 0是true, "" 也是true.
+- t: true, 空的向量列表 ~[]~ 也是true.
+
+逻辑运算
+
+(and t nil) => nil
+(or t nil) => t
 
 ** 列表
 - list: (1 2 3 4)，list中的元素叫atom
