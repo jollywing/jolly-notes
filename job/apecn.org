@@ -127,6 +127,29 @@ VideoLAN是一个开发通过局域网（LAN）播放视频及其他媒体格式
 ** try with opentracker
 1. under "./modules/bittorrent/goalbit/btv_tracker/", is /open-tracker/.
 
+
+** Parse makefile
+1. cd src to make libvlc
+2. cd bin to make vlc
+.MAKE: $(am__recursive_targets) all check install install-am \
+	install-strip
+
+* BTFS
+1. git clone https://github.com/rkfg/BTFS.git
+2. cd BTFS; python btfs.py;
+   ImportError: No module named libtorrent
+3. http://sourceforge.net/projects/libtorrent/files/py-libtorrent/,
+   On freeBSD, you can =sudo pkg install py27-libtorrent-rasterbar=
+4. ImportError: No module named fuse
+   On freeBSD, =sudo pkg install py27-fusefs=
+5. python btfs.py -f follow-stars.torrent -s /home/jolly/Downloads/
+   fuse: failed to open fuse device: No such file or directory
+   : sudo kldload fuse
+   : kldstat
+   : sudo python btfs.py -f follow-stars.torrent -s /home/jolly/Downloads/
+   
+6. deluge: bittorrent client.
+
 * Review vshow source
 1. block size 64 * 1024
 2. TrackerClient, Client, Server, PlayerServer

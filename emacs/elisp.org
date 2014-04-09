@@ -151,73 +151,47 @@
 
 其中, var2 只定义, 没有赋值, 默认值为 nil.
 
+* Symbol
 
-* 常用函数
+lisp can operate variable and function without evaluation,
+These variable and function are in *symbol's forms*.
+*Symbol* made lisp support /meta-programming/.
 
-- (number-to-string n): 将数字n转化成字符串，可以是浮点数。
-- (message string): 在echo区显示string。
-  格式化输出的例子:
-  (message "there are %d persons here" var-name),
-  (message "The area is %.2f ." float-var),
-  格式字符串中也可使用 \\n, \\t等转义字符.
-- (message "The name of this buffer is: %s." (buffer-name))
-- (message "The value of fill-column is %d." fill-column)
-- (buffer-name) (buffer-file-name) (current-buffer)
-- (other-buffer) 返回不可见的buffer中最近访问过的buffer。
-- (buffer-size) (point) (point-min) (point-max)
+- Symbol has *name*, same to the symbol.
+- When a symbol is used as *variable*, it has a *value*. Maybe empty.
+- When a symbol is used as *function*, it has a *function* definition. Maybe empty.
+- Symbol has a *property list*.
 
-* 函数模板
-
-Elisp中, 函数都是全局的.
-
-函数五部分:
-
+You can use *fboundp* to check if a function is defined first (it checks a
+symbol's definition cell), and use *boundp* to check if a variable is defined
+(it checkes a symbol's value cell)
 #+BEGIN_SRC lisp
-     (defun FUNCTION-NAME (ARGUMENTS...)
-  		    "OPTIONAL-DOCUMENTATION..."
-	            (interactive ARGUMENT-PASSING-INFO)     ; optional
-		    BODY...)
+(fboundp 'setq) ;;t
+(boundp 'setq) ;;nil
 #+END_SRC
 
-let语句:
-
 #+BEGIN_SRC lisp
-  (let ((VARIABLE VALUE)
-        (VARIABLE VALUE)
-        ...)
-    BODY...)
-#+END_SRC
+;; check if a variable eval to a lisp symbol
+(setq x1 123 )
+(symbolp x1)                            ;nil
+(setq x2 'xx )
+(symbolp x2)                            ;t
 
-save-excursion语句
-将光标位置和当前mark位置保存起来, 以便返回: ::
+;; get a symbol's cell values
+(symbol-name 'x1)                       ; "x1"
+(symbol-value 'x1)                      ; 123
+(symbol-function 'x1)                   ; error. because it's void.
+(symbol-plist 'x1)                      ;nil
 
-#+BEGIN_SRC lisp
-  (save-excursion
-    FIRST-EXPRESSION-IN-BODY
-    SECOND-EXPRESSION-IN-BODY
-     ...
-    LAST-EXPRESSION-IN-BODY)
-#+END_SRC
-
-* lambda函数
-
-: (lambda (param-list) "function-doc" body)
-
-匿名函数, 通常在使用的时候临时定义.
-::
-
-  (funcall (lambda (hello-name) "say hello to someone"
-    (message "hello, %s!" hello-name)) "wuchen")
-
-也可以把lambda赋值给一个变量, 再调用:
-#+BEGIN_SRC lisp
-  (setq hello (lambda (hello-name) "say hello to someone"
-    (message "hello, %s!" hello-name)))
-  (funcall hello "wuchen")
+;; get a symbol's cell values
+(symbol-name 'setq)                  ; "setq"
+(symbol-value 'setq)                 ; error. because it's void.
+(symbol-function 'setq)              ;#<subr setq>
+(symbol-plist 'setq)                 ;(byte-compile byte-compile-setq)
 #+END_SRC
 
 * 控制结构
-
+** Sequence
 只有在函数内部等环境中, 才能顺序执行多个表达式.
 如果想在函数外部一次 eval 多个表达式, 需要用 progn.
 : (progn A B C ...)
@@ -238,6 +212,16 @@ if语句:
   (if TRUE-OR-FALSE-TEST
       ACTION-TO-CARRY-OUT-IF-THE-TEST-RETURNS-TRUE
     ACTION-TO-CARRY-OUT-IF-THE-TEST-RETURNS-FALSE)
+#+END_SRC
+
+If you need not ELSE part, you can use *when* statement
+
+#+BEGIN_SRC lisp
+(when (< 5 10)
+  (message "you")
+  (message "are")
+  (message "a")
+  (message "fool"))
 #+END_SRC
 
 cond语句, 相当于 switch/case 结构:
@@ -279,3 +263,90 @@ cond语句, 相当于 switch/case 结构:
   
   (fib 5)
 #+END_SRC
+
+** Loop
+
+#+BEGIN_SRC lisp
+(setq x 0)
+(while (< x 10)
+  (print (format "x: %d" x))
+  (setq x (+ x 1)))
+#+END_SRC
+
+* Function
+
+** The function classes
+- Function = Most common. Written in elisp. Usually (defun …)
+- Primitive = elisp function written in C. ⁖ {list, car, append, point, defun, …}. Typically the most fundamental ones.
+- lambda expression = ⁖ (lambda …). Usually temp functions.
+- special form = a function that doesn't eval in the normal way. ⁖ {if, cond, and, or, while, progn}. (normally, arguments to a function are all evaluated first.)
+- macro = Similar to “special form”, but user-defined. i.e. the arguments are not eval'd, and you can manipulate them and eval them.
+- command = functions that can be called by command-execute. Typically, (defun …) with (interactive …) clause. All functions you can call by “M-x” are commands.
+
+* 函数模板
+
+Elisp中, 函数都是全局的.
+
+函数五部分:
+
+#+BEGIN_SRC lisp
+     (defun FUNCTION-NAME (ARGUMENTS...)
+  		    "OPTIONAL-DOCUMENTATION..."
+	            (interactive ARGUMENT-PASSING-INFO)     ; optional
+		    BODY...)
+#+END_SRC
+
+let语句:
+
+#+BEGIN_SRC lisp
+  (let ((VARIABLE VALUE)
+        (VARIABLE VALUE)
+        ...)
+    BODY...)
+#+END_SRC
+
+save-excursion语句
+将光标位置和当前mark位置保存起来, 以便返回: ::
+
+#+BEGIN_SRC lisp
+  (save-excursion
+    FIRST-EXPRESSION-IN-BODY
+    SECOND-EXPRESSION-IN-BODY
+     ...
+    LAST-EXPRESSION-IN-BODY)
+#+END_SRC
+
+
+* Command
+defun with *interactive*.
+* lambda函数
+
+: (lambda (param-list) "function-doc" body)
+
+匿名函数, 通常在使用的时候临时定义.
+::
+
+  (funcall (lambda (hello-name) "say hello to someone"
+    (message "hello, %s!" hello-name)) "wuchen")
+
+也可以把lambda赋值给一个变量, 再调用:
+#+BEGIN_SRC lisp
+  (setq hello (lambda (hello-name) "say hello to someone"
+    (message "hello, %s!" hello-name)))
+  (funcall hello "wuchen")
+#+END_SRC
+
+* 常用函数
+
+- (number-to-string n): 将数字n转化成字符串，可以是浮点数。
+- (message string): 在echo区显示string。
+  格式化输出的例子:
+  (message "there are %d persons here" var-name),
+  (message "The area is %.2f ." float-var),
+  格式字符串中也可使用 \\n, \\t等转义字符.
+- (message "The name of this buffer is: %s." (buffer-name))
+- (message "The value of fill-column is %d." fill-column)
+- (buffer-name) (buffer-file-name) (current-buffer)
+- (other-buffer) 返回不可见的buffer中最近访问过的buffer。
+- (buffer-size) (point) (point-min) (point-max)
+

@@ -549,7 +549,9 @@ C-SPC在全局的标记位置内跳转。
 
 - C-h a apropos-command, 查看哪些命令包含了某个子字符串。参数可以
   是单个关键字, 关键字列表 和 正则表达式.
-- C-u C-h a, show apropos commands or functions.
+- C-u C-h a, show apropos commands or functions. 
+  When looking for command by apropos-command, you can call it with 【Ctrl+u】 first.
+  It'll then also list functions. 
 - M-x apropos 查看哪些命令或变量包含了某个子串。默认不显示与命令对
   应的按键, C-u M-x apropos会显示对应的按键(如果有绑定按键的话).
 - M-x apropos-variable 列出用户可以定制的变量, 如果用C-u 做前缀,
