@@ -43,27 +43,18 @@ pkg stats, list how many packages installed.
 : pkg rquery %c <pkgname>
 Even though you did not install the pkg, you can check its comment with this.
 
-* XWindow
+* Account
+*nobody* is the generic unprivileged system account. 
+: # adduser
+Press Enter, then add an user interactively.
 
-#+BEGIN_EXAMPLE
-pkg install xorg
-pkg install icewm
-pkg install xinit
-echo 'exec icewm-session' > .xinitrc
-startx
-#+END_EXAMPLE
+Check which users contained in a group.
+: pw groupshow wheel
 
-mouse or keyboard not work?
-pkg install xf86-input-mouse
-pkg install xf86-input-keyboard
-
-* hardware
-* locale
-: locale -a
-list all supported locales
-
-: locale
-check the current locale
+add a user to  a group:
+: pw groupmod operator -M jolly
+: id jolly
+You'll see jolly has joined operator group.
 
 * network
 ** DHCP
@@ -84,6 +75,35 @@ to  ~/etc/resolv.conf~
 then
 : service netif restart
 
+* Kernel
+1. Change and check kernel state: =sysctl=
+   SET: ~sysctl vfs.usermount=1~
+   CHECK: ~sysctl vfs.usermount~
+* Module
+Edit /boot/loader.conf, put xxx_load="YES" to enable xxx loaded on boot.
+For example, to enable fuse on boot, add fuse_load="YES" on boot.
+* XWindow
+
+#+BEGIN_EXAMPLE
+pkg install xorg
+pkg install icewm
+pkg install xinit
+echo 'exec icewm-session' > .xinitrc
+startx
+#+END_EXAMPLE
+
+mouse or keyboard not work?
+pkg install xf86-input-mouse
+pkg install xf86-input-keyboard
+
+* locale
+: locale -a
+list all supported locales
+
+: locale
+check the current locale
+
+* hardware
 * sudo
 su: sorry
 # pw usermod jolly -g wheel

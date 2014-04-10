@@ -146,9 +146,28 @@ VideoLAN是一个开发通过局域网（LAN）播放视频及其他媒体格式
    fuse: failed to open fuse device: No such file or directory
    : sudo kldload fuse
    : kldstat
-   : sudo python btfs.py -f follow-stars.torrent -s /home/jolly/Downloads/
-   
+   : python btfs.py -f follow-stars.torrent -s /home/jolly/Downloads/
+   fuse: failed to open fuse device: Permission denied
+   *Use sysctl to change kernel state*: sudo sysctl "vfs.usermount=1"
+   You'll get =vfs.usermount: 0 -> 1=
+   In addition, you need join operator group.
+   : pw groupmod operator -M jolly
+   : id jolly (check whether you have joined operator)
+   After relogin, you should run
+   : python btfs.py -f follow-stars.torrent -s /home/jolly/Downloads/ ~/btfs
+   Then you can play the buffer with mplayer
+
 6. deluge: bittorrent client.
+
+** make torrent
+- pkg install gtorrentview
+- pkg install mktorrent
+  : mktorrent -a http://192.168.109.144/announce -c "local gaoyuanlan.mp4 torrent" -n gaoyuanlan -v -w http://192.168.109.144/gaoyuanlan.mp4 ~/media/gaoyuanlan.mp4 
+- start http service
+  : sudo service apache24 onestart
+  : ln -s gaoyuanlan.mp4 /usr/local/www/apache24/data/
+- start btfs
+  : python btfs.py -f gaoyuanlan.torrent -s ~/Downloads ~/btfs
 
 * Review vshow source
 1. block size 64 * 1024

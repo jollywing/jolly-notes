@@ -20,7 +20,6 @@
   This will get the same result: (message "my list is: %S" '(8 2 3))
 
 * 数据类型
-
 ** 数值
 
 判断是不是整数:
@@ -73,7 +72,11 @@
 (expt 2 3) ;; 2^3 = 8
 #+END_SRC
 
-数值比较
+Elisp中没有 ++ --, 但有1+和1-两个函数.
+(1+ 5) return 6; (1- 5) get 4.
+
+*数值比较*
+
 #+BEGIN_SRC lisp
 (< 3 4) ; less than
 (> 3 4) ; greater than
@@ -120,17 +123,65 @@
 (and t nil) => nil
 (or t nil) => t
 
+** vector
+=[3 4 5]= is a vector.
+(vector 3 4 5) will return =[3 4 5]=.
+
+: (length [3 4 5])
+Get the length of a given vector, the result is 3 in this case.
+
+: (elt [3 4 5] 0) ;; => 3
+*elt* should be the abbreviation of element, get the element of a vector at a given *index*.
+The index counts from 0.
+
+: (aset [3 4 5] 0 ?a)
+*aset* should be the abbreviation of /Array Set/.
+Its prototype is =(aset ARRAY IDX NEWELT)=, the ARRAY may be a vector, a string.
+
+*Go through a vector*
+Assume =v= is a vector.
+#+BEGIN_SRC lisp
+(let ((i 0))
+(while (< i (length v))
+(message "%s " (elt v i))
+(setq i (+ i 1)))
+)
+#+END_SRC
+
+vector is similiar to *tuple* of Python, whose size can not be changed.
+
 ** 列表
-- list: (1 2 3 4)，list中的元素叫atom
-- car 取列表的第一个元素，(car '(1 2 3)) 得到 1.
+- list: (1 2 3 4)，list中的元素叫atom. 通常我们使用 list, 需要用 \' 引用，否则list会被当作表达式评估。
+- =(list 2 3 4)= 会返回 \'(2 3 4). =(list '(2 3) '(4 5) '(6 7))= will GET =((2 3) (4 5) (6 7))=.
+- car 取列表的第一个元素，(car '(1 2 3)) 得到 1. Note: car can only be
+  applied to a list, Error when it is applied to a vector.
+- (nth N LIST) return the Nth element of LIST.
+- (last LIST &optional N) return a slice of LIST, consisted of the last N
+  elts. If N is nil, the slice contains only the last elt.
+- (car (last '(3 4 5))) Get the last element.
 - cdr 取列表的第一个元素后面的剩余部分， (cdr '(1 2 3)) 得到 (2 3).
 - lisp是函数式语言，每个()之间的部分会被认为函数调用。因此list的第一个元素会被认为是函数名。
   为了防止list被evaluate，在list前加一个 \', 比如 =\'(1 2 3)= 会返回列表本身。
-
+- (nthcdr N LIST) Take cdr N times on LIST, return the result.
+- (butlast LIST &optional N) Return a copy of LIST with the last N elements removed.
+  For example: =(butlast '(3 4 5) 3)= will get nil.
+- (length LIST) get the length of LIST.
+- (cons 5 '(3 4)) will get (5 3 4).
+- (append '(3 4) (list "a")) will get (3 4 "a").
+- (pop LIST) Remove first element from the LIST. Returns the removed element.
+- (setcar LIST x) replaces the first element in List with x. Returns x.
+- (setcdr LIST x)	replaces the rest of elements in LIST with x. Returns x.
+- (mapcar FUNC LIST) handle each element in LIST ( a list or a vector),
+  return the list containing new elts. For example: =(mapcar '1+ (list 1 2))=
+  will get (2 3). =(mapcar (lambda (x) (* x 2)) (list 1 2))= will GET (2 4).
+  =(mapcar 'car '((2 3) (4 5) (6 7)))= will GET (2 4 6).
 - pair: (apple . 2)
 - alist (associated list):一堆pair的集合，类似Python中的词典。
 - ...: 表示什么呢？应该是什么路径。亦或是省略的意思？
 - 可以用中文字符串作变量名, 如 (setq 个数 10).
+
+** alist (Association List)
+** hash table
 
 * 变量
 
