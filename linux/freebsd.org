@@ -43,6 +43,17 @@ pkg stats, list how many packages installed.
 : pkg rquery %c <pkgname>
 Even though you did not install the pkg, you can check its comment with this.
 
+* Shell
+The default shell is tcsh on freeBSD.
+When you login, tcsh will read ~/.login.
+Each time you startup a tcsh, tcsh will read ~/.tcshrc
+When you logout, tcsh will read ~/.logout.
+The global files are: /etc/csh.login, /etc/csh.logout, /etc/csh.cshrc.
+
+If you use sh OR ksh as your shell, it will read ~/.profile.
+
+If you use bash, it will find ~/.bash_profile, ~/.bash_login, ~/.profile,
+If it found one of them, it will take that file as its profile.
 * Account
 *nobody* is the generic unprivileged system account. 
 : # adduser
@@ -55,6 +66,10 @@ add a user to  a group:
 : pw groupmod operator -M jolly
 : id jolly
 You'll see jolly has joined operator group.
+* Chroot
+chroot = Change Root; change the root dir referred by a program. The original root dir is '/'.
+If you has two unix/Linux installed, you can mount the root region of another system,
+and =chroot $ANOTHER_SYS_ROOT /bin/bash=
 
 * network
 ** DHCP

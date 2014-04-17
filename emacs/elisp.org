@@ -338,7 +338,7 @@ cond语句, 相当于 switch/case 结构:
 
 Elisp中, 函数都是全局的.
 
-函数五部分:
+** 函数五部分:
 
 #+BEGIN_SRC lisp
      (defun FUNCTION-NAME (ARGUMENTS...)
@@ -346,6 +346,76 @@ Elisp中, 函数都是全局的.
 	            (interactive ARGUMENT-PASSING-INFO)     ; optional
 		    BODY...)
 #+END_SRC
+
+** Optional Parameters
+
+If you want optional parameters, just add &optional. Any parameter after
+that will be optional.
+When a optional parameter is not given, its value is “nil”.
+
+If you want to give a argument to some optional parameters but not all, use
+“nil” for those you don't care.
+
+** Unspecified Number of Parameters
+
+Elisp also support the unspecified number of parameters.
+For example, for functions like {+, message, concat}.
+It is done by adding &rest similar to &optional. You can have both &optional and &rest, in that order.
+
+** Tips on Writing Inline Doc
+Short Summary in First Line
+
+The first line of your doc string should be a one sentence summary of the
+function. Because, apropos-command 【F1 a】 will display just that line.
+
+The inline doc string should be formatted into lines each about 70 chars,
+instead of one long line of hundreds chars. (you can use fill-paragraph for
+this.)
+
+When your function takes arguments, their names in the inline string should be all CAPS.
+This way, when describe-function displays it, the arg will be automatically *italized*.
+
+If your doc mentions another function, user can click on it, so it takes
+them to that function's inline doc. To make it clickable, you need to quote
+it with `…'.
+
+To have a clickable URL, do like this: URL `http://example.org/'.
+
+Sometimes you want clickable links to emacs's doc. You can mark it like
+this: =Info node `(elisp)Font Lock Basics'.= Remember, each page in info doc
+is identified by a string, for examples: =(emacs) Dired=, =(elisp)Font Lock
+Basics=. The first part in paren is the doc name, followed by the node's
+name. When you are in info page, pressing c will copy this node's id to the
+kill-ring.
+
+*Auto Generate Shortcut Keys*
+
+In your inline doc you may need to tell users about pressing a keyboard
+shortcut to do something. If a user has customized dired's keys, the inline
+doc will correctly display the new key.
+
+To make shortcuts of a command automatically show correctly, you need to quote the command name by \\[…]. Here's a example from dired:
+
+#+BEGIN_SRC lisp
+(defun dired-mode (&optional dirname switches)
+  "\
+Mode for \"editing\" directory listings.
+…
+Type \\[dired-do-copy] to Copy files.
+…"
+)
+#+END_SRC
+
+Inline Doc Markup Summary
+
+| Example                   | Purpose                         |
+| ALLCAPS                   | function arguments              |
+| `sort-lines'              | link to other functions         |
+| URL `http://example.org/' | link to URL                     |
+| Info node `(emacs) Dired' | link to Info doc node           |
+| \\[backward-word]         | Keyboard shortcut for a command |
+| \\{c-mode-map}            | list of keybindings             |
+
 
 let语句:
 
@@ -366,7 +436,6 @@ save-excursion语句
      ...
     LAST-EXPRESSION-IN-BODY)
 #+END_SRC
-
 
 * Command
 defun with *interactive*.

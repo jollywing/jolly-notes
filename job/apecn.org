@@ -36,8 +36,17 @@ The avio.h from release 0.5 defined URLContext.
    and reconfig with ./configure --prefix=/home/jolly/job/ffmpeg-dev-0.5 --extra-cflags="-D__BSD_VISIBLE"
    then gmake again.
 
+* Opentracker
+** Make with _DEBUG enabled.
+: make all
+will create both opentracker and opentracker.debug.
+
+Try to enable WANT_SYSLOGS
+
 
 * Goalbit
+** LOG
+1. 2014-04-16 Send a mail to request new demo.
 ** survey
 1. Goalbit Media Player
 With the Goalbit Media Player (desktop and browser plug-in editions) you
@@ -169,7 +178,7 @@ VideoLAN是一个开发通过局域网（LAN）播放视频及其他媒体格式
 - start btfs
   : python btfs.py -f gaoyuanlan.torrent -s ~/Downloads ~/btfs
 
-* Review vshow source
+* Vshow
 1. block size 64 * 1024
 2. TrackerClient, Client, Server, PlayerServer
 3. Client add parents, add standby peers according to segments.
@@ -177,6 +186,10 @@ VideoLAN是一个开发通过局域网（LAN）播放视频及其他媒体格式
 5. rank parents according their contribution.
 6. TrackerClient sends keep_alive to server.
 
+7. 2014-04-16 read vfs_client.cpp
+8. 2014-04-16 read peerFacade module.
+9. 2014-04-16 compare FileOp_Linux.cpp with FileOp-Linux.cpp, it seems that the latter is for win32 platform.
+10. 2014-04-16 make client, change Makefile (g++ -> clang ++)
 * Sopcast
 ** experiment: run arm binary on android.
 1. Is NDK needed? The NDK is a toolset that allows you to implement parts
