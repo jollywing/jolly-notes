@@ -43,7 +43,6 @@ will create both opentracker and opentracker.debug.
 
 Try to enable WANT_SYSLOGS
 
-
 * Goalbit
 ** LOG
 1. 2014-04-16 Send a mail to request new demo.
@@ -142,6 +141,78 @@ VideoLAN是一个开发通过局域网（LAN）播放视频及其他媒体格式
 2. cd bin to make vlc
 .MAKE: $(am__recursive_targets) all check install install-am \
 	install-strip
+** mail to goalbit sales
+Hello, dear manager
+
+My name is Jiqing Wu.
+I am a techinque manager in a Chinese video broadcast company.
+We want to use your goalbit plus service to reduce our bandwidth cost.
+
+I tried your demo and want to learn more about goalbit.
+
+1. If I want to broadcast our video, what goalbit module can support?
+
+2. Can golbit plus encode the video stream to publish?
+
+3. I know P2P network need a tracker, where the tracker of goalbit is placed?
+   If we buy your product, will you provide us the tracker as a module?
+
+4. I learn about that goalbit has its own super nodes to assist p2p, 
+   can we deploy our own super nodes? and how to deploy?
+   would you provide us the supernode module?
+
+5. If we want to collect the information of our peer clients, 
+   to what degree can goalbit plus support?
+
+6. Now, we are in China Mainland.
+   It takes more than 5 minutes to wait your demo to play.
+   It's too long to tolerate. If we brocast the video from China,
+   can it start to play in a tolerable interval?
+
+If we buy your products, which form of products would you provide? software or hardware?
+Quote a price, Please.
+
+Waiting for your reply.
+
+Your sincerely,
+Jiqing Wu.
+2014-04-18 Fri
+** source tree
+#+BEGIN_EXAMPLE
+.+--compat
+ |    |
+ |    +--asprintf.c (replace asprintf of GNU)
+ |    +--atof.c (replace atof, convert string to double)
+ |    +--atoll.c (replace atoll, convert string to long long int)
+ |    +--gmtime_r.c (replace POSIX gmtime_r)
+ |    +-- ...
+ |
+ +--include
+ |     +--goalbit
+ |     |     +--generic_tools.h (generic queue operations and new vlc list)  
+ |     |     +--goalbit_status.h (structure of goalbit status, include quality, goalbit_status_bt_t)
+ |     |     +--goalbit_suite_tools.h (get goalbit suits of network)
+ |     |     +--gui_tools.h (bt_channel_stats_t, bt_tracker_t, bt_stats_query_t)
+ |     |     +--vlc_bitfield.h (bt_bitfield_t)
+ |     |     +--vlc_bittorrent.h (goalbitFileParser, bt_Control)
+ |     |     +--vlc_broadcaster.h (broadcaster_peer_list)
+ |     |     +--vlc_channel_access.h (channel access)
+ |     |     +--vlc_crypt.h (crypt events)
+ |     |     +--vlc_data.h (data extractor and data injector)
+ |     |     +--vlc_kad.h (kademlia descriptor, queries and methods. kad key, value, pair, list ...)
+ |     |     +--vlc_upnp.h ()
+#+END_EXAMPLE
+EVENT_TRACKER_COM
+p_btc->pf_control
+bt_Control
+INTF = interface
+pumper_peer
+(broadcaster, super_peer, normal_peer, broadcaster_super_peer)
+
+i frame, p frame, b frame.
+muxer
+channel(tracker, webtracker)
+public key & private key
 
 * BTFS
 1. git clone https://github.com/rkfg/BTFS.git
@@ -190,6 +261,8 @@ VideoLAN是一个开发通过局域网（LAN）播放视频及其他媒体格式
 8. 2014-04-16 read peerFacade module.
 9. 2014-04-16 compare FileOp_Linux.cpp with FileOp-Linux.cpp, it seems that the latter is for win32 platform.
 10. 2014-04-16 make client, change Makefile (g++ -> clang ++)
+
+11. 2014-04-18 make tracker,
 * Sopcast
 ** experiment: run arm binary on android.
 1. Is NDK needed? The NDK is a toolset that allows you to implement parts
