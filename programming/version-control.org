@@ -2,6 +2,9 @@
 #+OPTIONS: toc:2
 
 * Git
+** git config
+1. git config --list
+2. git config --global key=value
 ** 远程仓库
 github is but one solution to host your public, "on-the-cloud",
 repository for git push to work with. In reality, the destination
@@ -53,7 +56,11 @@ http-proxy-password = <密码，如果需要的话>
 HG更简单，因为它使用的是http协议，一个命令解决：
 export http_proxy=http://<用户名>:<密码>@<ip>:<端口>
 
-
+** Branch
+1. git branch. list all branches.
+2. git branch <name>. new a branch.
+3. git co <branch-name>. switch branch.
+4. git merge <branch-name>. merge another branch.
 * Mercurial
 ** What is Mercurial?
 ** How to setup Mercurial?

@@ -378,6 +378,7 @@ EMACS 所设计共享的 killing-ring 的用意是让被遗弃的文件可以找
 
 - C-q: (1) C-q后按特殊按键 如按TAB输入制表符；按回车(或C-m)输入回
   车符, 等等. (2) C-q后可以跟ascII码, 如 =C-q 7 7 b= 会输入 =?b=.
+- C-q C-m 会输入 ^M, C-q C-j 会输入换行符。
 - C-x 8 可以插入一些特殊符号。
 
   - C-x 8 "a ä
@@ -550,7 +551,9 @@ C-SPC在全局的标记位置内跳转。
 
 - C-h a apropos-command, 查看哪些命令包含了某个子字符串。参数可以
   是单个关键字, 关键字列表 和 正则表达式.
-- C-u C-h a, show apropos commands or functions.
+- C-u C-h a, show apropos commands or functions. 
+  When looking for command by apropos-command, you can call it with 【Ctrl+u】 first.
+  It'll then also list functions. 
 - M-x apropos 查看哪些命令或变量包含了某个子串。默认不显示与命令对
   应的按键, C-u M-x apropos会显示对应的按键(如果有绑定按键的话).
 - M-x apropos-variable 列出用户可以定制的变量, 如果用C-u 做前缀,

@@ -20,7 +20,6 @@
   This will get the same result: (message "my list is: %S" '(8 2 3))
 
 * 数据类型
-
 ** 数值
 
 判断是不是整数:
@@ -73,7 +72,11 @@
 (expt 2 3) ;; 2^3 = 8
 #+END_SRC
 
-数值比较
+Elisp中没有 ++ --, 但有1+和1-两个函数.
+(1+ 5) return 6; (1- 5) get 4.
+
+*数值比较*
+
 #+BEGIN_SRC lisp
 (< 3 4) ; less than
 (> 3 4) ; greater than
@@ -120,17 +123,65 @@
 (and t nil) => nil
 (or t nil) => t
 
+** vector
+=[3 4 5]= is a vector.
+(vector 3 4 5) will return =[3 4 5]=.
+
+: (length [3 4 5])
+Get the length of a given vector, the result is 3 in this case.
+
+: (elt [3 4 5] 0) ;; => 3
+*elt* should be the abbreviation of element, get the element of a vector at a given *index*.
+The index counts from 0.
+
+: (aset [3 4 5] 0 ?a)
+*aset* should be the abbreviation of /Array Set/.
+Its prototype is =(aset ARRAY IDX NEWELT)=, the ARRAY may be a vector, a string.
+
+*Go through a vector*
+Assume =v= is a vector.
+#+BEGIN_SRC lisp
+(let ((i 0))
+(while (< i (length v))
+(message "%s " (elt v i))
+(setq i (+ i 1)))
+)
+#+END_SRC
+
+vector is similiar to *tuple* of Python, whose size can not be changed.
+
 ** 列表
-- list: (1 2 3 4)，list中的元素叫atom
-- car 取列表的第一个元素，(car '(1 2 3)) 得到 1.
+- list: (1 2 3 4)，list中的元素叫atom. 通常我们使用 list, 需要用 \' 引用，否则list会被当作表达式评估。
+- =(list 2 3 4)= 会返回 \'(2 3 4). =(list '(2 3) '(4 5) '(6 7))= will GET =((2 3) (4 5) (6 7))=.
+- car 取列表的第一个元素，(car '(1 2 3)) 得到 1. Note: car can only be
+  applied to a list, Error when it is applied to a vector.
+- (nth N LIST) return the Nth element of LIST.
+- (last LIST &optional N) return a slice of LIST, consisted of the last N
+  elts. If N is nil, the slice contains only the last elt.
+- (car (last '(3 4 5))) Get the last element.
 - cdr 取列表的第一个元素后面的剩余部分， (cdr '(1 2 3)) 得到 (2 3).
 - lisp是函数式语言，每个()之间的部分会被认为函数调用。因此list的第一个元素会被认为是函数名。
   为了防止list被evaluate，在list前加一个 \', 比如 =\'(1 2 3)= 会返回列表本身。
-
+- (nthcdr N LIST) Take cdr N times on LIST, return the result.
+- (butlast LIST &optional N) Return a copy of LIST with the last N elements removed.
+  For example: =(butlast '(3 4 5) 3)= will get nil.
+- (length LIST) get the length of LIST.
+- (cons 5 '(3 4)) will get (5 3 4).
+- (append '(3 4) (list "a")) will get (3 4 "a").
+- (pop LIST) Remove first element from the LIST. Returns the removed element.
+- (setcar LIST x) replaces the first element in List with x. Returns x.
+- (setcdr LIST x)	replaces the rest of elements in LIST with x. Returns x.
+- (mapcar FUNC LIST) handle each element in LIST ( a list or a vector),
+  return the list containing new elts. For example: =(mapcar '1+ (list 1 2))=
+  will get (2 3). =(mapcar (lambda (x) (* x 2)) (list 1 2))= will GET (2 4).
+  =(mapcar 'car '((2 3) (4 5) (6 7)))= will GET (2 4 6).
 - pair: (apple . 2)
 - alist (associated list):一堆pair的集合，类似Python中的词典。
 - ...: 表示什么呢？应该是什么路径。亦或是省略的意思？
 - 可以用中文字符串作变量名, 如 (setq 个数 10).
+
+** alist (Association List)
+** hash table
 
 * 变量
 
@@ -151,73 +202,47 @@
 
 其中, var2 只定义, 没有赋值, 默认值为 nil.
 
+* Symbol
 
-* 常用函数
+lisp can operate variable and function without evaluation,
+These variable and function are in *symbol's forms*.
+*Symbol* made lisp support /meta-programming/.
 
-- (number-to-string n): 将数字n转化成字符串，可以是浮点数。
-- (message string): 在echo区显示string。
-  格式化输出的例子:
-  (message "there are %d persons here" var-name),
-  (message "The area is %.2f ." float-var),
-  格式字符串中也可使用 \\n, \\t等转义字符.
-- (message "The name of this buffer is: %s." (buffer-name))
-- (message "The value of fill-column is %d." fill-column)
-- (buffer-name) (buffer-file-name) (current-buffer)
-- (other-buffer) 返回不可见的buffer中最近访问过的buffer。
-- (buffer-size) (point) (point-min) (point-max)
+- Symbol has *name*, same to the symbol.
+- When a symbol is used as *variable*, it has a *value*. Maybe empty.
+- When a symbol is used as *function*, it has a *function* definition. Maybe empty.
+- Symbol has a *property list*.
 
-* 函数模板
-
-Elisp中, 函数都是全局的.
-
-函数五部分:
-
+You can use *fboundp* to check if a function is defined first (it checks a
+symbol's definition cell), and use *boundp* to check if a variable is defined
+(it checkes a symbol's value cell)
 #+BEGIN_SRC lisp
-     (defun FUNCTION-NAME (ARGUMENTS...)
-  		    "OPTIONAL-DOCUMENTATION..."
-	            (interactive ARGUMENT-PASSING-INFO)     ; optional
-		    BODY...)
+(fboundp 'setq) ;;t
+(boundp 'setq) ;;nil
 #+END_SRC
 
-let语句:
-
 #+BEGIN_SRC lisp
-  (let ((VARIABLE VALUE)
-        (VARIABLE VALUE)
-        ...)
-    BODY...)
-#+END_SRC
+;; check if a variable eval to a lisp symbol
+(setq x1 123 )
+(symbolp x1)                            ;nil
+(setq x2 'xx )
+(symbolp x2)                            ;t
 
-save-excursion语句
-将光标位置和当前mark位置保存起来, 以便返回: ::
+;; get a symbol's cell values
+(symbol-name 'x1)                       ; "x1"
+(symbol-value 'x1)                      ; 123
+(symbol-function 'x1)                   ; error. because it's void.
+(symbol-plist 'x1)                      ;nil
 
-#+BEGIN_SRC lisp
-  (save-excursion
-    FIRST-EXPRESSION-IN-BODY
-    SECOND-EXPRESSION-IN-BODY
-     ...
-    LAST-EXPRESSION-IN-BODY)
-#+END_SRC
-
-* lambda函数
-
-: (lambda (param-list) "function-doc" body)
-
-匿名函数, 通常在使用的时候临时定义.
-::
-
-  (funcall (lambda (hello-name) "say hello to someone"
-    (message "hello, %s!" hello-name)) "wuchen")
-
-也可以把lambda赋值给一个变量, 再调用:
-#+BEGIN_SRC lisp
-  (setq hello (lambda (hello-name) "say hello to someone"
-    (message "hello, %s!" hello-name)))
-  (funcall hello "wuchen")
+;; get a symbol's cell values
+(symbol-name 'setq)                  ; "setq"
+(symbol-value 'setq)                 ; error. because it's void.
+(symbol-function 'setq)              ;#<subr setq>
+(symbol-plist 'setq)                 ;(byte-compile byte-compile-setq)
 #+END_SRC
 
 * 控制结构
-
+** Sequence
 只有在函数内部等环境中, 才能顺序执行多个表达式.
 如果想在函数外部一次 eval 多个表达式, 需要用 progn.
 : (progn A B C ...)
@@ -238,6 +263,16 @@ if语句:
   (if TRUE-OR-FALSE-TEST
       ACTION-TO-CARRY-OUT-IF-THE-TEST-RETURNS-TRUE
     ACTION-TO-CARRY-OUT-IF-THE-TEST-RETURNS-FALSE)
+#+END_SRC
+
+If you need not ELSE part, you can use *when* statement
+
+#+BEGIN_SRC lisp
+(when (< 5 10)
+  (message "you")
+  (message "are")
+  (message "a")
+  (message "fool"))
 #+END_SRC
 
 cond语句, 相当于 switch/case 结构:
@@ -279,3 +314,159 @@ cond语句, 相当于 switch/case 结构:
   
   (fib 5)
 #+END_SRC
+
+** Loop
+
+#+BEGIN_SRC lisp
+(setq x 0)
+(while (< x 10)
+  (print (format "x: %d" x))
+  (setq x (+ x 1)))
+#+END_SRC
+
+* Function
+
+** The function classes
+- Function = Most common. Written in elisp. Usually (defun …)
+- Primitive = elisp function written in C. ⁖ {list, car, append, point, defun, …}. Typically the most fundamental ones.
+- lambda expression = ⁖ (lambda …). Usually temp functions.
+- special form = a function that doesn't eval in the normal way. ⁖ {if, cond, and, or, while, progn}. (normally, arguments to a function are all evaluated first.)
+- macro = Similar to “special form”, but user-defined. i.e. the arguments are not eval'd, and you can manipulate them and eval them.
+- command = functions that can be called by command-execute. Typically, (defun …) with (interactive …) clause. All functions you can call by “M-x” are commands.
+
+* 函数模板
+
+Elisp中, 函数都是全局的.
+
+** 函数五部分:
+
+#+BEGIN_SRC lisp
+     (defun FUNCTION-NAME (ARGUMENTS...)
+  		    "OPTIONAL-DOCUMENTATION..."
+	            (interactive ARGUMENT-PASSING-INFO)     ; optional
+		    BODY...)
+#+END_SRC
+
+** Optional Parameters
+
+If you want optional parameters, just add &optional. Any parameter after
+that will be optional.
+When a optional parameter is not given, its value is “nil”.
+
+If you want to give a argument to some optional parameters but not all, use
+“nil” for those you don't care.
+
+** Unspecified Number of Parameters
+
+Elisp also support the unspecified number of parameters.
+For example, for functions like {+, message, concat}.
+It is done by adding &rest similar to &optional. You can have both &optional and &rest, in that order.
+
+** Tips on Writing Inline Doc
+Short Summary in First Line
+
+The first line of your doc string should be a one sentence summary of the
+function. Because, apropos-command 【F1 a】 will display just that line.
+
+The inline doc string should be formatted into lines each about 70 chars,
+instead of one long line of hundreds chars. (you can use fill-paragraph for
+this.)
+
+When your function takes arguments, their names in the inline string should be all CAPS.
+This way, when describe-function displays it, the arg will be automatically *italized*.
+
+If your doc mentions another function, user can click on it, so it takes
+them to that function's inline doc. To make it clickable, you need to quote
+it with `…'.
+
+To have a clickable URL, do like this: URL `http://example.org/'.
+
+Sometimes you want clickable links to emacs's doc. You can mark it like
+this: =Info node `(elisp)Font Lock Basics'.= Remember, each page in info doc
+is identified by a string, for examples: =(emacs) Dired=, =(elisp)Font Lock
+Basics=. The first part in paren is the doc name, followed by the node's
+name. When you are in info page, pressing c will copy this node's id to the
+kill-ring.
+
+*Auto Generate Shortcut Keys*
+
+In your inline doc you may need to tell users about pressing a keyboard
+shortcut to do something. If a user has customized dired's keys, the inline
+doc will correctly display the new key.
+
+To make shortcuts of a command automatically show correctly, you need to quote the command name by \\[…]. Here's a example from dired:
+
+#+BEGIN_SRC lisp
+(defun dired-mode (&optional dirname switches)
+  "\
+Mode for \"editing\" directory listings.
+…
+Type \\[dired-do-copy] to Copy files.
+…"
+)
+#+END_SRC
+
+Inline Doc Markup Summary
+
+| Example                   | Purpose                         |
+| ALLCAPS                   | function arguments              |
+| `sort-lines'              | link to other functions         |
+| URL `http://example.org/' | link to URL                     |
+| Info node `(emacs) Dired' | link to Info doc node           |
+| \\[backward-word]         | Keyboard shortcut for a command |
+| \\{c-mode-map}            | list of keybindings             |
+
+
+let语句:
+
+#+BEGIN_SRC lisp
+  (let ((VARIABLE VALUE)
+        (VARIABLE VALUE)
+        ...)
+    BODY...)
+#+END_SRC
+
+save-excursion语句
+将光标位置和当前mark位置保存起来, 以便返回: ::
+
+#+BEGIN_SRC lisp
+  (save-excursion
+    FIRST-EXPRESSION-IN-BODY
+    SECOND-EXPRESSION-IN-BODY
+     ...
+    LAST-EXPRESSION-IN-BODY)
+#+END_SRC
+
+* Command
+defun with *interactive*.
+* lambda函数
+
+: (lambda (param-list) "function-doc" body)
+
+匿名函数, 通常在使用的时候临时定义.
+::
+
+  (funcall (lambda (hello-name) "say hello to someone"
+    (message "hello, %s!" hello-name)) "wuchen")
+
+也可以把lambda赋值给一个变量, 再调用:
+#+BEGIN_SRC lisp
+  (setq hello (lambda (hello-name) "say hello to someone"
+    (message "hello, %s!" hello-name)))
+  (funcall hello "wuchen")
+#+END_SRC
+
+* 常用函数
+
+- (number-to-string n): 将数字n转化成字符串，可以是浮点数。
+- (message string): 在echo区显示string。
+  格式化输出的例子:
+  (message "there are %d persons here" var-name),
+  (message "The area is %.2f ." float-var),
+  格式字符串中也可使用 \\n, \\t等转义字符.
+- (message "The name of this buffer is: %s." (buffer-name))
+- (message "The value of fill-column is %d." fill-column)
+- (buffer-name) (buffer-file-name) (current-buffer)
+- (other-buffer) 返回不可见的buffer中最近访问过的buffer。
+- (buffer-size) (point) (point-min) (point-max)
+

@@ -36,8 +36,18 @@ The avio.h from release 0.5 defined URLContext.
    and reconfig with ./configure --prefix=/home/jolly/job/ffmpeg-dev-0.5 --extra-cflags="-D__BSD_VISIBLE"
    then gmake again.
 
+* Opentracker
+** Make with _DEBUG enabled.
+: make all
+will create both opentracker and opentracker.debug.
 
+Try to enable WANT_SYSLOGS
+
+* goalbit-self-make
+1. # error No UTF8 charset conversion implemented on this platform!
 * Goalbit
+** LOG
+1. 2014-04-16 Send a mail to request new demo.
 ** survey
 1. Goalbit Media Player
 With the Goalbit Media Player (desktop and browser plug-in editions) you
@@ -127,7 +137,233 @@ VideoLAN是一个开发通过局域网（LAN）播放视频及其他媒体格式
 ** try with opentracker
 1. under "./modules/bittorrent/goalbit/btv_tracker/", is /open-tracker/.
 
-* Review vshow source
+
+** Parse makefile
+1. cd src to make libvlc
+2. cd bin to make vlc
+.MAKE: $(am__recursive_targets) all check install install-am \
+	install-strip
+** mail to goalbit sales
+*** >>>
+Hello, dear manager
+
+My name is Jiqing Wu.
+I am a techinque manager in a Chinese video broadcast company.
+We want to use your goalbit plus service to reduce our bandwidth cost.
+
+I tried your demo and want to learn more about goalbit.
+
+1. If I want to broadcast our video, what goalbit module can support?
+
+2. Can golbit plus encode the video stream to publish?
+
+3. I know P2P network need a tracker, where the tracker of goalbit is placed?
+   If we buy your product, will you provide us the tracker as a module?
+
+4. I learn about that goalbit has its own super nodes to assist p2p, 
+   can we deploy our own super nodes? and how to deploy?
+   would you provide us the supernode module?
+
+5. If we want to collect the information of our peer clients, 
+   to what degree can goalbit plus support?
+
+6. Now, we are in China Mainland.
+   It takes more than 5 minutes to wait your demo to play.
+   It's too long to tolerate. If we brocast the video from China,
+   can it start to play in a tolerable interval?
+
+If we buy your products, which form of products would you provide? software or hardware?
+Quote a price, Please.
+
+Waiting for your reply.
+
+Your sincerely,
+Jiqing Wu.
+2014-04-18 Fri
+
+*** <<<, relay to Haitao
+Dear Jiqing Wu,
+
+Thank you for your interest in our product and services.
+
+I think that we can have a chat in order to better understand your needs.
+为了更好地了解您的需求，我认为我们可以谈一下。
+Please tell me a convenient date for you.
+my skype is: goalbit
+my gtalk is: goalbit@gmail.com
+
+A fast answer about your last questions:
+
+1. If I want to broadcast our video, what goalbit module can support? 
+GoalBit Plus works as a delivery network, it accepts several streaming protocols as input (rtmp, rtp, mms, http and HLS).
+If it is necessary, GoalBit Plus transcode the streaming in the server in order to obtain an HLS streaming (compatible with android, apple and flash).
+（问：如果我们自己广播视频，goalbit如何支持？
+答：GoalBit Plus是一个内容交付网络，它能接受几种流协议作为输入，比如RTMP, RTP, MMS, HTTP, HLS。
+如果有必要，Goalbit Plus会把你的流在服务器端进行转码以得到HLS流，主要是为了兼容Android，苹果和flash播放器。）
+
+2. Can golbit plus encode the video stream to publish? 
+We accept 3rd party encoders, like wirecast, adobe live encoder (free), ffmpeg (free).
+Typical configuration is to use Flash Media Encoder in order to generate a compatible streaming and push it into Goalbit Plus servers.
+After the acquisition, our servers exchange the live content between them and serve the content in traditional streaming and p2p streaming.
+（问：goalbit支持视频流的编码吗？
+答：我们接受第三方的编码器，比如wirecast, adobe live encoder和ffmpeg。
+为了生成兼容大多数设备的流，典型的配置是使用Flash Media 编码器，编码后推送到流媒体服务器。
+获取流后，我们的服务器互相交换直播内容。然后以传统的方式或是P2P的方式提供服务。）
+
+3. I know P2P network need a tracker, where the tracker of goalbit is placed? If we buy your product, will you provide us the tracker as a module? 
+Yes. The tracker is part of the goalbit plus server software.
+（问：我知道P2P网络有一个tracker，goalbit的tracker部署在哪里？如果我买了你的产品，你会提供给我们tracker吗？）
+（答：是的，tracker是goalbit plus服务器软件的一部分。）
+
+4. I learn about that goalbit has its own super nodes to assist p2p, can we deploy our own super nodes? and how to deploy? would you provide us the supernode module? 
+There are a lot of academic work behind goalbit protocol, currently we are in version 3.0 and most documentation is about 1.0.
+Yes, GoalBit Plus provide you with super nodes (currently streaming servers) in order to help in the delivery.
+In summary, our solution includes all the necessary pieces in order to deliver live content to end users, you must provide a live streaming URL (for example an RTMP from Adobe live encoder) and our server does the rest, including:
+    - transcoding if necessary
+    - replicate the content between several servers
+    - load balancing of end users between servers
+    - deliver the content in traditional streaming (HLS) for non compatible devices, and deliver the content in p2p streaming (android and PC currently)
+    - etc
+（问：我了解到goalbit有自己的超级节点，我们可以部署自己的超级节点吗？如何部署，你可以提供给我们超级节点的软件模块吗？）
+（答：针对goalbit协议有大量的学术研究，当前我们的版本是3.0，而大多数文档是关于1.0的。
+是的，为了辅助内容交付，Goalbit Plus会提供给你超级节点（目前就是流媒体服务器）。
+总而言之，我们的方案包含所有必须的组件，用以为终端用户提供直播服务，
+你需要的是提供一个直播流的URL，比如来自Adobe直播编码器的一个RTMP流），我们的服务器会为你完成其余的工作：
+- 必要的转码
+- 在几个服务器之间复制视频内容
+- 根据用户情况在服务器之间进行负载平衡
+- 对于不兼容的设备，用传统的流（HLS）传输。对于android和PC，用P2P的方式交付内容。
+
+5. If we want to collect the information of our peer clients, to what degree can goalbit plus support? 
+We provide real time stats from our servers, as you can see in:
+    http://www.goalbit-solutions.com/demo
+    and with more details in: http://trial.goalbit-solutions.com/goalbit-media-server/tracker/stats/bigbangtheory
+We also works with google analytics in order to collect and summarize the monthly stats.
+(问：如果我们想收集客户端的信息，goalbit plus可以支持到什么程度？)
+（答：我们提供实时的信息统计，你可以看看这里。
+    http://www.goalbit-solutions.com/demo
+更详细的，可以看这里： http://trial.goalbit-solutions.com/goalbit-media-server/tracker/stats/bigbangtheory
+【可以看到连接的结点数，每个结点的ip，通过P2P下载或是上传的数据量，从服务器下载的数据量。】
+为了收集和汇总每月的数据，我们也用google analytics处理数据。
+
+6. Now, we are in China Mainland. It takes more than 5 minutes to wait your demo to play. It's too long to tolerate. If we brodcast the video from China, can it start to play in a tolerable interval? 
+Yes. Please read our last performance test: http://www.goalbit-solutions.com/www/download/goalbitPlus-testingPlanResults.pdf
+We worked a lot in order to have the same buffer than traditional streaming.
+The problem with your 5 minutes is that our trial streaming server is far away from you. 
+You can validate it, please go to http://trial.goalbit-solutions.com/goalbit-misc/gpa/play/ and try:
+    GPA disable (i.e. traditional streaming in HLS)
+    GPA requeried (i.e. p2p streaming)
+    you will found similar starting time in both technologies, and it can be improved if you have a server close to the users
+（问：现在我们在中国大陆，试验你们demo的时候，需要5分钟才能播放。等待时间长到不能容忍。如果我们从本地广播视频，是不是启动延迟会减小到可以容忍的程度？）
+（答：是的，请读我们最近的性能测试： http://www.goalbit-solutions.com/www/download/goalbitPlus-testingPlanResults.pdf
+为了减少缓冲时间，我们做了大量的工作。关于你的5分钟的问题是因为我们的试验服务器离你太远了。
+为了验证这一点，你可以去 http://trial.goalbit-solutions.com/goalbit-misc/gpa/play/ 试一下：
+GPA disable （传统方式）和 GPA required （P2P方式），你会发现两者的缓冲时间差不多。
+如果服务器离用户近，缓冲时间会得到改善。）
+
+7. If we buy your products, which form of products would you provide? software or hardware? 
+We offer SaaS (including hosting from a 3rd party) or selfhosted (where you provide the hosting infrastructure)
+Both have a monthly price based in the size of the deployment.
+In order to give you a quotation you must provide us with information about your company (name, address, contact, etc.)
+
+（问：如果我们买了你的产品，你们会以哪种方式提供产品，软件还是硬件？）
+（答：我们提供 SaaS，我们的软件部署在第三方服务器上， 或者selfhosted，即你们自己提供硬件来部署。
+都是基于部署规模按月计费的。
+要谈价格的话，你必须提供给我你们公司的信息，包括名称，地址，联系方式）。
+
+best regards,
+    Pablo
+** source tree
+#+BEGIN_EXAMPLE
+.+--compat
+ |    |
+ |    +--asprintf.c (replace asprintf of GNU)
+ |    +--atof.c (replace atof, convert string to double)
+ |    +--atoll.c (replace atoll, convert string to long long int)
+ |    +--gmtime_r.c (replace POSIX gmtime_r)
+ |    +-- ...
+ |
+ +--include
+ |     +--goalbit
+ |     |     +--generic_tools.h (generic queue operations and new vlc list)  
+ |     |     +--goalbit_status.h (structure of goalbit status, include quality, goalbit_status_bt_t)
+ |     |     +--goalbit_suite_tools.h (get goalbit suits of network)
+ |     |     +--gui_tools.h (bt_channel_stats_t, bt_tracker_t, bt_stats_query_t)
+ |     |     +--vlc_bitfield.h (bt_bitfield_t)
+ |     |     +--vlc_bittorrent.h (goalbitFileParser, bt_Control)
+ |     |     +--vlc_broadcaster.h (broadcaster_peer_list)
+ |     |     +--vlc_channel_access.h (channel access)
+ |     |     +--vlc_crypt.h (crypt events)
+ |     |     +--vlc_data.h (data extractor and data injector)
+ |     |     +--vlc_kad.h (kademlia descriptor, queries and methods. kad key, value, pair, list ...)
+ |     |     +--vlc_upnp.h (upnp)
+ |     |     +--vod_tools.h
+ |     +--mmx.h (a free MPEG-2 video stream decoder.)
+ |     +--vlc (libvlc and mediacontrol)
+ |     +--vlc_about.h (auto-generated, GPL, thanks and authors)
+ |     +--vlc_access.h (vlc access init)
+ |     +--vlc_acl.h (interface to the network Access Control List internal API)
+ |     +--vlc_aout.h (audio_output.h: audio output interface)
+ |
+ +--src
+ |   +--audio_output (audio module)
+ |   |        +-- ...
+ |   +--
+ +--modules
+ |    +--bittorrent
+ |    |      +--bt_client
+ |    |      |     +--btTrackerCom
+#+END_EXAMPLE
+EVENT_TRACKER_COM
+p_btc->pf_control
+btTrackerCom.m_request_buffer
+btTrackerCom.m_reponse_buffer
+bt_Control
+INTF = interface
+pumper_peer
+(broadcaster, super_peer, normal_peer, broadcaster_super_peer)
+
+i frame, p frame, b frame.
+muxer
+channel(tracker, webtracker)
+public key & private key
+
+* BTFS
+1. git clone https://github.com/rkfg/BTFS.git
+2. cd BTFS; python btfs.py;
+   ImportError: No module named libtorrent
+3. http://sourceforge.net/projects/libtorrent/files/py-libtorrent/,
+   On freeBSD, you can =sudo pkg install py27-libtorrent-rasterbar=
+4. ImportError: No module named fuse
+   On freeBSD, =sudo pkg install py27-fusefs=
+5. python btfs.py -f follow-stars.torrent -s /home/jolly/Downloads/
+   fuse: failed to open fuse device: No such file or directory
+   : sudo kldload fuse
+   : kldstat
+   : python btfs.py -f follow-stars.torrent -s /home/jolly/Downloads/
+   fuse: failed to open fuse device: Permission denied
+   *Use sysctl to change kernel state*: sudo sysctl "vfs.usermount=1"
+   You'll get =vfs.usermount: 0 -> 1=
+   In addition, you need join operator group.
+   : pw groupmod operator -M jolly
+   : id jolly (check whether you have joined operator)
+   After relogin, you should run
+   : python btfs.py -f follow-stars.torrent -s /home/jolly/Downloads/ ~/btfs
+   Then you can play the buffer with mplayer
+
+6. deluge: bittorrent client.
+
+** make torrent
+- pkg install gtorrentview
+- pkg install mktorrent
+  : mktorrent -a http://192.168.109.144/announce -c "local gaoyuanlan.mp4 torrent" -n gaoyuanlan -v -w http://192.168.109.144/gaoyuanlan.mp4 ~/media/gaoyuanlan.mp4 
+- start http service
+  : sudo service apache24 onestart
+  : ln -s gaoyuanlan.mp4 /usr/local/www/apache24/data/
+- start btfs
+  : python btfs.py -f gaoyuanlan.torrent -s ~/Downloads ~/btfs
+
+* Vshow
 1. block size 64 * 1024
 2. TrackerClient, Client, Server, PlayerServer
 3. Client add parents, add standby peers according to segments.
@@ -135,6 +371,12 @@ VideoLAN是一个开发通过局域网（LAN）播放视频及其他媒体格式
 5. rank parents according their contribution.
 6. TrackerClient sends keep_alive to server.
 
+7. 2014-04-16 read vfs_client.cpp
+8. 2014-04-16 read peerFacade module.
+9. 2014-04-16 compare FileOp_Linux.cpp with FileOp-Linux.cpp, it seems that the latter is for win32 platform.
+10. 2014-04-16 make client, change Makefile (g++ -> clang ++)
+
+11. 2014-04-18 make tracker,
 * Sopcast
 ** experiment: run arm binary on android.
 1. Is NDK needed? The NDK is a toolset that allows you to implement parts
@@ -292,6 +534,13 @@ DRM Plugins是真正实现权限管理、数字内容解密等工作的模块。
 这是因为媒体文件如果采用不同的DRM解决方案进行加密的话，手机在播放它们时，DRM Manager需找到对应的DRM Plugin以进行解密。
 ** How windows Meia Rights Manager Works
 ** How does Drm10 work?
+
+* MULTIMEDIA
+** S/PDIF
+Sony/Philips Digital interface
+digital sinals transfer specification,
+with the SPDIF out of sound card,
+some speakers can accept digital signals and convert them to analogue signals and play.
 * DONE DRM 10
   CLOSED: [2014-03-31 Mon 09:02]
 ** Experiment 0: let iis support media string
