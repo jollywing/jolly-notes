@@ -43,6 +43,8 @@ will create both opentracker and opentracker.debug.
 
 Try to enable WANT_SYSLOGS
 
+* goalbit-self-make
+1. # error No UTF8 charset conversion implemented on this platform!
 * Goalbit
 ** LOG
 1. 2014-04-16 Send a mail to request new demo.
@@ -294,10 +296,28 @@ best regards,
  |     |     +--vlc_crypt.h (crypt events)
  |     |     +--vlc_data.h (data extractor and data injector)
  |     |     +--vlc_kad.h (kademlia descriptor, queries and methods. kad key, value, pair, list ...)
- |     |     +--vlc_upnp.h ()
+ |     |     +--vlc_upnp.h (upnp)
+ |     |     +--vod_tools.h
+ |     +--mmx.h (a free MPEG-2 video stream decoder.)
+ |     +--vlc (libvlc and mediacontrol)
+ |     +--vlc_about.h (auto-generated, GPL, thanks and authors)
+ |     +--vlc_access.h (vlc access init)
+ |     +--vlc_acl.h (interface to the network Access Control List internal API)
+ |     +--vlc_aout.h (audio_output.h: audio output interface)
+ |
+ +--src
+ |   +--audio_output (audio module)
+ |   |        +-- ...
+ |   +--
+ +--modules
+ |    +--bittorrent
+ |    |      +--bt_client
+ |    |      |     +--btTrackerCom
 #+END_EXAMPLE
 EVENT_TRACKER_COM
 p_btc->pf_control
+btTrackerCom.m_request_buffer
+btTrackerCom.m_reponse_buffer
 bt_Control
 INTF = interface
 pumper_peer
@@ -514,6 +534,13 @@ DRM Plugins是真正实现权限管理、数字内容解密等工作的模块。
 这是因为媒体文件如果采用不同的DRM解决方案进行加密的话，手机在播放它们时，DRM Manager需找到对应的DRM Plugin以进行解密。
 ** How windows Meia Rights Manager Works
 ** How does Drm10 work?
+
+* MULTIMEDIA
+** S/PDIF
+Sony/Philips Digital interface
+digital sinals transfer specification,
+with the SPDIF out of sound card,
+some speakers can accept digital signals and convert them to analogue signals and play.
 * DONE DRM 10
   CLOSED: [2014-03-31 Mon 09:02]
 ** Experiment 0: let iis support media string
