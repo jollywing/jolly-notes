@@ -187,7 +187,8 @@ EMACS 所设计共享的 killing-ring 的用意是让被遗弃的文件可以找
   point 向上的两段.
 - 如果用鼠标标记一个区域(鼠标左键拖动, 鼠标右键单击), 会自动将选定
   的区域复制到kill-ring中.
-
+- M-=, M-x count-words-region 会显示选中的区域中有多少行，多少词，多少个字符。
+  （注意，一个汉字也只算一个字符哦）
 ** 可以应用于 region 的操作:
 
 - M-%: query-replace.
