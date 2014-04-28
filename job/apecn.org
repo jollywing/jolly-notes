@@ -273,6 +273,24 @@ In order to give you a quotation you must provide us with information about your
 
 best regards,
     Pablo
+
+*** prepare skype with goalbit
+Dear Pablo
+skype: goalbit
+
+My company info:
+APECN, Beijing ASIA Pacific East Communication Network LTD.
+12F, Building C, Royal international square, No.31 ShiJingShan Rd., Shijingshan District, Beijing, P.R. China.
+http://www.apecn.com/
+
+北京市石景山区石景山路31号盛景国际大厦C座12层  邮编：100043
+
+1. We want to deploy goalbit on our hardware, which software modules will you provide?
+2. If we want make our own android client (apk), will you provide us goalbit SDK?
+3. Where the tracker placed? Is it based on Opentracker, or KAD protol implemented in each peer?
+4. If we deploy our goalbit network, does it need to communicate with your goalbit network?
+   Or can we watch your programms provided by your goalbit network through our goalbit network.
+
 ** source tree
 #+BEGIN_EXAMPLE
 .+--compat
