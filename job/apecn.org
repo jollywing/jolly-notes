@@ -328,6 +328,7 @@ muxer
 channel(tracker, webtracker)
 public key & private key
 
+KAD RBT Red Black Tree
 * BTFS
 1. git clone https://github.com/rkfg/BTFS.git
 2. cd BTFS; python btfs.py;
