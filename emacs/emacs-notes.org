@@ -840,7 +840,7 @@ desktop-change-dir= 加载新的会话。现在不确定在加载新的会话前
 
 ** 在Emacs中使用shell
 
-- M-! 可以执行外部命令。
+- M-! 可以执行外部命令。 C-u M-! 会将shell命令的输出结果插入到当前缓冲区中。
 - M-x shell  启动shell。
 - C-u M-x shell 可以打开新的shell。
 - 在Emacs中使用shell的好处是你可以全屏编辑，一个最酷的例子是：

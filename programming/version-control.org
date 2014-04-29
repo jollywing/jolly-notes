@@ -5,6 +5,30 @@
 ** git config
 1. git config --list
 2. git config --global key=value
+3. 换行符问题。 *autocrlf*
+   #+BEGIN_EXAMPLE
+   #提交时转换为LF，检出时转换为CRLF
+   git config --global core.autocrlf true   
+
+   #提交时转换为LF，检出时不转换
+   git config --global core.autocrlf input   
+
+   #提交检出均不转换
+   git config --global core.autocrlf false
+   #+END_EXAMPLE
+
+   *safecrlf*
+   #+BEGIN_EXAMPLE
+   #拒绝提交包含混合换行符的文件
+   git config --global core.safecrlf true   
+
+   #允许提交包含混合换行符的文件
+   git config --global core.safecrlf false   
+
+   #提交包含混合换行符的文件时给出警告
+   git config --global core.safecrlf warn
+   #+END_EXAMPLE
+
 ** 远程仓库
 github is but one solution to host your public, "on-the-cloud",
 repository for git push to work with. In reality, the destination

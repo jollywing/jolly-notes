@@ -275,21 +275,28 @@ best regards,
     Pablo
 
 *** prepare skype with goalbit
-Dear Pablo
-skype: goalbit
+Dear Pablo,
+Thank you for your detailed answer.
+I have added your skype (goalbit), my skype ID is linuxer-wuchen.
 
-My company info:
-APECN, Beijing ASIA Pacific East Communication Network LTD.
+My company is Beijing ASIA Pacific East Communication Network LTD (APECN), located at
 12F, Building C, Royal international square, No.31 ShiJingShan Rd., Shijingshan District, Beijing, P.R. China.
-http://www.apecn.com/
 
-北京市石景山区石景山路31号盛景国际大厦C座12层  邮编：100043
+You can check it at http://www.apecn.com/, but it only has Chinese version.
+
+I want to talk the following questions with you:
 
 1. We want to deploy goalbit on our hardware, which software modules will you provide?
-2. If we want make our own android client (apk), will you provide us goalbit SDK?
+2. If we want to make our own android client (apk), will you provide us goalbit SDK?
 3. Where the tracker placed? Is it based on Opentracker, or KAD protol implemented in each peer?
 4. If we deploy our goalbit network, does it need to communicate with your goalbit network?
-   Or can we watch your programms provided by your goalbit network through our goalbit network.
+   Or can we watch your programms provided by your goalbit network through our goalbit network?
+
+When will you go online? Let us have a chat.
+I'm online from 9:00 to 17:00 (China timezone) today and tomorrow.
+
+Your sincerely,
+Jiqing Wu
 
 ** source tree
 #+BEGIN_EXAMPLE

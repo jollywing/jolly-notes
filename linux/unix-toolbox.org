@@ -1,3 +1,6 @@
 
 id <user>
 You can check which groups the user belong to.
+
+command line trash
+apt-get install trash-cli，alias rm=trash
