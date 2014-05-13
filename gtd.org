@@ -1,4 +1,25 @@
 
+
+* GTD
+** Hack CasparCG server
+*** build and run it
+*** find the place to hack
+*** hack it.
+** Items to buy
+*** 豆浆机
+*** DONE 风扇
+    CLOSED: [2014-05-13 周二 15:23]
+*** 平底休闲鞋
+*** 裤子
+*** T shirt
+*** samsung cell phone
+** Debug program for XiaoXiao
+*** DONE download the program
+    CLOSED: [2014-05-13 周二 11:31]
+*** debug it
+*** send mail
+** ZhouAiMin's Quest
+** offline activities
 * Compare streamer
 ** peer streamer
 ** myseelite
@@ -33,6 +54,11 @@ i="真值"||"其他真值";//->i="真值"
 i="真值"||"";//->i="真值"  
 #+END_EXAMPLE
  
+* C++
+** auto
+** wchar_t, wstring
+** lambda function
+http://www.devdiv.com/c_lambda_-blog-124976-12996.html
 * Node.js
 ** introduction
 Node.js 服务端(脱离浏览器环境)的javascript
@@ -177,3 +203,5 @@ set up linux version
 ** 科研项目
 1. 国家科技项目申报
 
+
+** 编程珠玑

@@ -1,9 +1,17 @@
+
 * log
 ** 2014-04-01 Tue
 1. try opentracker, =1=
 2. make install goalbit on freeBSD, =2=
 ** 2014-04-03 Thu
 sign up fosshub: github account
+* CasperCG
+** HACK SERVER
+main thread screen consumer
+run server
+create consumer
+
+assist thread wait stdin
 * ffmpeg
 ** ffmpeg player
 ref: http://dranger.com/ffmpeg/tutorial01.html
