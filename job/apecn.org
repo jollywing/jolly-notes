@@ -10,6 +10,16 @@ sign up fosshub: github account
 main thread screen consumer
 run server
 create consumer
+ogl = openGL
+producer: stage, input, {flash, ffmpeg (audio || video), images, declink(HDMI/SDI)}.
+consumer: stage, output, {bluefish (HD-SDI?), ffmpeg (disk || screen), newtek_ivga(HDMI)}
+mixer: opengl on gpu. or video card.
+protocol: amcp, cii
+
+HDMI = High Definition Multimedia Interface, video && audio
+DVI = Digital Video Interface; digital <=> digital
+SDI = Serial Digital Interface
+VGA = Video Graphics Array, digital -> analog -> digital
 
 assist thread wait stdin
 * ffmpeg
