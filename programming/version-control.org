@@ -3,8 +3,11 @@
 
 * Git
 ** git config
-1. git config --list
-2. git config --global key=value
+1. git config --list，列出当前项目的config， .git/config。
+2. 用户全局配置：git config --global key=value
+   会把配置写入 ~/.gitconfig.
+   On Windows 7, it maybe c:\Users\Administrator\.gitconfig
+   You can use =git config --global --edit= whatever platform you are using.
 3. 换行符问题。 *autocrlf*
    #+BEGIN_EXAMPLE
    #提交时转换为LF，检出时转换为CRLF
@@ -45,7 +48,7 @@ Git可以使用两种协议，git协议和http，
 如果是后者，那么办法跟HG一样，
 =export http_proxy=http://<用户名>:<密码>@<ip>:<端口>=
 
-如果是git，比较麻烦，但也不是不可解决：
+如果是git协议，比较麻烦，但也不是不可解决：
 先去下载一个协议转换小工具：
 http://www.meadowy.org/~gotoh/ssh/connect.c
 编译之：gcc -o connect connect.c
@@ -54,7 +57,7 @@ http://www.meadowy.org/~gotoh/ssh/connect.c
 然后创建一个使用代理的脚本，假设是http-proxy-gw，注意加上可执行属性，内容如下：
 #!/bin/sh
 # Filename: ~/bin/http-proxy-gw
-# This ｓｃｒｉｐｔ connects to an HTTP proxy using connect.c
+# This script connects to an HTTP proxy using connect.c
 connect -H http://yourproxyaddress:proxyport $@
 connect这个小程序还支持socket代理，用法是connect -S host:port 
 
@@ -68,23 +71,47 @@ for xxx.yyy"
 
 
 
-2，SVN
-SVN比较方便，编辑~/.subversion/servers文件即可：
-[global]
-http-proxy-host = <代理的ip或域名>
-http-proxy-port = <代理端口>
-http-proxy-username = <用户名，如果需要的话>
-http-proxy-password = <密码，如果需要的话>
-
-3，HG
-HG更简单，因为它使用的是http协议，一个命令解决：
-export http_proxy=http://<用户名>:<密码>@<ip>:<端口>
-
 ** Branch
 1. git branch. list all branches.
 2. git branch <name>. new a branch.
 3. git co <branch-name>. switch branch.
-4. git merge <branch-name>. merge another branch.
+4. git merge <branch-name>. merge another branch to current branch.
+** git
+*** Usage
+1. create repository jolly-notes on [[https://github.com/][git-hub]]
+2. =git clone https://github.com/jollywing/jolly-notes.git=
+3. change your cotents && commit to local (=git add= and =git commit=)
+4. =git remote add origin https://github.com/jollywing/jolly-notes.git=
+5. =git remote set-url origin https://jollywing@github.com/jollywing/jolly-notes.git=
+   Important! if you skip this step, you'll get error when you push.
+   The error is like: "error: The requested URL returned error: 403 while accessing ..."
+6. =git push -u origin master=
+7. In another location, you can  =git pull origin master=
+8. try *rebase*.
+*** msysgit (Git on Windows)
+When you clone a remote repository, you'll meet a error:
+
+#+BEGIN_EXAMPLE
+$ git clone https://github.com/jollywing/jolly-notes.git
+Initialized empty Git repository in e:/jollywing/jolly-notes/.git/
+error: error setting certificate verify locations:
+  CAfile: /bin/curl-ca-bundle.crt
+  CApath: none
+ while accessing https://github.com/jollywing/jolly-notes.git/info/refs
+
+fatal: HTTP request failed
+#+END_EXAMPLE
+
+Solution:
+: git config --global http.sslcainfo "/e/jollywing/installed/Git/bin/curl-ca-bundle.crt"
+
+*** errors
+1. non-fast-forward error, somebody else has commited something to the remote repository,
+   before you push, you nell pull at first.
+*** github
+1. delete a repository. Open the repository page, click /settings/ in the
+   right pane, click the button "delete this repository" in the bottom.
+
 * Mercurial
 ** What is Mercurial?
 ** How to setup Mercurial?
@@ -113,3 +140,15 @@ export http_proxy=http://<用户名>:<密码>@<ip>:<端口>
 
 4. Sync with the remote repository.
    : hg pull [remote-repo-name]
+2，SVN
+SVN比较方便，编辑~/.subversion/servers文件即可：
+[global]
+http-proxy-host = <代理的ip或域名>
+http-proxy-port = <代理端口>
+http-proxy-username = <用户名，如果需要的话>
+http-proxy-password = <密码，如果需要的话>
+
+3，HG
+HG更简单，因为它使用的是http协议，一个命令解决：
+export http_proxy=http://<用户名>:<密码>@<ip>:<端口>
+

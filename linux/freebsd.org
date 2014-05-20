@@ -111,6 +111,27 @@ mouse or keyboard not work?
 pkg install xf86-input-mouse
 pkg install xf86-input-keyboard
 
+** 为FreeBSD安装Adobe flash插件
+
+参考 [[http://www.freebsd.org/doc/en_US.ISO8859-1/books/handbook/desktop-browsers.html][FreeBSD官方手册浏览器一章]]
+
+1. =pkg install nspluginwrapper=
+   *nspluginwrapper* 是一个辅助安装配置 NetScape Plugin的工具。
+   可以为NetScape家族的浏览器安装在其它系统上构建的插件，比如安装在Linux上编译的flash plugin。
+2. 通过ports安装 =linux-f10-flashplugin11= 。 f10表示Fedora 10。
+   =cd /usr/ports/www/linux-f10-flashplugin11=
+   =sudo make install=
+   =sudo make clean=
+3. 安装flash plugin. =nspluginwrapper -v -a -i= ，-v表示输出详细信息， -a表示自动探测可用插件， -i表示安装。
+   这将会把 =flash-player-plugin.so= 安装到 =~/.mozilla/plugins= 目录下。
+   如果你日后更新了flash player的插件，要执行一次 =nspluginwrapper -v -a -u= ， -u表示update。
+4. 测试是否安装成功: 在firefox地址栏输入 =about:plugins= ，回车，会看见flash player在插件列表中，并且是enabled。
+5. 如果插件不能激活，应该是没有加载linux模块， =sudo kldload linux= 。
+   如果想让系统开机自动加载linux模块，编辑 =/etc/rc.conf= ，加入
+   : linux_enable="YES"
+
+2014-05-20 周二
+
 * locale
 : locale -a
 list all supported locales

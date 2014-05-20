@@ -1,4 +1,6 @@
 
+#+SEQ_TODO: TODO(t) ABORT(a) DONE(d) 
+
 * log
 ** 2014-04-01 Tue
 1. try opentracker, =1=
@@ -22,6 +24,29 @@ SDI = Serial Digital Interface
 VGA = Video Graphics Array, digital -> analog -> digital
 
 assist thread wait stdin
+** ABORT HACK VB CLIENT 
+*** check out playout client source code
+: git clone https://github.com/SublanTV/CasparsPlayoutClient.git
+*** try to build
+1. Problem: 无法打开工程文件
+   Reason: 工程文件比环境版本高。
+   Solution: edit sln file. change =Microsoft Visual Studio Solution File, Format Version 12.00= to
+    =Microsoft Visual Studio Solution File, Format Version 11.00=
+
+2. Problem: 无法在证书存储区中找到清单签名证书。
+   Reason:
+   Solution: 工程->属性->签名->uncheck ClickOnce清单签名 
+3. Problem: 依赖项目logger无法加载
+   Reason: 该项目不可用，不在 source tree 里。
+   Solution:
+*** replace the icon
+*** build
+** HACK OFFICIAL CLIENT
+*** setup qt on win
+*** clone the source code
+*** try to build
+*** change the logo
+*** build
 * ffmpeg
 ** ffmpeg player
 ref: http://dranger.com/ffmpeg/tutorial01.html
