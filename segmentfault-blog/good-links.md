@@ -1,5 +1,7 @@
 
 
+# Story #
+1. [All the tropes](https://allthetropes.orain.org/wiki/Main_Page)
 # GoodLinks #
 
 ## emacs ##

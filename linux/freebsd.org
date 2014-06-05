@@ -97,6 +97,13 @@ then
 * Module
 Edit /boot/loader.conf, put xxx_load="YES" to enable xxx loaded on boot.
 For example, to enable fuse on boot, add fuse_load="YES" on boot.
+* service
+通常我们使用 sudo service xxx {start|stop|restart} 来启动、停止、重启服务。
+但在freebsd中有些服务会提示使用 {onestart|onestop|onerestart} 来启动、停止和重启服务。
+什么原因呢。
+
+如果在 /etc/rc.conf 中有启动行的服务，则可以通过 {start|stop|restart} 控制。
+对于没有在 /etc/rc.conf 中甚至 enable 的服务，要通过 {onestart|onestop|onerestart} 来控制。
 * XWindow
 
 #+BEGIN_EXAMPLE

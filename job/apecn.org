@@ -474,6 +474,8 @@ failed.
 3. Peer端的源代码（包括服务模块、请求模块、和Tracker Server交互的模块）。理由：我们需要定制客户端应用，便于客户服务质量的统计分析。
 4. 如果存在superPeer, 我们也superPeer的源码。
 
+** experiment:
+1. http://192.168.109.174:8080/show
 * Android
 ** apk
 1. /system 系统目录。
