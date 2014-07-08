@@ -1,0 +1,12 @@
+
+* 字符串
+单引号和双引号都能表示字符串吗？
+
+* BOOLEAN
+php中有boolean类型吗？如何表示?
+0和0.0是FALSE吗？(c中是，java中是, lisp中是吗, python中是吗，javascript似乎是)
+""是FALSE吗？
+"0"是FALSE吗？
+空数组 =array()= 是不是FALSE?
+NULL是不是FALSE？
+

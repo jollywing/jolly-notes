@@ -70,6 +70,10 @@ for xxx.yyy"
 
 
 
+** 本地仓库
+1. git init
+2. =git clone -l /e/jollywing/11= (Local machine)
+   =git clone //DELL/jollywing/11= (LAN)
 
 ** Branch
 1. git branch. list all branches.

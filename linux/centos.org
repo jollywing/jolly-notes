@@ -44,6 +44,8 @@ or
 5. install a win 2003 virtual machine.
 6. Set Network to general network, then the vm os will get the adress that can be pinged from outside.
 
+If you want mount a share folder in a Linux virtual machine.
+: sudo mount -t vboxsf E_DRIVE /mnt/share
 ** File Manager
 1. bsc : Qt based Total Commander
 ** network

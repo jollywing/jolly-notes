@@ -1,29 +1,8 @@
 
 #+SEQ_TODO: TODO(t) ABORT(a) DONE(d) 
 
-* log
-** 2014-04-01 Tue
-1. try opentracker, =1=
-2. make install goalbit on freeBSD, =2=
-** 2014-04-03 Thu
-sign up fosshub: github account
+* OpenX (Revive Adserver)
 * CasperCG
-** HACK SERVER
-main thread screen consumer
-run server
-create consumer
-ogl = openGL
-producer: stage, input, {flash, ffmpeg (audio || video), images, declink(HDMI/SDI)}.
-consumer: stage, output, {bluefish (HD-SDI?), ffmpeg (disk || screen), newtek_ivga(HDMI)}
-mixer: opengl on gpu. or video card.
-protocol: amcp, cii
-
-HDMI = High Definition Multimedia Interface, video && audio
-DVI = Digital Video Interface; digital <=> digital
-SDI = Serial Digital Interface
-VGA = Video Graphics Array, digital -> analog -> digital
-
-assist thread wait stdin
 ** ABORT HACK VB CLIENT 
 *** check out playout client source code
 : git clone https://github.com/SublanTV/CasparsPlayoutClient.git
@@ -42,11 +21,16 @@ assist thread wait stdin
 *** replace the icon
 *** build
 ** HACK OFFICIAL CLIENT
-*** setup qt on win
-*** clone the source code
-*** try to build
-*** change the logo
-*** build
+*** OSC
+osc is /open sound control/ protocol,
+which sends real-time data and events from CasparCG Server over UDP.
+
+User can configure or edit OSC output layer.
+*** GPI
+General Purpose Input.
+GPI/GPO/GPIO, triggering through special hardwares.
+
+MIXER include ATEM and tricaster
 * ffmpeg
 ** ffmpeg player
 ref: http://dranger.com/ffmpeg/tutorial01.html
@@ -89,103 +73,6 @@ Try to enable WANT_SYSLOGS
 * goalbit-self-make
 1. # error No UTF8 charset conversion implemented on this platform!
 * Goalbit
-** LOG
-1. 2014-04-16 Send a mail to request new demo.
-** survey
-1. Goalbit Media Player
-With the Goalbit Media Player (desktop and browser plug-in editions) you
-can play and record video streams from the web, and you can live broadcast
-yourself with a home Internet connection.
-
-2. Also, you will need the Starter
-Suite in order to distribute GoalBit channels in the Web, and in order to
-do a web broadcast from the GoalBit Media Player browser plug-in.
-
-3. VLC = Video Lan Client.
-VideoLAN是一个开发通过局域网（LAN）播放视频及其他媒体格式的软件的计划。最初
-开发了两个媒体流媒体程序VideoLAN Client（VLC）及VideoLAN Server（VLS），然而
-大部分的VLS功能都逐渐整合進VLC，所以就將VLC改名為VLC media player。
-** make install on centOS
-1. git clone git://git.code.sf.net/p/goalbit/code goalbit-code
-2. No configure file; autoconf -v; 
-   #+BEGIN_EXAMPLE
-   configure.ac:446: error: m4_undefine: undefined macro: AC_DEPLIBS_CHECK_METHOD
-   configure.ac:446: the top level
-   autom4te: /usr/bin/m4 failed with exit status: 1
-   #+END_EXAMPLE
-3. ./bootstrap; 
-   #+BEGIN_EXAMPLE
-   configure.ac:5366: error: possibly undefined macro: AM_PATH_LIBGCRYPT
-      If this token and others are legitimate, please use m4_pattern_allow.
-      See the Autoconf documentation.
-   autoreconf: /usr/bin/autoconf failed with exit status: 1
-   #+END_EXAMPLE
-4. yum install libgcrypt-devel; ./bootstrap; SUCCESS!
-   Now we have configure.
-5. libmtp-devel
-6. libcddb, require libcdio.so.7, but there is only libcdio.so.10, so I downloaded the sourcecode.
-   wget -c http://prdownloads.sourceforge.net/libcddb/libcddb-1.3.2.tar.bz2
-   tar xjvf libcddb-1.3.2.tar.bz2
-   cd libcddb-1.3.2; ./configure; make; make install; make clean; *sudo ldconfig*
-7. configure: error: Could not find libmad on your system: you may get it from http://www.underbit.com/products/mad/. Alternatively you can use --disable-mad to disable the mad plugin.
-   mad = mpeg audio decoding library. sudo yum install libmap-devel.
-8. you must provide a gme-tree.
-   /gme-tree/: It is a very rare game format, so, skip it
-   GME is a library to parse various file formats, especially from old games.
-9. Give up, change to FreeBSD.
-
-
-** make install on freeBSD
-1. sudo pkg install autoconf; ./bootstrap;
-   #+BEGIN_EXAMPLE
-   autoreconf-2.69: failed to run aclocal: No such file or directory
-   #+END_EXAMPLE
-2. =sudo pkg install automake=, run ./bootstrap again.
-   #+BEGIN_EXAMPLE
-   configure.ac:446: error: m4_undefine: undefined macro: AC_DEPLIBS_CHECK_METHOD
-   configure.ac:446: the top level
-   autom4te-2.69: /usr/local/bin/gm4 failed with exit status: 1
-   aclocal-1.14: error: echo failed with exit status: 1
-   autoreconf-2.69: aclocal failed with exit status: 1
-   #+END_EXAMPLE
-3. It's because libtool missing. =sudo pkg install libtool=, then run ./bootstrap again.
-4. =./configure=.
-5. =./compile=.
-   #+BEGIN_EXAMPLE
-   /usr/local/bin/ld: cannot find -ldl
-   #+END_EXAMPLE
-   The dlopen/dlsym functions are built into libc on FreeBSD, so there's no need for a libdl
-   : sudo ln -s /usr/lib/libc.so /usr/lib/libdl.so
-6. add ffmpeg-release-0.5
-7. =error: implicit declaration of function= the function did not declared in header.
-8. USING gmake INSTEAD OF make.
-9. sed on linux and sed on unix are different.
-   Hack the goalbit-0.7.7/modules/gui/goalbit/qtgb/Makefile
-   #+BEGIN_EXAMPLE
-   ifeq ($(findstring freebsd,$(host_os)),freebsd)
-       sed 's/QT_BEGIN_MOC_NAMESPACE/ /g' $@ > $@
-       sed 's/QT_END_MOC_NAMESPACE/ /g' $@ > $@
-   else
-       sed -i 's/QT_BEGIN_MOC_NAMESPACE/ /g' $@
-       sed -i 's/QT_END_MOC_NAMESPACE/ /g' $@
-   endif
-   #+END_EXAMPLE
-
-** code
-1. What is SCRAPE. A client scrapes in order to determine whether or not to
-   send an /announce/ requesting more peers. Sending a scrape result is
-   usually less bandwidth consuming than sending a list of peers.
-
-
-** try with opentracker
-1. under "./modules/bittorrent/goalbit/btv_tracker/", is /open-tracker/.
-
-
-** Parse makefile
-1. cd src to make libvlc
-2. cd bin to make vlc
-.MAKE: $(am__recursive_targets) all check install install-am \
-	install-strip
 ** mail to goalbit sales
 *** >>>
 Hello, dear manager
@@ -341,6 +228,159 @@ I'm online from 9:00 to 17:00 (China timezone) today and tomorrow.
 Your sincerely,
 Jiqing Wu
 
+*** quote a price, please
+Hello, Pablo!
+
+I'm the technical manager of ASIA Pacific East Communication Network LTD.
+I has written a mail to you.
+I told you that my company want to buy your goalbit service to broadcast our programs.
+At that time you gave me your skype and gtalk.
+
+However, I can not find you on skype (goalbit?).
+Because of the 'Great FireWall' of China, my gtalk often goes offline.
+In addition, the clock difference between us adds the difficulty of chating with you.
+
+So I write mail to you again. Don't mind my discourteousness, please.
+
+My company is Beijing ASIA Pacific East Communication Network LTD (APECN),
+located at 12F, Building C, Royal international square, No.31 ShiJingShan
+Rd., Shijingshan District, Beijing, P.R. China.
+
+You can check it at http://www.apecn.com/, but it has only Chinese version.
+
+Would you give me a price list of your products, please?
+I'll look forward to your reply.
+
+Your sincerely, WU Jiqing
+The Technical manager of APECN.
+
+*** answer from Pablo
+<<<<
+On 06/25/2014 05:20 PM, sales@goalbit-solutions.com wrote:
+
+Dear WU Jiqing,
+Thank you for your contact.
+About pricing, our products and services starts with a price of 300 usd/month (for a single server and a minimal support).
+I need to understand better your need in order to give you a quotation. Could you define a date for a chat meeting?
+For example next Tuesday 7/1 at 8am (Beijing timezone) (my local time Monday 6/30 at 9pm).
+best regards,
+    Pablo
+
+<<<<
+Dear Wu,
+It is Monday 6/30 at 9.30pm. 
+I do not see you online (skype nor gmail). I will close the chat now.
+Please define a new date for the call.
+Best regards,
+    Pablo
+
+*** date for a chat
+Dear Pablo,
+
+I'm sorry for my absence on skype.
+I start work at nine. So I missed your message.
+
+Now I want to invite you to have a chat,
+I will go to my office earlier.
+Would you be available on Wednesday 7/09 at 8am (your local time maybe 7/08 at 9pm)?
+I'll wait for you on skype.
+
+Best regards,
+    Wu Jiqing
+    2014-07-08 周二
+
+** survey
+1. Goalbit Media Player
+With the Goalbit Media Player (desktop and browser plug-in editions) you
+can play and record video streams from the web, and you can live broadcast
+yourself with a home Internet connection.
+
+2. Also, you will need the Starter
+Suite in order to distribute GoalBit channels in the Web, and in order to
+do a web broadcast from the GoalBit Media Player browser plug-in.
+
+3. VLC = Video Lan Client.
+VideoLAN是一个开发通过局域网（LAN）播放视频及其他媒体格式的软件的计划。最初
+开发了两个媒体流媒体程序VideoLAN Client（VLC）及VideoLAN Server（VLS），然而
+大部分的VLS功能都逐渐整合進VLC，所以就將VLC改名為VLC media player。
+** make install on centOS
+1. git clone git://git.code.sf.net/p/goalbit/code goalbit-code
+2. No configure file; autoconf -v; 
+   #+BEGIN_EXAMPLE
+   configure.ac:446: error: m4_undefine: undefined macro: AC_DEPLIBS_CHECK_METHOD
+   configure.ac:446: the top level
+   autom4te: /usr/bin/m4 failed with exit status: 1
+   #+END_EXAMPLE
+3. ./bootstrap; 
+   #+BEGIN_EXAMPLE
+   configure.ac:5366: error: possibly undefined macro: AM_PATH_LIBGCRYPT
+      If this token and others are legitimate, please use m4_pattern_allow.
+      See the Autoconf documentation.
+   autoreconf: /usr/bin/autoconf failed with exit status: 1
+   #+END_EXAMPLE
+4. yum install libgcrypt-devel; ./bootstrap; SUCCESS!
+   Now we have configure.
+5. libmtp-devel
+6. libcddb, require libcdio.so.7, but there is only libcdio.so.10, so I downloaded the sourcecode.
+   wget -c http://prdownloads.sourceforge.net/libcddb/libcddb-1.3.2.tar.bz2
+   tar xjvf libcddb-1.3.2.tar.bz2
+   cd libcddb-1.3.2; ./configure; make; make install; make clean; *sudo ldconfig*
+7. configure: error: Could not find libmad on your system: you may get it from http://www.underbit.com/products/mad/. Alternatively you can use --disable-mad to disable the mad plugin.
+   mad = mpeg audio decoding library. sudo yum install libmap-devel.
+8. you must provide a gme-tree.
+   /gme-tree/: It is a very rare game format, so, skip it
+   GME is a library to parse various file formats, especially from old games.
+9. Give up, change to FreeBSD.
+
+** make install on freeBSD
+1. sudo pkg install autoconf; ./bootstrap;
+   #+BEGIN_EXAMPLE
+   autoreconf-2.69: failed to run aclocal: No such file or directory
+   #+END_EXAMPLE
+2. =sudo pkg install automake=, run ./bootstrap again.
+   #+BEGIN_EXAMPLE
+   configure.ac:446: error: m4_undefine: undefined macro: AC_DEPLIBS_CHECK_METHOD
+   configure.ac:446: the top level
+   autom4te-2.69: /usr/local/bin/gm4 failed with exit status: 1
+   aclocal-1.14: error: echo failed with exit status: 1
+   autoreconf-2.69: aclocal failed with exit status: 1
+   #+END_EXAMPLE
+3. It's because libtool missing. =sudo pkg install libtool=, then run ./bootstrap again.
+4. =./configure=.
+5. =./compile=.
+   #+BEGIN_EXAMPLE
+   /usr/local/bin/ld: cannot find -ldl
+   #+END_EXAMPLE
+   The dlopen/dlsym functions are built into libc on FreeBSD, so there's no need for a libdl
+   : sudo ln -s /usr/lib/libc.so /usr/lib/libdl.so
+6. add ffmpeg-release-0.5
+7. =error: implicit declaration of function= the function did not declared in header.
+8. USING gmake INSTEAD OF make.
+9. sed on linux and sed on unix are different.
+   Hack the goalbit-0.7.7/modules/gui/goalbit/qtgb/Makefile
+   #+BEGIN_EXAMPLE
+   ifeq ($(findstring freebsd,$(host_os)),freebsd)
+       sed 's/QT_BEGIN_MOC_NAMESPACE/ /g' $@ > $@
+       sed 's/QT_END_MOC_NAMESPACE/ /g' $@ > $@
+   else
+       sed -i 's/QT_BEGIN_MOC_NAMESPACE/ /g' $@
+       sed -i 's/QT_END_MOC_NAMESPACE/ /g' $@
+   endif
+   #+END_EXAMPLE
+
+** code
+1. What is SCRAPE. A client scrapes in order to determine whether or not to
+   send an /announce/ requesting more peers. Sending a scrape result is
+   usually less bandwidth consuming than sending a list of peers.
+
+** try with opentracker
+1. under "./modules/bittorrent/goalbit/btv_tracker/", is /open-tracker/.
+
+** Parse makefile
+1. cd src to make libvlc
+2. cd bin to make vlc
+.MAKE: $(am__recursive_targets) all check install install-am \
+	install-strip
 ** source tree
 #+BEGIN_EXAMPLE
 .+--compat
