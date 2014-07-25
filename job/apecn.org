@@ -2,7 +2,54 @@
 #+SEQ_TODO: TODO(t) ABORT(a) DONE(d) 
 
 * OpenX (Revive Adserver)
+AS3 需要广告平台的API?
+as3 调用 javascript 需要浏览器的支持。
+
+login the revive adserver
+get the tag
+put it to html.
+
+CPC: cost per click, 按点击收费.
+CPM: cost per mille, 每千人收费.
+CPA: cost per action.
+
+其中CPC和CPM比较流行，最为流行的是CPM.
 * CasperCG
+Question: The NVIDIA OpenGL driver lost connection with the display driver due to exceeding the windows Time-Out limit and is unable to continue.
+What does it mean?
+If you received this message from an application (on a pop up message or in the Event Log), the application was unable to continue rendering because the Microsoft Windows imposed time limit (TDR) was exceeded. This is normally the case when the workload sent to the Graphics Card is greater than what the graphics card can process in the normal timeout of two seconds.
+
+Two possible solutions to try would be:
+
+1.Reduce the graphics workload if possible, such as rendering to a lower resolution or with less detail.
+
+
+2.Increase the timeout to allow more time to complete the really tough
+rendering parts. Microsoft provides the information on how to modify the
+Windows Registry to achieve this.
+
+OpenGL message “lost connection” 显卡已停止响应
+简单的说，出现这种错误的原因是由于显卡处理的数据量过多，导致消耗时间过长。
+
+从Windows Vista开始到Windows 7，加入了对GPU的约束，当响应时间超过两秒时，就会强制停止GPU运行，并强行恢复。结果就是突然黑屏，然后通知栏弹出信息提示显卡驱动停止响应并已恢复。在windows xp中不会有这种情况发生。
+
+大部分时候，用户并不希望这种情况发生。解决方法是停用windows的GPU超时检测。
+
+在注册表：HKLM\System\CurrentControlSet\Control\GraphicsDrivers 下新建项目
+TdrLevel：REG_DWORD 并设置为 0。禁用检测。重启即可生效。
+
+ 
+
+TdrLevel: REG_DWORD. The initial level of recovery. The possible values are:
+
+TdrLevelOff (0). – Detection disabled.
+
+TdrLevelBugcheck (1) – Bug check on detected timeout, for example, no recovery.
+
+TdrLevelRecoverVGA (2) – Recover to VGA (not implemented).
+
+TdrLevelRecover(3) – Recover on timeout. This is the default value.
+
 ** ABORT HACK VB CLIENT 
 *** check out playout client source code
 : git clone https://github.com/SublanTV/CasparsPlayoutClient.git
@@ -31,6 +78,44 @@ General Purpose Input.
 GPI/GPO/GPIO, triggering through special hardwares.
 
 MIXER include ATEM and tricaster
+* CMP
+On server PC-
+Make a folder on server computer's D drive. Let us say mymedia
+Right click this folder---property---sahring. Share this folder.
+Right click on my computer--map network drive. Drive z--Folder= \\mypcname\mymedia
+Make sub folders on this z drive named video, template, log, thumbnail.
+Now modify you casparcg.config file as below
+Code: Select all  <paths>
+    <media-path>z:/video\</media-path>
+    <log-path>z:/log\</log-path>
+    <data-path>z:/data\</data-path>
+    <template-path>z:/template\</template-path>
+    <thumbnails-path>z:/thumbnail\</thumbnails-path>
+  </paths>
+
+Now on client PC
+Right click on my computer--map network drive. Drive z--Folder= \\serverpcname\mymedia
+Now run the server on server pc and Client on client pc.
+
+
+** Template module
+
+f0 is the name of textfield and loader1 is the name of dynamic image in
+template. Name of textfields are automatically retrieved from template but
+loader name are not. So loader1 name is given here for testing purpose. And
+its default value has been given so that you don't have to fill anything
+for testing. It will only work if a uiloader is there in template and its
+instance name is loader1. And a method has been defined like this.
+
+Code: Select allif (element. @ id == "loader1")
+{
+loader1.source = element.data.@value;
+}
+
+After installation of CMP from CasparMediaPlaybackSetup\Release\setup.exe, Three folders are created as c:/casparcg/_media, c:/casparcg/CMP, c:/casparcg/mydata
+Note- For proper working of example templates in remote server, install this client on remote server PC also.
+
+
 * ffmpeg
 ** ffmpeg player
 ref: http://dranger.com/ffmpeg/tutorial01.html
@@ -288,6 +373,134 @@ I'll wait for you on skype.
 Best regards,
     Wu Jiqing
     2014-07-08 周二
+
+*** Chat with Pablo
+
+Goalbit was started in 2008, offering innovative video solutions over internet.
+currently we are offering the goalbit plus product.
+its main objetive is to deliver the content from servers to end users.
+
+it is a simple management system and a set of streaming servers,
+and sometimes a video player at the client side.
+
+for streaming server there are three options:
+1. our own streaming server, called goalbit media server
+2. our add on for Wowza streaming server (a very popular streaming server)
+3. any CDN that offer HLS (http live streaming protocol)
+
+we offer the three options because each is convenient in differnet context
+
+for end user software, there are different options
+
+1. native player in android, flash player in browsers, etc
+2. P2P plugin: an SDK for android devices, a desktop application for windows
+
+again both options are necessary/ or convenient in different context
+
+typical configurations are:
+
+if you need to stream in other protocols than HLS, for example smooth streaming, then we use Wowza
+if you have Wowza servers, then use our wowza addon instead our goalbit media server
+if you want our best performance product, and HLS is enough, then we use goalbit media server
+
+about client side the decision is easier?
+
+we try to use the p2p plugin, and if it not possible then native player is used
+therefore we cover android, iOS, windows and linux
+
+how we offer our product?
+
+usually:
+
+a setup fee + monthly payment
+setup cover installation
+monthly payment covers licenses and support
+our support is an agreement between both parties
+we agree how many hours per month we will dedicate to upgrade, answer your questions, etc
+
+yes, we does not offer appliance, we install the software in your hardware?
+we does not offer hardware outside our country?
+but we have resellers in many countries?
+
+
+usually our customers prefer do not pay the cost of ownership?
+and pay per month?
+why do you want to pay in one payment??
+(it is not a problem, we are an small company that addapt us to our customers)
+
+I can give you a quotation for a one payment, but I need to known more about the sizing of the project?
+
+How much users of goalbit plus are there now??
+
+no so much, most of them are in our previous version of the software.
+
+goalbit plus has a focus in android device, and we are working with hardware developers?
+previous version was used for 300.000 of users?
+and 20 providers?
+
+
+goalbit plus is used by Pluggy and FPT (large telco)?
+FPT from Vietnam?
+
+everything run from your infrastructure?
+tracker is part of our streaming server?
+but 1st question to answer is: what is the best strreaming server for you?
+
+please go to http://goalbit-solutions.com/www/platform?
+there is a picture at the end?
+it includes all the components?
+
+at the server side, two software products: goalbit manager, and goalbit media server?
+
+goalbit manager offer an API for development?
+
+and a web interface in order to operate it?
+
+you can add/remove channels?
+
+change the load balancing between servers, etc?
+
+usually 1 or 2 servers with goalbit manager are enough
+
+then the goalbit media servers
+they are designed in order to scale with number of users and number of channels
+transcoding,
+HLS delivery?
+P2P delivery?
+tracker?
+
+
+because we expect thousands of users per server?
+and it is largest than any practical swarm of peers?
+
+http://trial.goalbit-solutions.com/goalbit-media-server/tracker/stats/bigbangtheory?
+it is the stat of a demo channel as a goalbit media server is offering?
+
+
+http://trial.goalbit-solutions.com/goalbit-media-server/tracker/graphs/bigbangtheory?
+and with some graphics?
+
+
+at the client side?
+in order to offer the service you must have a web portal from where you offer the service?
+and/or an android application?
+
+our sample code includes an SDK of our delivery technology?
+for browser clients the integration is simplest?
+
+for example http://trial.goalbit-solutions.com/goalbit-misc/gpa/play?
+there is a list of channels in our demo app?
+
+as I told you, we are not offering perpetual licenses, but to give you a reference of price?
+
+1 x Goalbit Manager     +     2 x Goalbit media server (up to 100 TB/month)   +    unlimited end users (with P2P or without)?
+
+installation server + support for a year (up to 4 hours/month)?
+
+for a one time price of 14.000 USD?
+
+
+?9?:?22 the same, with a monthly: 750 USD/month?
 
 ** survey
 1. Goalbit Media Player

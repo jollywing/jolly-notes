@@ -1,0 +1,7 @@
+
+Whenever ordinary integers and unsigned integers combine in an expression,
+the ordinary integers are converted to unsigned.
+
+** google test
+1. install: =pkg install googletest=.
+2. http://code.google.com/p/googletest/wiki/V1_7_Primer

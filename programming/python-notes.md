@@ -511,14 +511,17 @@ dir函数来列出模块定义的标识符。标识符有函数、类和变量�
 
 ## 网络编程 ##
 
-.. {{{1
 
-通过python可以启动简单的http服务，不需要启动apache。::
+通过python可以启动简单的http服务，不需要启动apache。
 
     python -m SimpleHTTPServer 8080
 
-然后通过 ``http://localhost:8080`` 就可以访问当前目录了。
+然后通过 `http://localhost:8080` 就可以访问当前目录了。
 python真是威武。
 
-.. }}}1
+在python3中， SimpleHTTPServer 不再可用，改用：
+
+    python -m http.server 8000
+
+访问 `http://localhost:8000` 会在浏览器中打开家目录.
 

@@ -1,0 +1,28 @@
+
+
+* Chapter 18:
+** 18.9 Shortest Common SuperString
+*Related Problems:*
++ Suffix Trees
++ Text Compression
+* [2013-09-07] Chapter 19: Algorithmic Resources
+** online bibliographics resource
+** Data resources
+- TSPLIB: the data of ~travaling sales Problem~
+- /DIMACS Challenge data/
+** [2013-09-07] Software systems
+- *LEDA*: Library of Efficient Data types and Algorithms, /c++/.
+- *CGAL*: Computational Geometry Algorithms Library, /c++/.
+- Boost Graph Library
+- *GOBLIN*: Graph Object Library for Network Programming, focusing on graph
+  optimization, /c++/
+- Netlib: http://www.netlib.org, The Guide to Available Mathematical
+  Software (GAMS)
+- CPAN: Comprehensive Perl Archive Network. http://www.cpan.org
+- [2013-09-07] Standford GraphBase, CWeb.
+- [2013-09-07] Combinatorica, writen with ~MatheMatica~
+- Programs from Books
+  + Programming Challenges, http://www.programming-challenges.com, written with c.
+  + /Computational Geometry in C/, http://maven.smith.edu/~orourke/code.html.
+  + /Algorithms in C++/, http://www.cs.princeton.edu/~rs/.
+
