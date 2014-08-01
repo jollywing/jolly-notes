@@ -1,0 +1,231 @@
+
+#+TITLE: C编程笔记
+#+AUTHOR: Jolly Wing (jiqingwu@gmail.com)
+
+* 编程环境及辅助工具
+- 编译器，推荐gcc. 如果你使用windows，可以通过安装 /DEV C++/ 或 /mingw/ 获得gcc.
+- 编辑器， vim/Emacs
+- ascii表，如果你使用Linux/Unix， =man ascii= 就可以得到ascii表。
+
+** gcc使用技巧
+
+- =gcc -E -o hello2.c hello.c= 将 hello.c 进行预处理，展开宏，去除注释，输出到 =hello2.c= 中。
+- =gcc -S -o hello.s hello.c= 汇编 hello.c ，生成 hello.s 。生成的汇编格式是
+  AT&T 格式的 x86 汇编，通常我们在 windows 上见到的是 Intel 汇编。
+
+** 辅助工具
+- 如果你安装了binutils，程序中就会有objdump，objdump是Linux下的反汇编工具。
+  比如说有个执行文件是 test, 我们可以用 objdump -s -d test > test.txt 。然后
+  打开 test.txt 查看test的反汇编代码。-s 表示用十六进制的形式打印所有段。-d
+  将所有包含执行的段反汇编。Linux下目标文件和可执行文件都是ELF格式，所以
+  objdump也可以查看目标文件的反汇编代码，只不过全局变量的地址都是不准确的，
+  只有链接后才会定下来。Windows下的执行文件是PE格式，而VC编译出的目标文件是COFF格式。
+- 用 =ldd= 可以查看一个执行程序依赖哪些动态链接库，比如你的执行文件是
+  =hello= ，你可以用 =ldd hello= 查看它依赖的动态链接库。
+- =lint= 用于对c程序进行静态检查，检查语法错误或质量不高的地方。在
+  /archLinux/ 的软件仓库里有 =splint= 可用。
+
+* C程序的结构
+
+main是入口函数：
+#+BEGIN_SRC c
+int main(int argc,char*argv[])
+{
+    ... ...
+    return 0;
+}
+#+END_SRC
+
+- argc 表示参数个数。如果生成的程序叫 `bin` ，在命令行下以 `bin
+  para1 para2` 调用时，argc的值是3, `bin` 本身算一个参数。
+- argv 是参数数组。
+
+如果程序不需要参数时，可简单的写：
+#+BEGIN_SRC c
+void main(){
+    ... ...
+}
+#+END_SRC
+
+* 数据类型
+
+指针的指针通常用于指针数组。
+
+** 类型转换
+
+- 可以在变量或常量前用(类型)进行强制类型转换。如：
+  #+BEGIN_SRC c
+  int a, c;
+  float b;
+  c = 111;
+  b = (float)c;
+  a = (int)b;
+  #+END_SRC
+- 字符串转浮点：double atof(const char \*string)，需要<stdlib.h>和
+  <math.h>。如果不能转换为对应类型，返回0.0。
+- 字符串转整型：int atoi(const char \*string)，需要<stdlib.h>。如果
+  不能转换为对应类型，返回0。
+- 字符串转长整型：long atol(const char \*string)，需要<stdlib.h>。
+  如果不能转换为对应类型，返回0。
+
+* 算术与逻辑操作符
+
+- +, -, \*, \/。 需要注意的是如果 \/ 的两个操作数都是整数，则整除，
+  有一个是实数，就是浮点除。
+
+* 变量
+
+- =extern= 用于在局部声明全局变量，表示该变量在别处定义过了，用
+  =extern= 引入后，即可使用。
+- =static= 修饰局部变量，不改变其作用域，但将其生命周期延展到程序结
+  束。修饰全局变量时，不改变其生命周期，但将其作用域限制在本文件
+  内。
+
+* 控制流
+
+* 函数声明与函数定义
+
+- =static= 修饰函数时，该函数只能在文件内部被访问。
+
+* 数学函数库
+
+** 随机数
+
+- =int rand()= 返回一个伪随机数，需要 =<stdlib.h>= 。
+- =void srand(unsigned int seed)= 为 =rand()= 产生随机数设置起始
+  点， =srand(1)= 会重新初始化 =rand()= 。
+
+** 几何函数
+
+- =double _hypot(double x, double y)= 计算直角三角形斜边长度。
+
+
+* 数据结构
+
+** 数组
+
+数组不能复制，因为赋值符右边的数组地址会退化成指针，而指针不能赋值给数组首地址。
+下面的程序是不能编译通过的。
+#+BEGIN_SRC c
+/* Array can not be copied. */
+int main(int argc, char *argv[])
+{
+    int a[100];
+    int b[100];
+    /* error: incompatible types when assigning to type
+       ‘int[100]’ from type ‘int *’ */
+    b = a;
+    return 0;
+}
+#+END_SRC
+
+** 结构体
+
+结构体其实是有格式的字节数组。
+因为编译器知道一个结构体的长度，所以结构体可以复制。
+这样，包含在结构体内部的字符数组同样可以复制。比如：
+
+#+BEGIN_SRC c    
+typedef struct{
+    int data[100];
+} Data;
+
+Data a, b;
+a = b;
+#+END_SRC
+
+同样，结构体也可以作为函数的参数，但是传值需要大量的复制操作，还是传指针比较好。
+
+* 宏
+
+** do while(0)
+
+下面是一个交换两个整型值的宏：
+
+#+BEGIN_SRC c
+#include <stdio.h>
+
+#define SWAP(a,b)       \
+    do{                 \
+        int t = a;      \
+        a = b;          \
+        b = t;          \
+    }while(0)
+
+int main()
+{
+    int c=1, d=2;
+    int t;  // 测试 SWAP 与环境的兼容性
+
+    SWAP(c,d);
+
+    printf("c:%d d:%d\n", c, d);
+    return 0;
+}
+#+END_SRC
+
+这个宏看起来就有点怪了：do while(0) 是写了个循环 又不让它循环，蛋疼啊！其实不然，这样写是有妙用的：
+
+使用 =do{...}while(0)= ， 中间的语句用大括号括起来了，所以是另一个命名空间，
+其中的新变量 t 不会发生命名冲突。
+
+** 用#字符串化
+
+标题我没打错，这里要说的就是井号，#的功能是将其后面的 宏参数进行字符串化操作。比如下面代码中的宏：
+
+#+BEGIN_SRC c
+#define WARN_IF(EXP) \
+do{ if (EXP) \
+    fprintf(stderr, "Warning: " #EXP "\n"); } \
+while(0) 
+#+END_SRC
+
+那么实际使用中会出现下面所示的替换过程：
+~WARN_IF (divider == 0);~ 被替换为
+#+BEGIN_SRC c
+do { if (divider == 0) 
+    fprintf(stderr, "Warning: " "divider == 0" "\n"); 
+} while(0); 
+#+END_SRC
+
+需要注意的是C语言中多个双引号字符串放在一起会自动连接起来，所以如果 divider 为 0 的话，就会打印出：
+: Warning: divider == 0
+
+** 连接符##
+
+#还是比较少用的，##却比较流行，在linux0.01中就用到过。##被称为连接符，用来将
+两个记号（编译原理中的词汇）连接为一个记号。看下面的例子吧（add.c）：
+
+#+BEGIN_SRC c
+#include <stdio.h>
+
+#define add(Type)               \
+Type add##Type(Type a, Type b){ \
+    return a+b;                 \
+}
+#+END_SRC
+
+下面两条是奇迹发生的地方
+#+BEGIN_SRC c
+add(int)
+add(double)
+
+int main()
+{
+    int a = addint(1, 2);
+    double d = adddouble(1.5, 1.5);
+
+    printf("a:%d d:%lf\n", a, d);
+    return 0;
+}
+#+END_SRC
+那两行被替换后是这个样子的：
+#+BEGIN_SRC c
+int addint(int a, int b){ return a+b; }
+double adddouble(double a, double b){ return a+b; }
+#+END_SRC
+
+* 系统资源
+
+** 内存管理
+

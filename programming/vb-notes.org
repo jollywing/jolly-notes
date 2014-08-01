@@ -1,0 +1,10 @@
+
+* arithmetic
+/ float point division
+\ integer division
+mod just mod
+
+* layout
+dock property is similiar to borderlayout.
+
+
