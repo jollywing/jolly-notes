@@ -1,4 +1,9 @@
 
+dim varName as integer
+
+for i as integer = 1 to N [step k]
+next
+
 * arithmetic
 / float point division
 \ integer division

@@ -83,3 +83,181 @@ char的最小值二进制表示, 1000 0000; 最大值的二进制表示是 0111 1111.
 如果你对数值范围不清楚，
 可以查看 =/usr/include/limits.h=
 
+取得无符号整数最大值得方法
+
+int x = -1
+unsigned int y = (unsigned int)x
+
+有符号数和无符号数的转变
+
+对于n位的二进制串s
+U(s)代表它表示的无符号的数值。
+S(s)表示有符号的数值。
+U(s) = x_{n-1} 2^n + S(s).
+x_{n-1}是最高位，可能为1，也可能为0
+
+也就是说对于一个有符号数x. 如果 x < 0, 则转换成无符号数，结果是 2^n + x.
+如果x > 0，转换成无符号数 仍是 x.
+
+无符号数转换为有符号数。
+
+S(s) = -x_{n-1} 2^n + U(s).
+也就是说，对于一个无符号数y, 如果最高位为1 (>= 2^{n-1}). 结果是 y - 2^n.
+如果最高位为0(< 2^{n-1}), 结果是 y.
+
+c语言中的整数常量默认是有符号的。0xF6会被解释为负数。
+如果要创建无符号常量，要加后缀U或u. 0xF6u, 116U.
+printf 输出无符号整数用 %u
+
+如果一个表达式中同时包含有符号数和无符号数，
+c会将有符号数转换成无符号数再进行运算，可能造成一些混乱。
+比如 -1 > 99u，结果为真。
+
+为避免混乱，在算术逻辑操作时，应避免使用无符号数。
+比如java中就不支持无符号数。
+
+当从较小的数据类型向较大的数据类型转换时，需要用到位扩展。
+对于无符号整数，扩展时，左边补0即可。
+对于有符号整数，扩展时，左边补最高位.
+
+为什么扩展n个1，负数的值保持不变。
+- 2^{n-1} + 2^{n-2} = -2^{n-2}
+-2^{n-2} + 2^{n-3} = -2^{n-3}
+......
+
+当较大的数据类型变为较小的数据类型时，
+数据会被截断，比如int类型转换为short类型。
+
+对于一个无符号数x，截断它到k位，相当于x mod 2^k.
+把一个有符号数截断到k位，相当于 U2T(x % 2^k).
+U2T表示从无符号数向有符号数转换.
+
+加法溢出
+当两个字长为n的数相加时，其和超过2^n - 1，则会产生溢出。
+溢出结果为 r = x + y - 2^n. 因为 0 <= x < 2^n, 0 <= y < 2^n.
+因此 r < x 而且 r < y.
+
+加法逆元
+x + y = 0, y称为x的加法逆元.
+如果x = 0, y = 0.
+如果x > 0, y = 2^n - x.
+
+向下取整
+对于a, 向下取整的结果是 a'，则 a' <= a < a' + 1.
+3.14向下取整为3, -3.14 向下取整为 -4.
+
+* 网络应用
+事务是客户端-服务器模型中的基本操作。
+（1）客户端发起请求；（2）服务器解释请求，操作资源。（3）服务器响应。（4）客户端处理。
+注意：客户端和服务器都是进程，而非机器。
+
+最流行的局域网技术是以太网.
+一个以太网由集线器和网线组成。
+集线器的工作只是将一个端口的数据复制到其它所有端口上。
+每个主机发送到网络的数据以frame为单位。
+每个frame包含header信息，标志着该frame的源地址和目标地址(MAC地址？)。
+随后是有效数据载荷。
+
+桥接以太网(bridged Ethernet)：通过网桥，多个以太网段可以连接成较大的局域网。
+比如校园网。
+
+多个局域网可以通过叫做router的计算机连接起来，叫做internet.
+
+Internet协议两种基本能力：（1）命名，用IP地址标识每台主机；（2）数据封装成packet.
+数据在局域网内传输时，要先加上packet头信息，再加上frame头信息。
+
+MAC地址：每块网卡都有全球唯一的48位地址，存储在该网卡的永久存储器上。
+#+BEGIN_SRC c
+/* internet address structure */
+struct in_addr {
+    unsigned int s_addr; /* network byte order (big-endian) */
+}
+#+END_SRC
+
+Unix提供了下列函数在网络与主机字节序间转换
+#+BEGIN_SRC c
+/* HOST TO NETWORK */
+unsigned long int htonl(unsigned long int hostlong);
+unsigned short int htons(unsigned short int hostshort);
+
+/* NETWORK TO HOST */
+unsigned long int ntohl(unsigned long int netlong);
+unsigned short int ntohs(unsigned short int netshort);
+#+END_SRC
+
+我们通常使用 点分十进制串 来表示IP地址
+Unix用 inet_aton 从十进制串 得到 IP地址的整数表示。
+inet_ntoa从整数得到IP地址的十进制串表示。
+其中 a: application; n: network.
+常见的第一层域名包括: com, net, org, edu, gov.
+一旦一个组织得到了第二层域名，就可以在这个子域中创建新的域名了。
+
+套接字是连接的端点。由一个32位的IP地址和一个16位的端口号组成
+用 地址:端口 来表示。
+客户端发起一个请求时，客户端套接字中的端口是内核自动分配的，是临时端口。
+服务器套接字中的端口通常和服务对应。
+例如 web 80, 邮件服务器 25.
+=/etc/services= 包含这台机器提供的服务以及端口号。
+
+一个连接是由两端的套接字地址唯一确定的。叫做套接字对(socket pair)
+(cliaddr:cliport, servaddr:servport)
+
+从Unix程序来看，套接字就是一个拥有描述符的打开文件.
+套接字地址存放在 sockaddr_in (16 bytes) 中
+#+BEGIN_SRC c
+/* Generic socket address structure */
+struct sockaddr {
+    unsigned short sa_family; /* sa = sockaddr */
+    char sa_data[14]; /* address data */
+};
+
+/* Internet style socket address structure */
+struct sockaddr_in {
+    unsigned short sin_family;
+    unsigned short sin_short;
+    struct in_addr sin_addr;
+    unsigned char sin_zero[8]; /* pad with 0 */
+};
+#+END_SRC
+IP地址和端口号都是按网络字节序存放的。
+sin_family总是 AF_INET
+
+: typdef struct sockaddr SA;
+
+创建一个socket:
+#+BEGIN_SRC c
+#include <sys/types.h>
+#include <sys/socket.h>
+
+/* If failed, return -1 */
+int socket(int domain, int type, int protocol);
+#+END_SRC
+我们总是这样调用socket函数。
+: int clientfd = socket(AF_INET, SOCK_STREAM, 0);
+此时的socket 还不能用于读写。
+
+建立连接
+#+BEGIN_SRC c
+#include <sys/socket.h>
+/* return 0 on Success, return -1 on Failure */
+int connect(int sockfd, struct sockaddr *serv_addr, int addrlen);
+#+END_SRC
+其中 addrlen = sizeof(struct sockaddr_in);
+
+服务器绑定端口
+
+#include <sys/socket.h>
+/* return 0 on success, return -1 on error */
+int bind(int sockfd, struct sockaddr *my_addr, int addrlen);
+/* 内核认为用socket函数创建的是主动套接字。
+ * 用listen函数把主动套接字转换为监听套接字,
+ * 当队列中未完成连接请求的数量超过 backlog, 服务器将拒绝心的连接,
+ * 通常设为 1024
+ */
+int listen(int sockfd, int backlog);
+* 并发
+构造并发程序的方法有：
+1. 多进程。因为进程有独立的地址空间，需要用到进程间通信。
+2. I/O多路复用。一个进程，通过状态机应用程序自己调度逻辑流。
+3. 进程。
+
