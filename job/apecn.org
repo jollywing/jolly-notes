@@ -97,6 +97,15 @@ Now on client PC
 Right click on my computer--map network drive. Drive z--Folder= \\serverpcname\mymedia
 Now run the server on server pc and Client on client pc.
 
+#+BEGIN_SRC basic
+       CasparDevice.RefreshMediafiles()
+        Threading.Thread.Sleep(250)
+        For Each File In CasparDevice.Mediafiles
+            If File.Type = Svt.Caspar.MediaType.STILL Then
+                cmbimageforimagescroll.Items.Add(Replace(File.ToString, "\", "/"))
+            End If
+        Next
+#+END_SRC
 
 ** Template module
 
@@ -733,6 +742,33 @@ failed.
 密码：apecn123456
 106.37.212.141
 106.37.212.142
+认证服务是频道只能通过认证的用户才能观看
+起初不需要考虑，用户多了之后，需要收费时再考虑
+到时候给你们提供接口和说明。
+
+就是节点peer管理器
+sopcast  15:33:17
+一个peer开始观看频道时，会发消息给broker，获取可以获取数据的peer list
+sopcast  15:34:48
+broker会优选peers发给peer
+
+SO服务器和SC服务器各是什么啊？
+sopcast  15:36:38
+so服务器就是频道广播服务器 steaming originator
+sc服务器就是 Streaming client
+sc就是客户端
+吉庆  15:38:41
+SO链接数目的值是 10:15 怎么解释呢
+sopcast  15:39:14
+10，最多可接受的输入连接
+15，做多的连接数
+吉庆  15:39:28
+15呢？
+sopcast  15:39:37
+最多
+吉庆  15:40:20
+最多可以接受10个客户端的连接吗？
+还是说最多有10个邻居？
 
 * Android
 ** apk

@@ -145,6 +145,127 @@ x + y = 0, y称为x的加法逆元.
 向下取整
 对于a, 向下取整的结果是 a'，则 a' <= a < a' + 1.
 3.14向下取整为3, -3.14 向下取整为 -4.
+* 虚拟存储器
+早期PC使用物理寻址。
+数字信号处理器、嵌入式微控制器、Cray超级计算机仍然使用物理寻址。
+但现代的通用处理器都使用 /虚拟寻址/.
+
+将虚拟地址转换为物理地址叫地址翻译。
+CPU上的MMU (memory management unit) 利用内存中的查询表进行地址转换。
+查询表由操作系统维护。
+
+VM系统将虚拟存储器分割成固定大小的虚拟页(VP: virtual page)，作为主存到磁盘之间的传输单元。
+类似的，物理存储器被分割成大小相同的物理页 (PP: physical page)，也称为 page frame.
+
+一个进程的虚拟页面分为3类：
+1. 未分配的：VM系统还未创建的页，没有任何数据与之关联，不占用任何存储空间。
+2. 缓存的：缓存在物理存储器中已分配的页，对应于物理存储器的某个page frame.
+3. 未缓存的：没有缓存在物理存储器中的已分配页，在磁盘上。
+
+内存可以看作是虚拟存储器的缓存。虚拟页的大小通常是 4-8K.
+因为对磁盘的访问时间太长，DRAM缓存总是使用 write-back，而非 write-through.
+
+可以利用Unix的getrusage (get resource usage)函数检测缺页的数量。
+
+实际上，操作系统为每个进程提供了独立的页表。
+不同进程的虚拟页面可能指向同一个物理页面。
+
+映射一个连续虚拟页面的集合到任意一个位置的概念叫做存储器映射(mmap).
+
+进程访问内存的权限控制：不应该修改自己的只读文本段，不应该读写内核的代码和数
+据结构，不应该读写其它进程的存储空间，也不该修改与其它进程共享的虚拟页面（除
+非共享者允许）。
+
+在页表入口(PTE)有权限许可位: SUP位表示进程是否运行在内核模式下才能访问该页。
+READ和WRITE位控制对页面的读写。
+如果进程违反了访问许可，CPU就触发一个一般保护故障，将控制传递给内核的异常处理程序。
+Unix中，这种异常叫做 segmentation fault.
+
+对于高速缓存，大多数系统使用物理寻址。
+
+每次CPU产生一个虚拟地址，MMU都会访问一次PTE，这会产生额外的内存访问开销。
+解决这个问题的办法是，MMU中包含了一个关于PTE的小缓存。称为
+TLB (translation lookaside buffer, 翻译后备缓冲)
+
+每次CPU产生一个虚拟地址，发送给MMU，MMU会先向TLB取PTE，如果取到，则立即翻译出物理地址。
+如果取不到，则向L1缓存取PTE。如果再取不到则去内存取。
+
+* I/O
+Unix shell创建的每个进程开始时会打开3个文件。
+STDIN, 描述符为0; STDOUT, 描述符为1; STDERR, 描述符为2.
+<unistd.h>中用宏定义了这些描述符的值： STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO.
+
+** open
+: man 2 open
+得到open的帮助.
+#+BEGIN_SRC c
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+int open(char * filename, int flags, mode_t mode);
+#+END_SRC
+
+flags可以是下列标志位的或：
+- O_RDONLY
+- O_WRONLY
+- O_RDWR
+- O_CREAT 如果文件不存在就创建文件。
+- O_TRUNC 如果文件已经存在，就截断它。
+- O_APPEND 追加内容。
+
+mode指定新文件的访问权限。
+: #define DEF_MODE S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH
+每个进程有自己的umask
+: #define DEF_UMASK S_IWGRP|S_IWOTH
+文件的访问权限将被设置为 =mode & ~umask=.
+结果为 =S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH=.
+即只有文件的拥有者可以读写，其它用户只读。
+
+#+BEGIN_SRC c
+#include <unistd.h>
+/* return 0 on SUCCESS, return -1 on FAILURE */
+int close(int fd);
+#+END_SRC
+
+** read and write
+#+BEGIN_SRC c
+#include <unistd.h>
+/* return byte count readed on SUCCESS, return 0 on EOF, return -1 on FAILURE */
+ssize_t read(int fd, void *buf, size_t n);
+
+/* return byte count writen on SUCCESS, return -1 on FAILURE */
+ssize_t write(int fd, const void *buf, size_t n);
+#+END_SRC
+为了返回负数，使得read和write的最大字节数最多为2G.
+
+** 读取文件元数据
+#+BEGIN_SRC c
+#include <unistd.h>
+#include <sys/stat.h>
+
+int stat(const char *filename, struct stat *buf);
+int fstat(int fd, struct stat *buf);
+#+END_SRC
+=man fstat= 可以看到 =struct stat= 的结构体定义.
+** 共享文件
+内核用3种数据结构表示打开的文件：
+1. v-node table. 所有进程共享的表，每个表项包含struct stat的大多数信息。
+2. 文件表。系统中打开文件的集合，所有进程共享这张表。每个表项包含文件的当前
+   位置，引用计数，一个指针指向v-node table中的对应表项。当引用计数为0，该表
+   项会被删除。
+3. 描述符表。每个进程拥有独立的描述符表。每个表项由它打开的文件描述符来索引。
+   每个表项指向文件表中对应的表项。
+
+子进程拥有父进程描述符表的副本。因此，内核在删除相应文件表表项之前，父子进程
+必须都关闭了它们的文件描述符。
+
+** I/O 重定向
+#+BEGIN_SRC c
+#include <unistd.h>
+int dup2(int oldfd, int newfd);
+#+END_SRC
+dup2把进程描述符表中oldfd的表项内容拷贝到newfd索引的表项。
+即newfd指向的文件表表项变成了oldfd指向的文件表表项。
 
 * 网络应用
 事务是客户端-服务器模型中的基本操作。

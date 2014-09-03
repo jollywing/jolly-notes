@@ -4,6 +4,36 @@ dim varName as integer
 for i as integer = 1 to N [step k]
 next
 
+Problem:
+在本地运行良好的程序部署到其它机器上，不能启动，报错CLR20r3，一个问题签名是System.Drawing.
+Answer:
+居然是字体问题，程序里使用了某个字体，目标机器中未安装该字体。
+
+Problem:
+获取当前路径
+Answer:
+Application.StartupPath
+
+Problem:
+制作安装包时，如何一次性添加一个文件夹到文件系统。
+Answer: 在文件管理器中拷贝目录，然后在 VS.NET 的文件系统视图中粘贴。
+
+Problem:
+制作安装包时，如何创建桌面快捷方式？
+Answer: 点应用程序文件夹，在主输出上点右键，创建快捷方式，设置快捷方式的属性，
+Folder选择用户桌面，选一个图标，WorkingFolder选择应用程序文件夹.
+
+Problem:
+数组的初始化
+Answer:
+    '    Dim rdoButtons() As RadioButton = New RadioButton() {rdoClip, rdotemplate, rdoCover, rdoStreaming, rdoAdsEvent,
+    'rdoHorizontalScroll1, rdoHorizontalScroll2, rdoVericalScroll,
+    'rdohtmlscroller, rdooneliner, rdoTwoLiner, rdoscroll, rdoBreakingNews,
+    'rdocg, rdoimagescroll, rdologo, rdoSongSubtitling,
+    'rdocricket, rdohockey, rdobadminton, rdoathletics, rdoplayersoldrecord,
+    'rdoamcp, rdoutility, rdoosc, rdoMixer, rdovisionmixer,
+    'rdoRecording, rdooffairlogger, rdoSlowMotion}
+
 * arithmetic
 / float point division
 \ integer division
