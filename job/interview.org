@@ -37,16 +37,6 @@
 以上是我在搜索软件工程方面的资料时候简单的描述了软件工程的阶段。
 但是个人感觉很多项目在正式过程中只有四个阶段，即需求分析，软件设计，编码，测试，这是最重要的四个阶段。
 计划阶段和维护阶段没有，也不能说没有，只是这2个阶段应该说不明显。
-* C
-** 预编译
-什么是预编译？什么时候需要预编译？
-** 关键字
-*** volatile
-** 函数指针
-*** 定义
-: void (*func)(int);
-: char (*get_char)(char);
-: typedef void (*) () FuncPtr;
 * C++
 ** 虚表的实现
 ** Template
@@ -168,6 +158,105 @@ iso-8859-1 为ISOIEC 8859-1:1998，又称Latin-1;
 * 算法
 ** find repeat in array
 * 网络
+** Question
+1. TCP协议中的AIMD是什么意思？其优缺点是什么？
+2. 试说明TCP协议中的RTT和SRTT的含义。
+3. TCP协议如何在多个流之间共享带宽？
+4. TCP协议有哪两个问题需要改善？
+5. UDT是什么，做什么用？
+6. 简述UDT数据报文的格式。
+7. UDT都有哪些类型的控制报文？
+8. 拥塞控制和流量控制有什么分别？
+9. 试说明TCP协议中拥塞窗口和通告窗口的含义。
+10. 试说明在带宽时延积较大的网络中TCP为何低效。
+11. HTTP协议的作用是什么？现在通用的HTTP协议的版本是什么？
+12. HTTP常用的请求方法有哪些？
+13. HTTP采用持续连接还是非持续连接？
+14. FTP用anonymous用户登录时，口令是什么？
+15. Archie服务器的作用是什么？
+16. FTP用户有哪3类，各自特点是什么？
+17. Windows系统有自带的FTP客户端吗？
+18. 描述用命令行操作FTP的过程。
+19. FTP有那两种数据传输方式。
+20. 用户可以使用的端口号范围。
+21. FTP有哪两种工作方式，有何不同？
+** Answer
+1. additive increase Mutliplicative decrease. 用于TCP的拥塞控制，
+   优点是能有效地减少拥塞窗口，缺点是传输低效。
+2. RTT(Round Trip Time), 发送端发送报文到收到立即响应的时间；将多次采样的
+   RTT加权平均会得到SRTT，SRTT收敛于8倍的RTT。根据RTT确定RTO(Retransmission
+   Time Out)，重传间隔。
+3. TODO.
+4. 传输效率低，公平性差。
+5. UDP-based Data Transfer protocol，用于海量数据高速传输，比如互联网上的视
+   频传输。
+6. 第一位是控制位，0表示是数据报文，1表示是控制报文。接下来31位是报文序号。
+   后面是报文内容。
+7. TODO.
+8. 拥塞控制是为了避免通道拥塞，流量控制是为了避免接收端缓冲溢出。
+9. TCP拥塞窗口是发送端根据拥塞控制算法计算出来的，通告窗口是接收端根据自己的
+   缓冲情况告知发送端的。TCP的滑动窗口是拥塞窗口和通告窗口的最小值。
+10. 带宽记作B，时延记作rtt，带宽时延积记作 B x rtt, 这个值比较大的通道称作
+    长肥通道。由于协议自身的限制，TCP一开始的滑动窗口最大值为65535，远小于带
+    宽时延积。而且，TCP是个慢启动的协议，因此会在较多的时间内不能充分利用长
+    肥通道的带宽。
+11. HTTP协议用于从WWW服务器传输超文本到浏览器，现在广泛使用的是HTTP 1.1
+12. GET POST HEAD
+13. HTTP 1.1使用持续连接，一次连接可以传送多个对象。
+14. 任意字符串，建议使用自己的Email做密码。
+15. Internet上有大量的匿名FTP服务器，如何从数不清的FTP服务器上找到自己想要的资源。
+    Archie服务器就是对Internet上匿名FTP服务器的内容建立索引的。
+16. Real用户，有自己的主目录，也可以浏览其它的目录；Guest用户，只能访问自己
+    的主目录；Anonymous用户，没有自己的主目录，只能访问对匿名用户开放的资源。
+17. 有，一个命令行程序，随TCP/IP协议一起安装的。
+18. ftp 回车; open xxx.xxx.xxx.xxx; 输入用户名和密码; ls:put:get; bye.
+19. ascii和binary，如果使用ascii模式，ftp会根据两边的操作系统对文件进行转译，
+    比如将文件的dos换行符替换为unix换行符，ascii模式适合文本文件的传输。要传
+    送应用程序和图片，就不能用ascii模式，要用逐字拷贝的binary模式。(在FTP会
+    话中敲入binary，就会切换到binary模式。)
+20. 1024-65535.
+21. 主动模式和被动模式。主动模式又叫PORT模式，客户端随机打开一个端口x，连接
+    服务器的21端口，建立控制通道。客户端再打开一个端口(x+1)，通过PORT命令，
+    告知服务器自己的数据端口，服务器就用20端口去连接客户端的数据端口，建立数
+    据连接。被动模式叫做PASV模式。客户端随机打开一个端口x，连接服务器的21端
+    口，建立控制通道。服务器随机打开一个数据端口，告知客户端，客户端去连接服
+    务器，建立数据连接。两种模式的主要区别在于，建立数据连接时，是服务器发起
+    连接还是客户端发起连接。
+* P2P
+** Question
+1. BT协议中，一个结点如何加入系统？
+2. 简述torrent文件的格式。
+3. BT结点在下载片段时，使用怎样的片段选择策略？根据是什么？
+4. BT为何要将片段再分为子片段？
+5. BT用户如何发布资源？
+6. 有些用户下载完成后立即退出BT,BT采用什么样的策略？
+7. BT使用的DHT算法是什么？
+8. BT客户端和Tracker交互使用什么样的协议？
+9. 结点会向Tracker发送哪些请求？
+10. bt结点对上载带宽的分配有哪些策略？
+** Answer
+1. 客户端得到torrent文件，根据torrent文件给出的tracker的URL，去连接tracker.
+   Tracker随机返回一个已在系统中的结点列表。新结点和这些结点建立双向连接。形
+   成swarming.
+2. TODO.
+3. BT结点刚加入系统时，为了尽快获得第一个片段，会随机选择一个片段开始下载。
+   获得第一个片段后，BT结点开始使用最少优先的片段选择策略。最少优先有两个好
+   处：一是增加系统交换数据的效率，二是避免种子结点突然失效导致的系统内数据
+   不完整问题。在结点下载最后一个片段时，使用尽快完成的策略，向所有邻居发送
+   数据请求，如果得到数据，就发送cancel指令取消冗余的传输。
+4. 因为TCP的慢启动特性，片段与片段之间，造成传输的低效。为此BT把片段再划分为
+   子片段，每次发送5个流水请求，通过流水请求，弥补了TCP启动慢的缺点，刚充分
+   地利用了带宽。
+5. 一个用户要发布资源，要有一个种子，拥有文件的完整拷贝，连接到Tracker。同时
+   制作一个torrent文件，发布到web服务器。torrent文件中指明tracker的URL以及文
+   件的信息。
+6. 超级种子算法，资源发布者一开始只发布一部分资源，逐渐地扩大发布资源的比例，
+   这样早期的用户不能很快地完成下载，增加了在系统内停留的时间，能贡献更多的
+   带宽。
+7. Kademlia, 简称KAD。Emule也使用了这个算法，实现稍有不同。
+8. 基于HTTP的协议。
+9. TODO.
+10. tit-for-tat，choking, optimisc-unchoking (为了寻找更好的结点)
 * 云计算
 ** 定义
 云计算是一种按使用量进行付费的模式，这种模式提供可用的、便捷的、按需的网络访问，使用可配置的计算资源共享池，共享池的资源包括网络、服务器、存储、应用软件、服务等，这些资源能够通过云计算平台快速提供给客户，只需投入很少的管理工作，或与服务供应商进行很少的交互。
@@ -220,3 +309,26 @@ PaaS模式的云计算平台，提供Owlet应用开发语言和编译环境。
 综合应用了BBS请求端调度算法和DSF服务端调度算法。
 * To understand
 1. 68
+* microsoft
+1. 设计模式
+2. Researcher
+   Develop solutions to machine learning problems with large scale data 
+   Excellent written and oral communication skills in English
+   Broad knowledge and expertise in computer science and mathematics
+   Strong understanding of technology trends
+3. Software Development Engineer
+4. 互联网软件开发工程师
+   Have experienced full product life cycle; managed project development and schedule to a successful shipping 
+5. Significant experiences in one of the following areas : large scale internet applications, operating system kernels, distributed systems, storage systems, and search relevance 
+6. Senior Software Development Engineer，Job ID 889335 
+   Location China, Beijing 
+   Job Category Software Engineering: Development 
+   Division Cloud and Enterprise Engineering
+   Key requirements 
+- A very versatile software developer, with natural curiosity and habit to keep up with the latest technologies and open source software. Always ready to learn new languages and new systems. 
+- 2+ years of intense working experience on open source software, especially in the cloud environment and/or on mobile platform 
+- Familiar with Linux and Windows operating systems, having solid algorithm and data structure foundations, fluent in more than two general purpose programming languages and popular scripting languages like Java/C#/C/C++/JavaScript/Python/Ruby/Perl/PHP/Scala/Groovy/Go, 
+- Familiar with common frameworks and OSS packages 
+- Experience with Agile processes with the necessary knowledge of current software engineering practices 
+- Work both independently and in a team. A good communication skill is important to work in the cross-function environment 
+- Previous experiences with Big Data, Distributed Computing, Cloud and Mobile computing development are desired 

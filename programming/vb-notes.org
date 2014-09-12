@@ -1,45 +1,129 @@
 
-dim varName as integer
+* Data Type and Variable
+** Question
+1. 定义一个整型变量
+2. vb.net 转换对象的类型
+3. 如何在声明数组的时候为它赋值？
+** Answer
+1. dim i as integer
+2. Dim i As Integer = CType(obj, Integer)
+3. 声明数组的同时赋值
+   #+BEGIN_SRC basic
+   Dim rdoButtons() As RadioButton = New RadioButton() {rdoClip, rdotemplate, rdoCover}
+   #+END_SRC
+* Arithmetic and Logic Operations
+** Question
+1. 浮点除和整除的操作符各是什么？
+2. 按位取非
+3. 异或
+** Answer
+1. float point division: =/=; integer division: =\=
+2. Not, 例如 Not 5 = -6.
+3. Xor
 
-for i as integer = 1 to N [step k]
-next
+* Flow Control
+** Question
+1. for循环的形式
+** Answer
+1. for循环的形式
+   #+BEGIN_SRC basic
+   for i as integer = 1 to N [step k]
+       ' do something
+   next
+   #+END_SRC
 
-Problem:
-在本地运行良好的程序部署到其它机器上，不能启动，报错CLR20r3，一个问题签名是System.Drawing.
-Answer:
-居然是字体问题，程序里使用了某个字体，目标机器中未安装该字体。
+* OO
+** Question
+1. 定义一个函数
+2. 定义一个过程
+3. 定义一个类
+** Answer
+1. 'function definition
+   #+BEGIN_SRC basic
+    Public Function FUNC_NAME(ByVal param1 As String, ByRef param2 As Integer) As String
+        DoSomething()
+        Return onecastDataDir
+    End Function
+   #+END_SRC
+2. 'subroutine definition
+   #+BEGIN_SRC basic
+    Private Sub SUB_NAME(ByVal param1 As String, ByVal param2 As Double)
+        DoSomething()
+    End Sub
+   #+END_SRC
+3. 'class definition
+   #+BEGIN_SRC basic
+   Public Class CLASS_NAME
+       Public m1 As String
+       Private m2 As Integer
 
-Problem:
-获取当前路径
-Answer:
-Application.StartupPath
+       Public Shared Function FUNC_NAME() As String
+           ... ...
+       End Function
+   End Class
+   #+END_SRC
+* UI and Controls
+** Question
+1. 如何实现BorderLayout?
+2. 声明一个打开文件对话框对象 ofd.
+3. 设定打开文件对话框 ofd 的过滤表
+4. 得到打开文件对话框 ofd 的文件路径
+** Answer
+1. dock property is similiar to borderlayout.
+2. Dim ofd As New OpenFileDialog
+3. 'Set ofd's filter
+   : ofd.Filter = "Media Files (*.rmvb)|*.rmvb|*.rm|*.avi|*.mp4|*.mkv|*.ogg|*.mp3|All Files (*.*)|*.*"
+4. 'Get the File Path
+   #+BEGIN_SRC vb
+   If ofd.ShowDialog() = Windows.Forms.DialogResult.OK Then
+       MsgBox(ofd.FileName)
+   End If
+   #+END_SRC
 
-Problem:
-制作安装包时，如何一次性添加一个文件夹到文件系统。
-Answer: 在文件管理器中拷贝目录，然后在 VS.NET 的文件系统视图中粘贴。
+* API (frequently used)
+** Problem:
+1. 获取程序运行的当前路径
+2. 启动外部程序
+3. 如何使用windows API?
 
-Problem:
-制作安装包时，如何创建桌面快捷方式？
-Answer: 点应用程序文件夹，在主输出上点右键，创建快捷方式，设置快捷方式的属性，
-Folder选择用户桌面，选一个图标，WorkingFolder选择应用程序文件夹.
+** Answer:
+1. Application.StartupPath
+2. Process.start(app_path, parameter)
+3. 'import API from user.dll
+   #+BEGIN_SRC vb
+   <Runtime.InteropServices.DllImport("user32.dll")> _
+   Public Shared Function SetParent(ByVal hWndChild As IntPtr, ByVal hWndNewParent As IntPtr) As Integer
+   End Function
+   #+END_SRC
 
-Problem:
-数组的初始化
-Answer:
-    '    Dim rdoButtons() As RadioButton = New RadioButton() {rdoClip, rdotemplate, rdoCover, rdoStreaming, rdoAdsEvent,
-    'rdoHorizontalScroll1, rdoHorizontalScroll2, rdoVericalScroll,
-    'rdohtmlscroller, rdooneliner, rdoTwoLiner, rdoscroll, rdoBreakingNews,
-    'rdocg, rdoimagescroll, rdologo, rdoSongSubtitling,
-    'rdocricket, rdohockey, rdobadminton, rdoathletics, rdoplayersoldrecord,
-    'rdoamcp, rdoutility, rdoosc, rdoMixer, rdovisionmixer,
-    'rdoRecording, rdooffairlogger, rdoSlowMotion}
 
-* arithmetic
-/ float point division
-\ integer division
-mod just mod
+* Program Oranizition
+** Question
+1. import 如何使用？
+** Answer
+1. 当一个类包含在某个名字空间内，使用这个类时需要加上名字空间的引用。
+   如 System.IO.FileInfo。如果想直接使用FileInfo，需要 import System.IO
+* Environment
+** Problem:
+1. 在本地运行良好的程序部署到其它机器上，不能启动，报错CLR20r3，一个问题签名
+   是System.Drawing.
+2. 制作安装包时，如何一次性添加一个文件夹到文件系统。
+3. 制作安装包时，如何创建桌面快捷方式？
 
-* layout
-dock property is similiar to borderlayout.
+** Answer:
+1. 居然是字体问题，程序里使用了某个字体，目标机器中未安装该字体。解决这类问
+   题的方法就是在目标机器上安装开发环境，试着生成程序，就能发现问题。
+2. 在文件管理器中拷贝目录，然后在 VS.NET 的文件系统视图中粘贴。
+3. 点应用程序文件夹，在主输出上点右键，创建快捷方式，设置快捷方式的属性，
+   Folder选择用户桌面，选一个图标，WorkingFolder选择应用程序文件夹.
+
+* Third Party Controls and Libs
+** Question
+1. download vlc 2.x.x, install, add axvlc to vb.net, add the component to
+   form, error: 不能创建axhost组件，库没有创建.
+** Answer
+1. vlc 2以上的版本对托管代码不友好，下载vlc 1.1.x, 即可。
+
+   
 
 
