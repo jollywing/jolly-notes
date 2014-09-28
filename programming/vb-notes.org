@@ -4,6 +4,7 @@
 1. 定义一个整型变量
 2. vb.net 转换对象的类型
 3. 如何在声明数组的时候为它赋值？
+4. 如何定义一个list变量？
 ** Answer
 1. dim i as integer
 2. Dim i As Integer = CType(obj, Integer)
@@ -11,6 +12,7 @@
    #+BEGIN_SRC basic
    Dim rdoButtons() As RadioButton = New RadioButton() {rdoClip, rdotemplate, rdoCover}
    #+END_SRC
+4. Dim l As New List(Of String)
 * Arithmetic and Logic Operations
 ** Question
 1. 浮点除和整除的操作符各是什么？
@@ -37,6 +39,17 @@
 1. 定义一个函数
 2. 定义一个过程
 3. 定义一个类
+4. vb 有静态成员函数吗？
+5. 如何定义类的静态常量？
+6. 类的构造函数，是怎样的？
+7. 类的析构函数是怎样的，如何手动析构一个对象。
+8. Vb中怎么判断一个对象的类型？
+9. 声明一个带有抽象函数的抽象类。
+10. 如果有一个基类A，声明一个类B，继承自A。
+11. Vb.net 怎么定义接口？
+12. 接口中的方法和过程需要加Public修饰符吗？
+13. 基类实现的接口，其继承类也会继承吗？
+14. 如果不加访问修饰符，成员默认访问权限是什么？
 ** Answer
 1. 'function definition
    #+BEGIN_SRC basic
@@ -62,12 +75,64 @@
        End Function
    End Class
    #+END_SRC
+4. 有的，其修饰符是shared， 如：
+   #+BEGIN_SRC basic
+   Public Shared Function FUNC_NAME()
+       ... ...
+   End Function
+   #+END_SRC
+5. 用const关键字。
+   : Public Const GOOD_WORD As String = "Hello"
+6. 构造函数是 New，可以带参数。访问修饰符总是Public.
+   #+BEGIN_SRC basic
+   Public Sub New()
+       ... ...
+   End Sub
+   #+END_SRC
+7. 析构函数是 Finalize，不能带参数，不能被调用。访问修饰符是Protected
+   #+BEGIN_SRC basic
+   Protected Sub Finalize()
+       ... ...
+   End Sub
+   #+END_SRC
+   若想手动回收一个对象的内存，把Nothing赋值给它。
+8. =TypeName(obj)= 会返回该对象的类型的字符串。
+9. 用 MustInherit 修饰 抽象类，用 MustOverride 声明抽象过程或函数
+   #+BEGIN_SRC basic
+   Public  MustInherit Class Rundown
+       Public MustOverride Sub StartRundown()
+       Public MustOverride Sub StopRundown()
+   End Class
+   #+END_SRC
+10. 在B的声明语句后，用Inherits说明基类，如果基类中有MustOverride函数，
+    必须在B中实现，并用 Overrides修饰。
+    #+BEGIN_SRC basic
+    Public Class B
+        Inherits A
+        Public Overrides Sub Do()
+            ... ...
+        End Sub
+        ... ...
+    End Class
+    #+END_SRC
+11. 用 =Interface= 关键字
+    #+BEGIN_SRC basic
+    Public Interface Observer
+        Sub onConnected()
+        Function onDisconnected(Byval p1 As Integer)
+    End Interface
+    #+END_SRC
+    一个类如果想实现这个接口，在类名称下面写 =Implements Observer=.
+12. 不可以。Interface中的方法都是Public的，不需要也不可以加访问修饰符。
+13. 子类会继承基类实现的接口。
+14. 对于数据成员，默认为private；对于方法，默认为public.
 * UI and Controls
 ** Question
 1. 如何实现BorderLayout?
 2. 声明一个打开文件对话框对象 ofd.
 3. 设定打开文件对话框 ofd 的过滤表
 4. 得到打开文件对话框 ofd 的文件路径
+5. 如何解决控件无法跨线程操作的问题
 ** Answer
 1. dock property is similiar to borderlayout.
 2. Dim ofd As New OpenFileDialog
@@ -79,7 +144,8 @@
        MsgBox(ofd.FileName)
    End If
    #+END_SRC
-
+5. 对于要操作的控件x, 把要对它进行的操作写在一个函数或过程中，比如Y，跨线程操作的代码可以这样写：
+   : x.BeginInvoke(Sub() Y())
 * API (frequently used)
 ** Problem:
 1. 获取程序运行的当前路径

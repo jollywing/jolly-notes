@@ -332,3 +332,21 @@ PaaS模式的云计算平台，提供Owlet应用开发语言和编译环境。
 - Experience with Agile processes with the necessary knowledge of current software engineering practices 
 - Work both independently and in a team. A good communication skill is important to work in the cross-function environment 
 - Previous experiences with Big Data, Distributed Computing, Cloud and Mobile computing development are desired 
+* cisco
+职位月薪：面议工作地点：大连发布日期：2014-08-28工作性质：全职工作经验：3-5年最低学历：本科招聘人数：2人 职位类别：软件工程师
+职位描述公司介绍收藏
+工作职责： 
+   1. 针对客户需求，设计基于web的解决方案并加以实现。
+   2. 针对客户网络进行网管工具的二次开发与定制化开发。
+ 
+基本要求（必须）： 
+1.       2~3年开发经验
+2.       熟悉Linux操作，能够进行基本的脚本编程和系统维护
+3.       熟悉java，mysql， html，css， jquery 
+4.       有一定英文能力，能够用英文进行简单写作，并简单对话
+5.       做事踏实认真，具备长时间进行独立开发并完成项目的能力。 
+ 
+具备以下能力（之一）者可优先考虑： 
+1.  有良好的美工基础，能够独立完成web前端页面美工设计全部工作
+2.  如果熟悉c/python/perl编程语
+3.  日语熟练
