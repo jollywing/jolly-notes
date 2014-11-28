@@ -1,6 +1,7 @@
 
 * Basic
 ** ASCII码表
+man ascii on linux/unix
 * 软件工程
 ** 软件工程的六个阶段
 一，项目计划阶段（可行性分析阶段），撰写可行性分析报告。
@@ -156,7 +157,29 @@ iso-8859-1 为ISOIEC 8859-1:1998，又称Latin-1;
 * 数据库
 ** 存储过程
 * 算法
-** find repeat in array
+** Question
+1. find repeat in array
+2. 给一组数，其中只有一个数是重复了奇数次，其余都重复了偶数次，如何找出奇数次的那个数
+3. 一个N个整数的无序数组，给你一个数sum，求出数组中是否存在两个数，使他们的和为sum?
+4. 有一百个人，其中有一个是明星。明星不认识任何人，其他人都认识明星以及若干
+   个其他人。你可以找任意两个人，问他们互相是否认识。 问：如何以最快的方式找
+   出明星。
+5. 用两个队列模拟栈。
+
+** Answer
+1. 
+2. 所有的数异或，结果就是那个数。
+3. 先排序。然后ptr1指向最小的元素，ptr2指向最大的元素，向下移动ptr2，直到
+   ptr1和ptr2指向的元素之和小于sum. 再向后移动ptr1，直到指向的元素之和大于
+   sum. 再移动ptr2...
+4. 从任意一个人开始，问他是否认识另一个。如果认识，说明此人不是明星，排除之；
+   如不认识，说明另一人不是明星，排除。排除99次，最后一人是明星。
+5. 假设queue a和queue b。入栈：由queue a入队列出栈：(a) 如果queuea.size>1，
+   queuea元素出队列到queueb，但queuea保留一个元素，并出队列. (b) 如果
+   queuea.size=1，queuea出队列. (c) 如果queuea.size=0，且queueb.size>0，
+   queueb所有元素出队列到queuea，且queuea再导出元素到queueb，但queuea保留一
+   个元素，并出队列. (d) 如果queuea.size=0&?queueb.size=0，没有元素可出栈
+
 * 网络
 ** Question
 1. TCP协议中的AIMD是什么意思？其优缺点是什么？

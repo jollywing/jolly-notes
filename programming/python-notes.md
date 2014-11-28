@@ -87,15 +87,36 @@ python3中语法有变化，参数需要用括号围起来，参见 `help(print)
 
 ## 基本类型和运算 ##
 
-
 ### 类型和类型转换 ###
+
+**数值**
+
+Python的整数类型只有 int, 浮点类型只有 float(相当于c语言中的双精度浮点数).
+float表示浮点数时并不是很精确，可以用Decimal.
 
 - 转换成整型： ``int(a)``
 - 转换成浮点型： ``float(a)``
 
-python的布尔类型： True False
-0, 0.0, None, [], '', (), {} 都被认为是假的。
-其它都是真的。
+除了表示实数还能表示虚数 (complex), 如 `2+3j`.
+
+其实每种类型都提供了一个工厂函数，如 `int()` `bool()`等。
+
+**字符**
+python中并没有字符类型，可以用单字符的字符串表示字符。
+
+- ord('a')会得到a的ascii码. ord是ordinal（序号）的意思。
+- chr(32) 会返回 ' '. 根据ascii码返回字符。
+
+**布尔常量**： `True` and `False`
+
+所有的Python对象都有内建的布尔值.
+
+- 等于零的数值都是False, 非零的数值都是True.
+- 空的容器都是False, 非空的容器都是True. (字符串也是容器，所以空字符串也是False).
+- None是False.
+
+怎么查看一个变量的布尔值？ `bool(var)`.
+
 
 ### 算术逻辑和关系运算 ###
 
@@ -104,12 +125,17 @@ Python有两个除法符号： `/` 和 `//` 。
 `/` ，在python2中，当除数和被除数都是整数时，进行整除；当有一个数是浮点数时，进行真
 正的除法。在python3中，都是浮点除。
 
-`//` ，在python2中，不管是不是浮点数，结果都是整除的结构。
+`//` ，在python2中，不管是不是浮点数，结果都是整除的结果。
 在python3中，如果两个数是整数，是整除。如果两个数至少有一个是浮点数，也是整除，但结果是浮点数的形式。
 
 `a ** b` 表示求a的b次方。
 
 `abs(-5)` 取绝对值。
+
+`round`用于把浮点数精确到指定的位数。 `help(round)`.
+
+`divmod`可以同时得出商和余数。如`divmod(5, 2) = (2, 1)`
+
 
 移位操作： << 和 >>
 
@@ -136,7 +162,35 @@ python这样实现： `cond and true_value or false_value`
 
 ## 数据结构 ##
 
+### 序列 ###
+序列支持用 `[n]` 进行索引，支持用 `[:]` 进行切片。
+还支持用 `+` 连接，用 `*` 进行重复拼接。(`'a'*5`会得到 `'aaaaa'`).
+支持用in检查是否是成员。如 `'ab' in 'abcd'` 会得到 `True`.
+
+*Note* : 避免用`+`拼接序列，因为这是低效的做法。
+用 `%s %s %('foo', 'bar')`来代替 `'foo' + 'bar'`.
+或者你可以用 `''.join('foo', 'bar')`.
+
+序列结构都提供了工厂函数。 `list`, `tuple` 和 `str`.
+对一个元组d使用 `str(d)` 会得到该元组的字符串表示。
+对元组使用 `list(d)` 会得到一个和元组相同元素的列表。
+对字符串使用 `list`会得到一个由字符为元素的列表。
+
+你可以对序列结构应用下列函数：
+
+- len
+- max
+- min
+- any(l), l中是否有元素为True.
+- all(l), l中是否
+- sorted, 返回排好序的列表
+- reversed, 返回反序排好的列表
+- sum, 对于以数值为元素的序列，计算他们的和
+
 ### 字符串 ###
+
+字符串是 `Sequence` 数据结构之一。支持切片和负索引，如`hello[-1]`会得到`o`.
+`hello[1:]`会得到`ello`.
 
 字符串格式化： `'I like {} more than {}.'.format('dog', 'cat')` 输出什么？
 对应的python2中应该如何写？
@@ -147,15 +201,29 @@ Python中字符串常量用单引号或双引号括起来，
 可以包含换行等特殊字符。这种方式用来写在线文档。
 字符串变量其实是一个list对象。
 
+注意：字符串不能更改，如果你要改写字符串，都会返回一个新的拷贝，原字符串不变。
+
 - `''.join(list)` 可以把字符串列表对象拼接成一个字符串。
+- s.split() #返回一个单词列表.
+- s.splitlines() 返回多个字符串，换行
+- s.upper() #返回一个全大写的字符串, 对应s.lower()
+- s.isupper() #判断是否全大写的字符串, 对应 s.islower()
+- s.title() #单词的首字母大写。
+- s.capitalize() #句首单词的首字母大写
+- s.count('abc') #统计s中abc出现的次数
 - s.startswith('abc')
 - s.endswith('abc')
 - 'abc' in s
 - s.find('abc') 如果s不包含abc，会返回-1。
 - s.replace('abc', 'ABC') 返回一个新的字串，abc被替换成ABC.
+- s.strip() 返回一个新的字符串，移除两边的空白符，(包括空格、制表符)
+- s.lstrip() 移除左边的空白符号
+- s.rstrip() 移除右边的空白符号
 
 自然字符串， `r'ab\c'` 中 `\` 就是 `\` 本身，不再具有转义作用。
-自然字符串以 `r` 或是 `R` 引导。
+自然字符串以 `r` 或是 `R` 引导。比如 `r'\n'`不会把 \n 转换成换行符号。
+使用正则表达式的时候，也很有用。
+(在django中写url的模式时，推荐用r字符串。)
 
 unicode字符串，以 `u` 或 `U`引导。
 如果你的字符串中含有非 ascii 字符，就使用unicode字符串。
@@ -180,7 +248,7 @@ unicode字符串，以 `u` 或 `U`引导。
 如果不指定end, end = len(aList)
 
 + `aList[2:]` 从索引为2的元素到最后一个元素。
-+ `aList[:3]` 从索引为0的元素到索引为2的元素。
++ `aList[:3]` 从索引为0的元素到索引为2的元素。 *注意*: 不包括3.
 + `aList[:]` 返回和 `aList`完全相同的列表。
 + `aList[-1]` 索引最后一个元素。
 + `aList[-2]` 倒数第2个元素。
@@ -188,17 +256,40 @@ unicode字符串，以 `u` 或 `U`引导。
 
 （*注意: 字符串、元组、列表都是序列，都支持索引和切片操作。*）
 
-用append添加元素。
+用append添加元素。用extend来拼接列表。
 del mylist[0] 删除第一个元素。
+`l = [2, 3, 4]`, `l.remove(4)`.
+`l.pop(2)`返回索引为2的元素，l中原索引为2的元素将移除。
 mylist.sort() 返回一个排好序的列表。
 
-Python有个非常高级的特性就是列表解析，
+Python有个非常高级的特性就是列表解析（列别推导式），
 如 ``[x ** 2 for x in range(4)]``
 解析后将是 ``[0, 1, 4, 9]`` 。
+
+    l = [1, 2, 5]
+    m = [x + x for x in l]
+    
 还有更复杂的， ``[x ** 2 for x in range(8) if not x % 2]``
-解析后就是 ``[0, 4, 16, 36]`` 。
+解析后就是 ``[0, 4, 16, 36]`` 。阅读方法：先看for，再看if, 再看for前面。
+
+2.4后，支持 **生成器表达式**，与列表推导式不同的是，它一次处理一个对象。
+
+    g = (x for x in range(8) if x % 2 == 0)
+    g.next()
+
+g是一个生成器对象，每次调用next它会返回一个元素。
 
 enumerate(aList)会返回一个元组列表，每个元组的形式如(索引,元素)。
+
+    dat = (1, 2, 'a')
+    for i, e in enumerat(dat):
+        print i, e
+
+会得到
+
+    0 1
+    1 2
+    2 'a'
 
 ### 元组 ###
 
@@ -212,7 +303,14 @@ enumerate(aList)会返回一个元组列表，每个元组的形式如(索引,�
 
     t = (1,)
 
+其实元组可以不用 `()` 的， `d = 1, 2, 3` d的值是一个元组 (1, 2, 3).
+
+注意：元组支持的方法只有 `count` 和 `index`. *help(tuple)*
+
 ### 字典 ###
+
+字典是大多数Python对象的幕后黑手，
+不管对象是什么，都有一个字典管理着它们的属性。
 
     d = {key1: value1, key2: value2}
 
@@ -231,8 +329,24 @@ value可以是变量。
 
 或
 
+    for v in dict2.values():
+        print v
+
+或
+
     for name, address in d.items():
         print 'Contact %s at %s' % (name, address)
+
+或
+
+    for key in dict2:
+        print dict2[key]
+
+`d.get('dog')` 如果d有 'dog' 这个键，就返回其值，否则返回 None.
+
+`d.get('dog', 'N/A')` 如果d有 'dog' 这个键，就返回其值，否则返回 'N/A'.
+
+`d.setdefault('dog', 'Harry')` 为键 `dog` 创建一个默认值。
 
 想看字典中是否有某个键值：
 
@@ -252,7 +366,8 @@ value可以是变量。
     del dict2['ip']
     dict2.clear()     #清空所有元素
     del dict2     #销毁dict2
-
+    d.pop('ip') 删除该键并返回该键的值。
+    
 （注意，字典不是序列，不支持按下标的索引。dict中的元素也没有固定顺序。）
 
 -------------------------------------------------------------------------------
@@ -290,6 +405,13 @@ for可以迭代一个列表中的各个元素，如
 
     for item in aList:
       print item
+
+如
+
+    for line in open('/tmp/test.txt'):
+        if 'error' in line:
+            print line
+
 
 与while类似，for也可以跟一个else子块。
 需要注意的是，如果你用 `break` 中途退出循环， else子块将不被执行。
@@ -466,6 +588,17 @@ dir函数来列出模块定义的标识符。标识符有函数、类和变量�
     else:
         blablabla...
 
+或者
+
+    try:
+        blablabla...
+    except (ValueError, TypeError), e: #同时捕获多种类型的异常
+        print str(e)
+    except ArithmeticError, e:
+        print 'some math error occured.'
+    except Exception, e:
+        blablabla...
+        
 当没有异常发生，`else`子块会被执行。
 
 用 `raise` 抛出异常。

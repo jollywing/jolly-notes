@@ -1,0 +1,54 @@
+
+* Data Type
+** Question
+1. 表示整数的数据类型有哪些？
+2. 表示无符号整形常量的后缀是什么？
+3. 表示长整型的常量的后缀是什么？
+4. 单精度浮点数常量的后缀是什么？
+5. 双精度浮点数常量的后缀是什么？
+6. c sharp 有字符类型吗？如何表示？
+7. c sharp 有布尔类型吗？如何表示？
+8. decimal 和double, float有什么区别？
+9. 如何取到某个数值类型的最大值和最小值。
+10. Single和float类型有什么分别？
+11. 字符串常量前面加@有什么作用？
+12. 字符串定义
+13. 字符串如何拼接
+14. 定义一个枚举类型
+
+** Answer
+1. sbyte, short, int, long; byte(无符号), ushort, uint, ulong.
+2. U或u, 如 189U.
+3. L或l, 如 1345L, 33445UL则表示 unsigned long const，LU是同样的作用。
+4. F或f, 如 3.4F，如不加则默认为双精度常量。
+5. D或d, 也可以不加。
+6. 有， char c; c是一个Unicode字符变量。 'h' 是一个字符常量。
+7. 有。 bool b; bool常量有 true 和 false.
+8. decimal有更高的精度。 float是7位精度， double是15位精度，而decimal是28位精度。
+   decimal类型的常量后缀是 M或m.
+9. 如 int.MaxValue, float.MinValue.
+10. 似乎是一样的。
+11. 前导转义符。字符串中若有 "", 表示 ".
+12. string str;
+13. +
+14. enum
+    #+BEGIN_EXAMPLE
+    enum Direction {
+        EAST,
+        WEST
+    }
+    #+END_EXAMPLE
+    
+
+* 输入输出
+** Question
+1. 命令行输出语句
+2. 命令行输入语句
+3. 输出一个格式化字符串
+4. 得到一个格式化字符串
+** Answer
+1. Console.WriteLine("Hello, World!");
+2. string input = Console.ReadLine();
+3. Console.WriteLine("My name is {0}, I'm {1} years old!", "LiLi", 18);
+4. string s = string.Format("Name: {0}\nAge: {1}\n", "LiHan", 22);
+
