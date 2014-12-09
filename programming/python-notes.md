@@ -1,5 +1,3 @@
-
-
 # Python学习笔记 #
 
     :author: jiqing Wu
@@ -18,7 +16,7 @@
   题，就等于写好了程序框架。
 - 当感到一个问题复杂时，要确认哪些部分是造成复杂的原因，
   然后试图去除或替换这部分。
-
+- 当你为变量赋值的时候，记住：不可变对象传值，可变对象传引用。
 
 ### 基本语法 ###
 
@@ -30,8 +28,10 @@
 - 从 `#` 开始，一直到一行结束都是注释。
 
 ### 编程规范 ###
-
-
+1. 使用四个空格缩进
+2. 使用空格而非TAB
+3. 使用文档字符串注释模块、类、函数。这样你可以在运行时通过 `__doc__` 来访问他们。
+   也可以通过 `help()` 来显示文档字符串。
 ### 获得帮助 ###
 
 从交互解释器中获得帮助，例如你想了解 `raw_input` 函数，
@@ -502,6 +502,84 @@ range(n)是从0到n-1。
 
     global x, y, z
 
+### 匿名函数 ###
+
+    sorted(people_list, key = lambda person: person.last_name)
+
+sorted返回一个列表的排好序的拷贝。
+people_list是待排序的列表。
+key被赋予一个匿名函数。
+匿名函数的形式： `lambda args: expressions`.
+上述的匿名函数以 person 为参数，返回 person.last_name.
+
+比较蛋疼。
+
+### 元组、列表、字典作为函数参数 ###
+
+    def sum23(a, b, c = 0):
+        return a + b + c
+    
+    a1 = (1, 3)
+    a2 = [2.5, 10000, 99]
+    
+    print sum23(*a1) # a1 will be expanded into 2 args
+    print sum23(*a2) # a2 will be expanded into 3 args
+    
+    d = {'a':100, 'b':33, 'c': 33 }
+    
+    print sum23(**d) # d will be expanded into 3 args
+
+### 变长参数 ###
+
+    # multiple args
+    def get_avg(grade, *scores):
+        sum_score = 0
+        avg = 0
+        for x in scores:
+            sum_score += x
+    
+        if sum_score > 0:
+            avg = float(sum_score) / len(scores)
+    
+        print 'Class %d: %f.' % (grade, avg)
+    
+    get_avg(1, 100, 99, 98, 60, 44)
+    
+    # multiple keywords args
+    def collect(**data):
+        for x in data:
+            print x, ':', data[x]
+    
+    collect(dollar=8, name='Zhang', skill='shit')
+
+### 函数的装饰器 ###
+
+    def dec(func):
+        print 'find the max'
+        return func
+    
+    @dec
+    def max(a, b):
+        if a > b:
+            return a
+        else:
+            return b
+    
+    # max = dec(max)
+    max(3,4)
+
+**装饰器生成器**
+
+    def make_deco(s):
+        print 'making deco ....'
+        return dec
+    
+    @make_deco('making decoration')
+    def say_hello():
+        print 'hello, world!'
+    
+    # say_hello = make_deco('making decoration')(say_hello)
+    say_hello()
 
 ## 模块 ##
 
@@ -524,9 +602,27 @@ range(n)是从0到n-1。
 
 dir函数来列出模块定义的标识符。标识符有函数、类和变量。
 
-当你为dir()提供一个模块名的时候，它返回模块定义的名称列表。如果不提供参数，它返回当前模块中定义的名称列表。
+当你为 `dir()` 提供一个模块名的时候，它返回模块定义的名称列表。如果不提供参数，它返回当前模块中定义的名称列表。
 
+不用担心模块重复导入的问题。一个模块可以被导入很多次，但只会加载一次。所以放心 import 吧，不会占用多余的内存。
+
+**package**
+
+如果一个目录下有 `__init__.py`，表明这个目录一个 *package*.
+`__init__.py`通常是空文件，当然也可以用它定义一些使用包时的初始化工作。
+
+    import Phone.Mobile.Analog
+    Phone.Mobile.Analog.dial()
+
+还有更简单的方法：
+
+    import Phone.Mobile.Analog as pma
+    pma.dial()
 ## 类和对象 ##
+
+### 动态的实例属性 ###
+即使你在类的定义里没有定义属性age，你在操作实例的时候，也可以为age属性赋值。
+例如: `o.age = 17`.
 
 ### 类的变量 ###
 
@@ -553,6 +649,7 @@ dir函数来列出模块定义的标识符。标识符有函数、类和变量�
 
     class Tree(Plant):
         def __init__(self):
+            # 调用基类的构造函数时，必须要self参数，因为是通过基类调用的该函数。
             Plant.__init__(self)
             ... ...
         def show(self):
@@ -570,6 +667,8 @@ dir函数来列出模块定义的标识符。标识符有函数、类和变量�
 - `__len__(self)`	对序列对象使用内建的len()函数的时候调用。
 
 ## 异常处理 ##
+
+**Try and Except**
 
     try:
         do something...
@@ -601,7 +700,9 @@ dir函数来列出模块定义的标识符。标识符有函数、类和变量�
         
 当没有异常发生，`else`子块会被执行。
 
-用 `raise` 抛出异常。
+**Raise**
+
+用 `raise` 抛出异常。形如 `raise SomeException(params)`.
 
     
     class ShortInputException(Exception):
@@ -626,11 +727,21 @@ dir函数来列出模块定义的标识符。标识符有函数、类和变量�
     finally:
         print('whatever I will say something.')
 
+在写django应用时，用 raise 抛出 Http404 异常是很常用的。
+
+**Finally**
+
 上例中有 finally 子块。
 不管是否发生异常， finally子块都会被执行。
 
-## python标准库 ##
+    try:
+        blablabla...
+    finally:
+        do_something()
 
+python 2.5之后，支持 try-finally 和 except 一起使用了。
+
+## python标准库 ##
 ### 文件操作 ###
 
 
@@ -641,6 +752,18 @@ dir函数来列出模块定义的标识符。标识符有函数、类和变量�
 
 用 ``handle.close()`` 关闭文件。
 
+- write(str) 把字符串写入文件
+- writelines 把一个字符串列表写入文件，用正确的换行符分割。
+- read() 把整个文件的内容读入一个字符串
+- readlines() 把文件内容读入一个字符串列表
+
+文件对象本身就是一个迭代器，所以没必要使用readline.
+
+    for x in f:
+        print x.rstrip()
+
+在读入行的时候，换行符是保留的，所以要用 rstrip 来去除。
+### 正则表达式 ###
 
 ## 网络编程 ##
 

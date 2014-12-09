@@ -112,8 +112,9 @@ DATE: 2013-08-12
 ** 搭建环境
 1. 安装 /JDK/.
 2. 安装 /Apache Ant/.
-3. 下载 /Android sdk/, 解压，配置好环境变量。
+3. 下载 /Android sdk/, 解压，配置好环境变量。(tools和platform_tools都需要)
 4. 在命令行运行 ~android~ ，会启动 /android sdk and avd manager/ ，通过它可以建立虚拟设备，管理API。
+
 ** 创建工程
 : android create project --name little_game --activity SimpleGame --path ./ --package game.simple --target 2
 
@@ -122,12 +123,19 @@ DATE: 2013-08-12
 + --path 如果指定的目录存在，则不创建新的目录。
 + --package 指定包名。
 + --target id。如果不知道id的值是什么，可以 ~android list targets~.
+
+: android update project --name <project_name> --target <target_id> --path <path>
+升级工程。
+
 ** 构建工程
 *建立一个用debug key签名的应用*
 : ant debug
 
 *建立软件的正式版本*
 : ant release
+
+*构建测试*
+: ant test
 
 *编译java类*
 : ant compile
@@ -146,12 +154,26 @@ DATE: 2013-08-12
    : emulator -avd <avdname>
    模拟器启动后，可以按 Ctrl-F11 在横屏和竖屏之间切换。
 
+   模拟器的其它快捷键：
+   - Alt-Enter 全屏
+   - Home: Home
+   - Esc: 返回
+   - F2: Menu
+
+4. 查看logcat: =adb logcat=
+
 *安装应用到模拟器*
-: ant install
+- 安装debug版本， =ant installd=
+- 安装release版本， =ant installr=
+- 安装测试， =ant installt=
+- 安装一个已有的apk, =adb install hello.apk=
+- 卸载， =ant uninstall=
 
 *卸载应用*
 : ant uninstall
 
+
+* Emacs android模式
 * [转]Android屏幕分辨率详解
 #+begin_quote
 TAG: android, vga, hvga, wvga, qvga\\
