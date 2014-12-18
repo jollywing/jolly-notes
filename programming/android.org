@@ -1,6 +1,16 @@
 #+TITLE: Android开发日志2013
 #+OPTIONS: toc:1
 
+* android系统的目录结构
+- /system 存放的是rom的信息；
+- /system/app 存放rom本身附带的软件即系统软件；
+- /system/data 存放/system/app 中核心系统软件的数据文件信息。
+
+- /data 存放的是用户的软件信息（非自带rom安装的软件）；
+- /data/app 存放用户安装的软件；
+- /data/data 存放所有软件（包括/system/app 和 /data/app 和 /mnt/asec中装的软件）的一些lib和xml文件等数据信息；
+- /data/dalvik-cache 存放程序的缓存文件，这里的文件都是可以删除的。
+
 * Android开发之Eclipse环境搭建
 #+begin_quote
 TAG: android, eclipse, ADT\\
@@ -240,6 +250,107 @@ DATE: 2013-08-12
 ** 有没有类似下拉列表的控件?
    Yes, try ``Spinner``.
 
+
+** Activity theme
+android:theme="@android:style/Theme.Dialog" : Activity显示为对话框模式
+
+android:theme="@android:style/Theme.NoTitleBar" : 不显示应用程序标题栏
+
+android:theme="@android:style/Theme.NoTitleBar.Fullscreen" : 不显示应用程序标题栏，并全屏
+
+android:theme="Theme.Light ": 背景为白色
+
+android:theme="Theme.Light.NoTitleBar" : 白色背景并无标题栏
+
+android:theme="Theme.Light.NoTitleBar.Fullscreen" : 白色背景，无标题栏，全屏
+
+android:theme="Theme.Black" : 背景黑色
+
+android:theme="Theme.Black.NoTitleBar" : 黑色背景并无标题栏
+
+android:theme="Theme.Black.NoTitleBar.Fullscreen" : 黑色背景，无标题栏，全屏
+
+android:theme="Theme.Wallpaper" : 用系统桌面为应用程序背景
+
+android:theme="Theme.Wallpaper.NoTitleBar" : 用系统桌面为应用程序背景，且无标题栏
+
+android:theme="Theme.Wallpaper.NoTitleBar.Fullscreen" : 用系统桌面为应用程序背景，无标题栏，全屏
+
+android:theme="Theme.Translucent : 透明背景
+
+android:theme="Theme.Translucent.NoTitleBar" : 透明背景并无标题
+
+android:theme="Theme.Translucent.NoTitleBar.Fullscreen" : 透明背景并无标题，全屏
+
+android:theme="Theme.Panel ": 面板风格显示
+
+android:theme="Theme.Light.Panel" : 平板风格显示
+** 控件属性
+
+*** TextView
+- android:autoLink setAutoLinkMask(int)  Controls whether links such as urls and email addresses are automatically found and converted to clickable links.  
+- android:autoText setKeyListener(KeyListener)  If set, specifies that this TextView has a textual input method and automatically corrects some common spelling errors.  
+- android:bufferType setText(CharSequence,TextView.BufferType)  Determines the minimum type that getText() will return.  
+- android:capitalize setKeyListener(KeyListener)  If set, specifies that this TextView has a textual input method and should automatically capitalize what the user types.  
+- android:cursorVisible setCursorVisible(boolean)  Makes the cursor visible (the default) or invisible.  
+- android:digits setKeyListener(KeyListener)  If set, specifies that this TextView has a numeric input method and that these specific characters are the ones that it will accept.  
+- android:drawableBottom setCompoundDrawablesWithIntrinsicBounds(int,int,int,int)  The drawable to be drawn below the text.  
+- android:drawableLeft setCompoundDrawablesWithIntrinsicBounds(int,int,int,int)  The drawable to be drawn to the left of the text.  
+- android:drawablePadding setCompoundDrawablePadding(int)  The padding between the drawables and the text.  
+- android:drawableRight setCompoundDrawablesWithIntrinsicBounds(int,int,int,int)  The drawable to be drawn to the right of the text.  
+- android:drawableTop setCompoundDrawablesWithIntrinsicBounds(int,int,int,int)  The drawable to be drawn above the text.  
+- android:editable  If set, specifies that this TextView has an input method.  
+- android:editorExtras setInputExtras(int)  Reference to an <input-extras> XML resource containing additional data to supply to an input method, which is private to the implementation of the input method.  
+- android:ellipsize setEllipsize(TextUtils.TruncateAt)  If set, causes words that are longer than the view is wide to be ellipsized instead of broken in the middle.  
+- android:ems setEms(int)  Makes the TextView be exactly this many ems wide.  
+- android:freezesText setFreezesText(boolean)  If set, the text view will include its current complete text inside of its frozen icicle in addition to meta-data such as the current cursor position.  
+- *android:gravity* setGravity(int)  Specifies how to align the text by the view's x- and/or y-axis when the text is smaller than the view.  
+- *android:height* setHeight(int)  Makes the TextView be exactly this many pixels tall.  
+- *android:hint* setHint(int)  Hint text to display when the text is empty.  
+- android:imeActionId setImeActionLabel(CharSequence,int)  Supply a value for EditorInfo.actionId used when an input method is connected to the text view.  
+- android:imeActionLabel setImeActionLabel(CharSequence,int)  Supply a value for EditorInfo.actionLabel used when an input method is connected to the text view.  
+- android:imeOptions setImeOptions(int)  Additional features you can enable in an IME associated with an editor to improve the integration with your application.  
+- android:includeFontPadding setIncludeFontPadding(boolean)  Leave enough room for ascenders and descenders instead of using the font ascent and descent strictly.  
+- android:inputMethod setKeyListener(KeyListener)  If set, specifies that this TextView should use the specified input method (specified by fully-qualified class name).  
+- android:inputType setRawInputType(int)  The type of data being placed in a text field, used to help an input method decide how to let the user enter text.  
+- android:lineSpacingExtra setLineSpacing(float,float)  Extra spacing between lines of text.  
+- android:lineSpacingMultiplier setLineSpacing(float,float)  Extra spacing between lines of text, as a multiplier.  
+- android:lines setLines(int)  Makes the TextView be exactly this many lines tall.  
+- android:linksClickable setLinksClickable(boolean)  If set to false, keeps the movement method from being set to the link movement method even if autoLink causes links to be found. 
+- android:numeric setKeyListener(KeyListener)  If set, specifies that this TextView has a numeric input method.  
+- android:password setTransformationMethod(TransformationMethod)  Whether the characters of the field are displayed as password dots instead of themselves.  
+- android:phoneNumber setKeyListener(KeyListener)  If set, specifies that this TextView has a phone number input method.  
+android:privateImeOptions setPrivateImeOptions(String)  An addition content type description to supply to the input method attached to the text view, which is private to the implementation of the input method.  
+android:scrollHorizontally setHorizontallyScrolling(boolean)  Whether the text is allowed to be wider than the view (and therefore can be scrolled horizontally).  
+android:selectAllOnFocus setSelectAllOnFocus(boolean)  If the text is selectable, select it all when the view takes focus instead of moving the cursor to the start or end.  
+android:shadowColor setShadowLayer(float,float,float,int)  Place a shadow of the specified color behind the text.  
+android:shadowDx setShadowLayer(float,float,float,int)  Horizontal offset of the shadow.  
+android:shadowDy setShadowLayer(float,float,float,int)  Vertical offset of the shadow.  
+android:shadowRadius setShadowLayer(float,float,float,int)  Radius of the shadow.  
+android:singleLine setTransformationMethod(TransformationMethod)  Constrains the text to a single horizontally scrolling line instead of letting it wrap onto multiple lines, and advances focus instead of inserting a newline when you press the enter key.  
+android:marqueeRepeatLimit setMarqueeRepeatLimit(int)  The number of times to repeat the marquee animation.  
+android:maxEms setMaxEms(int)  Makes the TextView be at most this many ems wide.  
+android:maxHeight setMaxHeight(int)  Makes the TextView be at most this many pixels tall.  
+android:maxLength setFilters(InputFilter)  Set an input filter to constrain the text length to the specified number.  
+android:maxLines setMaxLines(int)  Makes the TextView be at most this many lines tall.  
+android:maxWidth setMaxWidth(int)  Makes the TextView be at most this many pixels wide.  
+android:minEms setMinEms(int)  Makes the TextView be at least this many ems wide.  
+android:minHeight setMinHeight(int)  Makes the TextView be at least this many pixels tall.  
+android:minLines setMinLines(int)  Makes the TextView be at least this many lines tall.  
+android:minWidth setMinWidth(int)  Makes the TextView be at least this many pixels wide.  
+android:marqueeRepeatLimit setMarqueeRepeatLimit(int) The number of times to repeat the marquee animation. android:maxEms setMaxEms(int) Makes the TextView be at most this many ems wide. android:maxH
+- android:width setWidth(int)  Makes the TextView be exactly this many pixels wide.
+- android:text setText(CharSequence,TextView.BufferType)  Text to display.  
+- android:textSize setTextSize(int,float)  Size of the text.  
+- android:textStyle setTypeface(Typeface)  Style (bold, italic, bolditalic) for the text.  
+- android:typeface setTypeface(Typeface)  Typeface (normal, sans, serif, monospace) for the text.  
+- android:textColor setTextColor(int)  Text color.  
+- android:textColorHighlight setHighlightColor(int)  Color of the text selection highlight.  
+- android:textColorHint setHintTextColor(int)  Color of the hint text.  
+- android:textColorLink setLinkTextColor(int)  Text color for links.  
+- android:textIsSelectable isTextSelectable()  Indicates that the content of a non-editable text can be selected.  
+- android:textScaleX setTextScaleX(float)  Sets the horizontal scaling factor for the text.  
+- android:textAppearance  Base text color, typeface, size, and style.  
 * Android资源目录
 #+BEGIN_QUOTE
 TAGS: android, res, resource\\
