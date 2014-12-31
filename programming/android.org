@@ -394,4 +394,145 @@ InputStream stream = getResources().openRawResource(R.raw.file);
 BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 #+END_SRC
 
+字符串(String)资源：
+     无论字符串资源放在res/values目录下哪个资源文件中，在生成ID时都会放在R.string类中。这就意味着，字符串资源的key的唯一性的作用域是res/values目录下所有的资源文件 
 
+　　<string name="reference">abc</string>
+      setText(R.string.reference);
+
+数组(Array)资源：
+
+         数组资源包括字符串数组资源(string-array)和整数数组资源(integer-array)
+
+<resources>
+　　<string-array name="country">
+
+　　　　<item>
+
+　　　　　　中国
+
+　　　　</item>
+
+　　　　<item>
+
+　　　　　　美国
+
+　　　　</item>
+
+      <string-array>
+
+　　<integer-array name="values">
+
+　　　　<item>
+
+　　　　　　100
+
+　　　　</item>
+
+　　　　<item>
+
+　　　　　　200
+
+　　　　</item>
+
+      <integer-array>
+
+</resources>
+
+String []country = getResources().getStringArray(R.array.country);
+
+颜色(Color)资源：
+
+ 
+
+             保存在资源文件中的颜色值用井口"#"开头
+
+　　　　<resources>
+
+　　　　　　<color name="red_color">#F00</color>
+
+　　　　</resources>
+*在XML文件中引用：android：textColor="@color/red_color" 
+*在代码中引用：setTextColor(getResources().getColor(R.color.red_color)) ;
+
+尺寸(Dimension)资源：
+ 　　尺寸资源就是一系列的浮点数组成的资源，<dimen>标签用来定义尺寸资源
+　　　　<resources>
+
+　　　　　　<dimen name="size_px">50px</dimen>
+
+　　　　 </resources>
+*在XML文件中引用：android：textSize="@dimen/size_px" 
+*在代码中引用：float size = getResources().getDimension(R.dimen.size_px) ;
+dp可以自适应屏幕的密度，dpi表示密度，而dip=dp
+sp与比例无关的像素，除了自适应屏幕密度外，还会自适应用户设置的字体。 
+
+ 
+
+类型(Style)资源：
+
+　　 　　 类型资源实际上就是将需要设置相同值的属性提出来放在单独的地方，然后在每一个需要设置这些属性的组件引用这些类型，类型之间
+　　也可以继承，通过style标签的parent属性指定父类型的资源ID 
+
+　　　　<resources>
+
+　　　　　　<style name="style1">
+
+　　　　　　　　<item name="android:textSize">20sp</item>
+
+　　　　　　</style>
+
+　　　　　　<style name="style2" parent="@style/style1">
+
+　　　　　　　　<item name="android:textColor">#FFFF00</item>
+
+　　　　　　</style>
+
+　　　　 </resources>
+*XML文件中使用：
+　　　　　　　　<TextView android:layout_width="fill_parent"
+
+　　　　　　　　　　android:layout_height="full_parent"
+
+　　　　　　　　　　android:text=""
+                            style="@style/style2"> 
+
+ 
+
+主题(Theme)资源：
+
+　　　　主题实际上也是类型，只是这种类型只能用于<activity>和<application>标签。其中<activity>
+　　用于定义Activity；<application>标签中使用主题，那么所有在<application>中定义的<activity>
+　　不过在<activity>中使用主题可以覆盖<application>的主题。主题也可以有继承，不过使用的形式是
+      通过"."
+　　　　<resources> 
+　　　　　　<style name="style1">
+　　　　　　　　<item name="android:textSize">20sp</item>
+　　　　　　　　<item name="android:textColor">#FFFFFF</item>
+　　　　　　</style>
+　　　　　　<style name="style1.style2">
+　　　　　　　　<item name="android:gravity">right</item>
+
+　　　　　　</style>
+
+　　　　<resources> 
+*XML使用方式:android:theme="@style/style1.style2" 
+
+ 颜色(Drawable)资源
+
+　　　配置文件与颜色资源类似，只是要使用<drawable>标签
+
+　　　　<resources>
+　　　　　　<drawable name="solid_blue">#0000FF</drawable>
+　　　　　　<drawable name="solid_yello">#FFFF00</drawable>
+　　　　<resources>
+*在XML中使用：android:textColor="@drawable/solid_blue"
+*在代码中使用：Drawable drawable = getResources().getDrawabale(R.drawable.solid_blue);
+ 
+
+
+
+　　
+　　 
+
+ 
