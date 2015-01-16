@@ -1,0 +1,25 @@
+#+TITLE:Python高级笔记
+#+AUTHOR: jolly wing(jiqing_wu@126.com)
+
+* 数学模块
+=import math=, 然后 =help(math)= 查看。比如平方根是 =math.sqrt(x)=
+
+* 文件操作
+1. 打开文件
+   : f = open('file.txt', 'r') # f is a File object
+   如果忽略文件打开模式，默认是'r'，其它的模式包括 'w', 'a'.
+   用 =f.mode= 可以查看模式。
+2. 关闭文件，用 =file.closed= 判断是否关闭了。
+   : f.close()
+3. 读取数据
+   : f.read() 读取所有内容，返回字符串对象
+   : f.read(n) 读取最多n个字节，返回字符串对象
+   : f.readline() 读取一行，返回字符串，包含换行符
+   : f.readline(n) 读取一行，最多n个字节。如果遇见EOF，返回空字符串。
+   : f.readlines() 读取所有内容，返回一个字符串数组
+   : f.readlines(n) 最多读取n行，返回一个字符串数组
+4. 写入数据
+   : f.write(str) 把字符串写入文件，没有返回值。
+   : f.writelines(sequence) 把一个字符串序列写入文件
+5. 其它
+   - file.encoding 可以查看文件的编码.

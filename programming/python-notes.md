@@ -185,7 +185,7 @@ python这样实现： `cond and true_value or false_value`
 - all(l), l中是否
 - sorted, 返回排好序的列表
 - reversed, 返回反序排好的列表
-- sum, 对于以数值为元素的序列，计算他们的和
+- sum, 对于以数值为元素的序列，计算他们的和. `sum(sequence[, start])`
 
 ### 字符串 ###
 
@@ -268,7 +268,7 @@ Python有个非常高级的特性就是列表解析（列别推导式），
 
     l = [1, 2, 5]
     m = [x + x for x in l]
-    
+
 还有更复杂的， ``[x ** 2 for x in range(8) if not x % 2]``
 解析后就是 ``[0, 4, 16, 36]`` 。阅读方法：先看for，再看if, 再看for前面。
 
@@ -352,7 +352,7 @@ value可以是变量。
 
     if 'dog' in dict2:
       print True
-  
+
     if 'dog' not in dict2:
       print False
 
@@ -367,7 +367,7 @@ value可以是变量。
     dict2.clear()     #清空所有元素
     del dict2     #销毁dict2
     d.pop('ip') 删除该键并返回该键的值。
-    
+
 （注意，字典不是序列，不支持按下标的索引。dict中的元素也没有固定顺序。）
 
 -------------------------------------------------------------------------------
@@ -420,7 +420,7 @@ for可以迭代一个列表中的各个元素，如
       print item
     else:
       do something
-      
+
 用range可以生成一个整数的列表。
 range(n)是从0到n-1。
 
@@ -445,7 +445,7 @@ range(n)是从0到n-1。
             print(a)
         else:
             print(b)
-    
+
     print(print_max.__doc__)
 
 用 `help(print_max)` 也会显示`print_max`的docstrin.
@@ -518,15 +518,15 @@ key被赋予一个匿名函数。
 
     def sum23(a, b, c = 0):
         return a + b + c
-    
+
     a1 = (1, 3)
     a2 = [2.5, 10000, 99]
-    
+
     print sum23(*a1) # a1 will be expanded into 2 args
     print sum23(*a2) # a2 will be expanded into 3 args
-    
+
     d = {'a':100, 'b':33, 'c': 33 }
-    
+
     print sum23(**d) # d will be expanded into 3 args
 
 ### 变长参数 ###
@@ -537,19 +537,19 @@ key被赋予一个匿名函数。
         avg = 0
         for x in scores:
             sum_score += x
-    
+
         if sum_score > 0:
             avg = float(sum_score) / len(scores)
-    
+
         print 'Class %d: %f.' % (grade, avg)
-    
+
     get_avg(1, 100, 99, 98, 60, 44)
-    
+
     # multiple keywords args
     def collect(**data):
         for x in data:
             print x, ':', data[x]
-    
+
     collect(dollar=8, name='Zhang', skill='shit')
 
 ### 函数的装饰器 ###
@@ -557,14 +557,14 @@ key被赋予一个匿名函数。
     def dec(func):
         print 'find the max'
         return func
-    
+
     @dec
     def max(a, b):
         if a > b:
             return a
         else:
             return b
-    
+
     # max = dec(max)
     max(3,4)
 
@@ -573,18 +573,18 @@ key被赋予一个匿名函数。
     def make_deco(s):
         print 'making deco ....'
         return dec
-    
+
     @make_deco('making decoration')
     def say_hello():
         print 'hello, world!'
-    
+
     # say_hello = make_deco('making decoration')(say_hello)
     say_hello()
 
 ## 模块 ##
 
     import sys
-    
+
     # avoid this, it makes you program hard to read, and may result in name confictions.
     from sys import *
 
@@ -697,23 +697,23 @@ dir函数来列出模块定义的标识符。标识符有函数、类和变量�
         print 'some math error occured.'
     except Exception, e:
         blablabla...
-        
+
 当没有异常发生，`else`子块会被执行。
 
 **Raise**
 
 用 `raise` 抛出异常。形如 `raise SomeException(params)`.
 
-    
+
     class ShortInputException(Exception):
         def __init__(self, length, atleast):
             Exception.__init__(self)
             self.length = length
             self.atleast = atleast
-    
+
     # if __name__ = main:
     s = input('Input something:')
-    
+
     try:
         if len(s) < 3:
             # use raise to throw exception.
@@ -780,4 +780,3 @@ python真是威武。
     python -m http.server 8000
 
 访问 `http://localhost:8000` 会在浏览器中打开家目录.
-
