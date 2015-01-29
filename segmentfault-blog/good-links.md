@@ -12,3 +12,7 @@
 
 1. <http://www.unixwiz.net/techtips/reading-cdecl.html>
 2. <http://c-faq.com/decl/spiral.anderson.html>
+
+## blog ##
+
+1. [sacha chua, an awsome girl](http://sachachua.com/blog/)

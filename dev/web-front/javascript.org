@@ -1,0 +1,94 @@
+#+TITLE: Javascript笔记
+#+AUTHOR: JollyWing(jiqing_wu@126.com)
+
+* Javascript
+** System Object
+1. process
+2. console
+** boolean
+| null           | FALSE |
+| undefined      | FALSE |
+| Object         | TRUE  |
+| function       | TRUE  |
+| 0              | FALSE |
+| 1              | TRUE  |
+| 0、1之外的数字 | TRUE  |
+| 字符串         | TRUE  |
+| ""(空字符串)   | FALSE |
+
+如果&&左侧表达式的值为真值，则返回右侧表达式的值；否则返回左侧表达式的值。
+
+#+BEGIN_EXAMPLE
+var i=""&&"真值";//->i=""
+i="真值"&&"其他真值";//->i="其他真值"
+i="真值"&&"";//->i=""
+#+END_EXAMPLE
+
+如果||左侧表达式的值为真值，则返回左侧表达式的值；否则返回右侧表达式的值。
+#+BEGIN_EXAMPLE
+var i=""||"真值";//->i="真值"
+i="真值"||"其他真值";//->i="真值"
+i="真值"||"";//->i="真值"
+#+END_EXAMPLE
+
+** HTML DOM
+- window.document
+- window.alert
+- window常省略.
+
+- document.links 返回所有<a href="">和<area>元素。
+- document.images 返回<img>集合。
+- document.forms 返回<form>集合。
+- document.anchors 返回anchor引用。
+- document.cookie 返回或设置cookie
+
+- document.title
+- document.URL
+- document.domain
+
+- document.getElementById()
+- document.getElementByName()
+- document.getElementByTagName() 返回带有指定标签名的对象集合
+
+** Json
+我写的json入门: http://segmentfault.com/blog/jollywing/1190000002521169
+* Node.js
+** introduction
+1. Node.js 服务端(脱离浏览器环境)的javascript
+2. Node.js使用了Google的V8虚拟机（Google的Chrome浏览器使用的JavaScript执行环境），来解释和执行JavaScript代码。
+3. Node.js事实上既是一个运行时环境，同时又是一个库。使用Node.js时，我们不仅仅在实现一个应用，同时还实现了整个HTTP服务器。
+
+** install
+1. goto http://nodejs.org/download/, download a binary archive.
+2. tar xzvf /path/to/the/nodejs/archive.
+3. add the following code to your .profile.
+   #+BEGIN_SRC sh
+   node_js_path=~/pkgs/node-v0.10.26-linux-x64/bin
+   if [ -d $node_js_path ]
+   then
+   PATH=$PATH:$node_js_path
+   fi
+
+   export PATH
+   #+END_SRC
+4. =\. .profile=, then you can use node and npm
+5. If node complains `can not find module xxx', you need set environment variable NODE_PATH:
+   #+BEGIN_SRC sh
+   node_js_root=~/pkgs/node-v0.10.26-linux-x64
+   NODE_PATH=${node_js_root}/lib/node_modules/npm/lib
+   NODE_PATH=$NODE_PATH:${node_js_root}/lib/node_modules/npm/node_modules
+   export NODE_PATH
+   #+END_SRC
+6. If you import module with absolute path or relative path, node will search the file with same name and with extension .js or json.
+   If you import module without path, it will search node_modules under the same directory.
+   If node can not find node_modules dir, it will goto the parent dir to look for mode_modules until the root `/' is reached.
+   If node can still not find node_modules, it resort to NODE_PATH.
+
+** Tutorial
+1. http://www.nodebeginner.org/index-zh-cn.html Node入门
+   https://github.com/manuelkiessling/NodeBeginnerBook
+
+** Notes
+1. Node有一些核心模块，被编译进Node的二进制中，如http, child_process, fs (manipulate file system)
+2. npm install numeral; formatting and manipulating numbers.
+3. npm install clivas; A *interesting* library to manipulate terminal as a canvas.
