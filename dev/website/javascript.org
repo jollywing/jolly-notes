@@ -1,0 +1,289 @@
+#+TITLE: Javascript笔记
+#+AUTHOR: JollyWing(jiqing_wu@126.com)
+
+* Javascript
+** System Object
+1. process
+2. console
+** boolean
+| null           | FALSE |
+| undefined      | FALSE |
+| Object         | TRUE  |
+| function       | TRUE  |
+| 0              | FALSE |
+| 1              | TRUE  |
+| 0、1之外的数字 | TRUE  |
+| 字符串         | TRUE  |
+| ""(空字符串)   | FALSE |
+
+如果&&左侧表达式的值为真值，则返回右侧表达式的值；否则返回左侧表达式的值。
+
+#+BEGIN_EXAMPLE
+var i=""&&"真值";//->i=""
+i="真值"&&"其他真值";//->i="其他真值"
+i="真值"&&"";//->i=""
+#+END_EXAMPLE
+
+如果||左侧表达式的值为真值，则返回左侧表达式的值；否则返回右侧表达式的值。
+#+BEGIN_EXAMPLE
+var i=""||"真值";//->i="真值"
+i="真值"||"其他真值";//->i="真值"
+i="真值"||"";//->i="真值"
+#+END_EXAMPLE
+
+** HTML DOM
+http://www.w3cschool.cc/jsref/dom-obj-document.html
+
+- window.document
+- window.alert
+- window常省略.
+
+- document.links 返回所有<a href="">和<area>元素。
+- document.images 返回<img>集合。
+- document.forms 返回<form>集合。
+- document.anchors 返回anchor引用。
+- document.cookie 返回或设置cookie
+
+- document.title
+- document.URL
+- document.domain
+
+- document.getElementById()
+- document.getElementsByName() 返回有指定name的元素集合，可通过length得知其个数
+- document.getElementsByTagName() 返回带有指定标签名的对象集合
+
+访问元素的内容多用 =innerHTML=.
+个别元素用 =value=.
+** TDD
+http://stackoverflow.com/questions/300855/javascript-unit-test-tools-for-tdd/680713#680713
+* Json
+我写的json入门: http://segmentfault.com/blog/jollywing/1190000002521169
+* Bootstrap
+* AJAX
+** 什么是 AJAX ？
+AJAX = 异步 JavaScript 和 XML。
+(Asynchrous Javascript and XML)
+
+AJAX 是一种用于创建快速动态网页的技术。
+
+通过在后台与服务器进行少量数据交换，AJAX 可以使网页实现异步更新。这意味着可以在不重新加载整个网页的情况下，对网页的某部分进行更新。
+
+AJAX应用程序与浏览器和平台无关！
+
+** 实例入门
+
+#+BEGIN_SRC html
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+function loadXMLDoc()
+{
+var xmlhttp;
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp=new XMLHttpRequest();
+  }
+else
+  {// code for IE6, IE5
+  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+xmlhttp.onreadystatechange=function()
+  {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+    document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
+    }
+  }
+xmlhttp.open("GET","/try/ajax/ajax_info.txt",true);
+xmlhttp.send();
+}
+</script>
+</head>
+<body>
+<div id="myDiv"><h2>使用 AJAX 修改该文本内容</h2></div>
+<button type="button" onclick="loadXMLDoc()">修改内容</button>
+</body>
+</html>
+#+END_SRC
+
+运行结果看这里: http://www.w3cschool.cc/try/try.php?filename=tryajax_first		
+
+所有现代浏览器均支持 XMLHttpRequest 对象（IE5 和 IE6 使用 ActiveXObject）。
+
+通过 xmlhttp.open 和 send 发送请求，请求某项资源。
+XMLHttpRequest的 open 方法的原型: open(method,url,async).
+send方法的原型 =send(str)=, 当使用GET方法时，str参数省略。POST方法才用到str.
+
+
+定义 xmlhttp的 onreadystatechange 函数，如果请求成功，就更新网页的局部。
+
+** GET 请求
+一个简单的 GET 请求：
+
+#+BEGIN_SRC js
+xmlhttp.open("GET","demo_get.html",true);
+xmlhttp.send();
+#+END_SRC
+
+在上面的例子中，您可能得到的是缓存的结果。
+
+为了避免这种情况，请向 URL 添加一个唯一的 ID：
+#+BEGIN_SRC js
+xmlhttp.open("GET","demo_get.html?t=" + Math.random(),true);
+xmlhttp.send();
+#+END_SRC
+
+如果您希望通过 GET 方法发送信息，请向 URL 添加信息：
+#+BEGIN_SRC js
+xmlhttp.open("GET","demo_get2.html?fname=Henry&lname=Ford",true);
+xmlhttp.send();
+#+END_SRC
+
+** POST 请求
+一个简单 POST 请求：
+#+BEGIN_SRC js
+xmlhttp.open("POST","demo_post.html",true);
+xmlhttp.send();
+#+END_SRC
+
+如果需要像 HTML 表单那样 POST 数据，请使用 setRequestHeader() 来添加 HTTP 头。然后在 send() 方法中规定您希望发送的数据：
+#+BEGIN_SRC js
+xmlhttp.open("POST","ajax_test.html",true);
+xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+xmlhttp.send("fname=Henry&lname=Ford");
+#+END_SRC
+
+setRequestHeader(header,value) 向请求添加 HTTP 头。
+
+** Async=true
+AJAX 指的是异步 JavaScript 和 XML（Asynchronous JavaScript and XML）。
+
+XMLHttpRequest 对象如果要用于 AJAX 的话，其 open() 方法的 async 参数必须设置为 true：
+
+: xmlhttp.open("GET","ajax_test.html",true);
+
+对于 web 开发人员来说，发送异步请求是一个巨大的进步。很多在服务器执行的任务都相当费时。AJAX 出现之前，这可能会引起应用程序挂起或停止。
+
+通过 AJAX，JavaScript 无需等待服务器的响应，而是：
+在等待服务器响应时执行其他脚本
+当响应就绪后对响应进行处理
+
+当使用 async=true 时，请规定在响应处于 onreadystatechange 事件中的就绪状态时执行的函数：
+
+#+BEGIN_SRC js
+xmlhttp.onreadystatechange=function()
+  {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+    document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
+    }
+  }
+xmlhttp.open("GET","ajax_info.txt",true);
+xmlhttp.send();
+#+END_SRC
+
+每当 readyState 属性改变时，就会调用 onreadystatechange 函数。
+
+readyState存有 XMLHttpRequest 的状态。从 0 到 4 发生变化。
++ 0: 请求未初始化
++ 1: 服务器连接已建立
++ 2: 请求已接收
++ 3: 请求处理中
++ 4: 请求已完成，且响应已就绪
+
+status的值：
+- 200: "OK"
+- 404: 未找到页面
+
+** Async = false
+如需使用 async=false，请将 open() 方法中的第三个参数改为 false：
+
+xmlhttp.open(&quot;GET&quot;,&quot;test1.txt&quot;,false);
+
+我们不推荐使用 async=false，但是对于一些小型的请求，也是可以的。
+请记住，JavaScript 会等到服务器响应就绪才继续执行。如果服务器繁忙或缓慢，应用程序会挂起或停止。
+
+注意：当您使用 async=false 时，请不要编写 onreadystatechange 函数 - 把代码放到 send() 语句后面即可：
+#+BEGIN_SRC js
+xmlhttp.open("GET","ajax_info.txt",false);
+xmlhttp.send();
+document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
+#+END_SRC
+
+** 服务器响应
+如需获得来自服务器的响应，请使用 XMLHttpRequest 对象的 responseText 或 responseXML 属性。responseText获得字符串形式的响应数据。responseXML获得 XML 形式的响应数据。
+
+: document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
+
+如果来自服务器的响应是 XML，而且需要作为 XML 对象进行解析，请使用 responseXML 属性：
+
+请求 cd_catalog.xml 文件，并解析响应：
+
+#+BEGIN_SRC js
+xmlDoc=xmlhttp.responseXML;
+txt="";
+x=xmlDoc.getElementsByTagName("ARTIST");
+for (i=0;i<x.length;i++)
+  {
+  txt=txt + x[i].childNodes[0].nodeValue + "<br>";
+  }
+document.getElementById("myDiv").innerHTML=txt;
+#+END_SRC
+
+** 用AJax请求头部信息
+*** 所有头部信息
+#+BEGIN_SRC js
+xmlhttp.onreadystatechange=function()
+  {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+    document.getElementById('p1').innerHTML=xmlhttp.getAllResponseHeaders();
+    }
+  }
+xmlhttp.open("GET",url,true);
+xmlhttp.send();
+#+END_SRC
+*** 特定头部信息
+:     document.getElementById('p1').innerHTML="Last modified: " + xmlhttp.getResponseHeader('Last-Modified');
+
+* Node.js
+** introduction
+1. Node.js 服务端(脱离浏览器环境)的javascript
+2. Node.js使用了Google的V8虚拟机（Google的Chrome浏览器使用的JavaScript执行环境），来解释和执行JavaScript代码。
+3. Node.js事实上既是一个运行时环境，同时又是一个库。使用Node.js时，我们不仅仅在实现一个应用，同时还实现了整个HTTP服务器。
+
+** install
+1. goto http://nodejs.org/download/, download a binary archive.
+2. tar xzvf /path/to/the/nodejs/archive.
+3. add the following code to your .profile.
+   #+BEGIN_SRC sh
+   node_js_path=~/pkgs/node-v0.10.26-linux-x64/bin
+   if [ -d $node_js_path ]
+   then
+   PATH=$PATH:$node_js_path
+   fi
+
+   export PATH
+   #+END_SRC
+4. =\. .profile=, then you can use node and npm
+5. If node complains `can not find module xxx', you need set environment variable NODE_PATH:
+   #+BEGIN_SRC sh
+   node_js_root=~/pkgs/node-v0.10.26-linux-x64
+   NODE_PATH=${node_js_root}/lib/node_modules/npm/lib
+   NODE_PATH=$NODE_PATH:${node_js_root}/lib/node_modules/npm/node_modules
+   export NODE_PATH
+   #+END_SRC
+6. If you import module with absolute path or relative path, node will search the file with same name and with extension .js or json.
+   If you import module without path, it will search node_modules under the same directory.
+   If node can not find node_modules dir, it will goto the parent dir to look for mode_modules until the root `/' is reached.
+   If node can still not find node_modules, it resort to NODE_PATH.
+
+** Tutorial
+1. http://www.nodebeginner.org/index-zh-cn.html Node入门
+   https://github.com/manuelkiessling/NodeBeginnerBook
+
+** Notes
+1. Node有一些核心模块，被编译进Node的二进制中，如http, child_process, fs (manipulate file system)
+2. npm install numeral; formatting and manipulating numbers.
+3. npm install clivas; A *interesting* library to manipulate terminal as a canvas.
