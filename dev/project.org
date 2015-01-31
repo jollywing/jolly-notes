@@ -11,10 +11,10 @@
 3. 换行符问题。 *autocrlf*
    #+BEGIN_EXAMPLE
    #提交时转换为LF，检出时转换为CRLF
-   git config --global core.autocrlf true   
+   git config --global core.autocrlf true
 
    #提交时转换为LF，检出时不转换
-   git config --global core.autocrlf input   
+   git config --global core.autocrlf input
 
    #提交检出均不转换
    git config --global core.autocrlf false
@@ -23,10 +23,10 @@
    *safecrlf*
    #+BEGIN_EXAMPLE
    #拒绝提交包含混合换行符的文件
-   git config --global core.safecrlf true   
+   git config --global core.safecrlf true
 
    #允许提交包含混合换行符的文件
-   git config --global core.safecrlf false   
+   git config --global core.safecrlf false
 
    #提交包含混合换行符的文件时给出警告
    git config --global core.safecrlf warn
@@ -41,7 +41,7 @@ local hard drive in another directory (git remote add clone
 ~/proj/clone.git master, for example), or a git repository that
 your own host serves.
 ** 设置代理
-连接外国网站, 下载太慢. 如果不设置代理, 
+连接外国网站, 下载太慢. 如果不设置代理,
 可能不能完成clone, pull等操作.
 
 Git可以使用两种协议，git协议和http，
@@ -59,7 +59,7 @@ http://www.meadowy.org/~gotoh/ssh/connect.c
 # Filename: ~/bin/http-proxy-gw
 # This script connects to an HTTP proxy using connect.c
 connect -H http://yourproxyaddress:proxyport $@
-connect这个小程序还支持socket代理，用法是connect -S host:port 
+connect这个小程序还支持socket代理，用法是connect -S host:port
 
 最后，配置git：
 git config --global core.gitproxy "http-proxy-gw
@@ -116,6 +116,10 @@ Solution:
 1. delete a repository. Open the repository page, click /settings/ in the
    right pane, click the button "delete this repository" in the bottom.
 
+Ref:
+1. 怎么查看diff输出: http://www.ruanyifeng.com/blog/2012/08/how_to_read_diff.html
+2. Git分支管理策略: http://www.ruanyifeng.com/blog/2012/07/git.html
+3. github-flow: http://scottchacon.com/2011/08/31/github-flow.html
 * Mercurial
 ** What is Mercurial?
 ** How to setup Mercurial?
@@ -127,7 +131,7 @@ Solution:
 
 ** create a local repository?
 : hg init
- 
+
 
 ** How to cooperate with others through remote repositories on Internet?
 1. Clone the repositories.
@@ -155,4 +159,3 @@ http-proxy-password = <密码，如果需要的话>
 3，HG
 HG更简单，因为它使用的是http协议，一个命令解决：
 export http_proxy=http://<用户名>:<密码>@<ip>:<端口>
-

@@ -1,5 +1,10 @@
 
-#+SEQ_TODO: TODO(t) ABORT(a) DONE(d) 
+#+SEQ_TODO: TODO(t) ABORT(a) DONE(d)
+
+* PeerCastStation
+** Setup
+1. http://www.pecastation.org/download-stable.html
+2. download, unzip, +can not start up!+
 
 * OpenX (Revive Adserver)
 AS3 需要广告平台的API?
@@ -38,7 +43,7 @@ OpenGL message “lost connection” 显卡已停止响应
 在注册表：HKLM\System\CurrentControlSet\Control\GraphicsDrivers 下新建项目
 TdrLevel：REG_DWORD 并设置为 0。禁用检测。重启即可生效。
 
- 
+
 
 TdrLevel: REG_DWORD. The initial level of recovery. The possible values are:
 
@@ -50,7 +55,7 @@ TdrLevelRecoverVGA (2) – Recover to VGA (not implemented).
 
 TdrLevelRecover(3) – Recover on timeout. This is the default value.
 
-** ABORT HACK VB CLIENT 
+** ABORT HACK VB CLIENT
 *** check out playout client source code
 : git clone https://github.com/SublanTV/CasparsPlayoutClient.git
 *** try to build
@@ -61,7 +66,7 @@ TdrLevelRecover(3) – Recover on timeout. This is the default value.
 
 2. Problem: 无法在证书存储区中找到清单签名证书。
    Reason:
-   Solution: 工程->属性->签名->uncheck ClickOnce清单签名 
+   Solution: 工程->属性->签名->uncheck ClickOnce清单签名
 3. Problem: 依赖项目logger无法加载
    Reason: 该项目不可用，不在 source tree 里。
    Solution:
@@ -184,11 +189,11 @@ I tried your demo and want to learn more about goalbit.
 3. I know P2P network need a tracker, where the tracker of goalbit is placed?
    If we buy your product, will you provide us the tracker as a module?
 
-4. I learn about that goalbit has its own super nodes to assist p2p, 
+4. I learn about that goalbit has its own super nodes to assist p2p,
    can we deploy our own super nodes? and how to deploy?
    would you provide us the supernode module?
 
-5. If we want to collect the information of our peer clients, 
+5. If we want to collect the information of our peer clients,
    to what degree can goalbit plus support?
 
 6. Now, we are in China Mainland.
@@ -218,14 +223,14 @@ my gtalk is: goalbit@gmail.com
 
 A fast answer about your last questions:
 
-1. If I want to broadcast our video, what goalbit module can support? 
+1. If I want to broadcast our video, what goalbit module can support?
 GoalBit Plus works as a delivery network, it accepts several streaming protocols as input (rtmp, rtp, mms, http and HLS).
 If it is necessary, GoalBit Plus transcode the streaming in the server in order to obtain an HLS streaming (compatible with android, apple and flash).
 （问：如果我们自己广播视频，goalbit如何支持？
 答：GoalBit Plus是一个内容交付网络，它能接受几种流协议作为输入，比如RTMP, RTP, MMS, HTTP, HLS。
 如果有必要，Goalbit Plus会把你的流在服务器端进行转码以得到HLS流，主要是为了兼容Android，苹果和flash播放器。）
 
-2. Can golbit plus encode the video stream to publish? 
+2. Can golbit plus encode the video stream to publish?
 We accept 3rd party encoders, like wirecast, adobe live encoder (free), ffmpeg (free).
 Typical configuration is to use Flash Media Encoder in order to generate a compatible streaming and push it into Goalbit Plus servers.
 After the acquisition, our servers exchange the live content between them and serve the content in traditional streaming and p2p streaming.
@@ -234,12 +239,12 @@ After the acquisition, our servers exchange the live content between them and se
 为了生成兼容大多数设备的流，典型的配置是使用Flash Media 编码器，编码后推送到流媒体服务器。
 获取流后，我们的服务器互相交换直播内容。然后以传统的方式或是P2P的方式提供服务。）
 
-3. I know P2P network need a tracker, where the tracker of goalbit is placed? If we buy your product, will you provide us the tracker as a module? 
+3. I know P2P network need a tracker, where the tracker of goalbit is placed? If we buy your product, will you provide us the tracker as a module?
 Yes. The tracker is part of the goalbit plus server software.
 （问：我知道P2P网络有一个tracker，goalbit的tracker部署在哪里？如果我买了你的产品，你会提供给我们tracker吗？）
 （答：是的，tracker是goalbit plus服务器软件的一部分。）
 
-4. I learn about that goalbit has its own super nodes to assist p2p, can we deploy our own super nodes? and how to deploy? would you provide us the supernode module? 
+4. I learn about that goalbit has its own super nodes to assist p2p, can we deploy our own super nodes? and how to deploy? would you provide us the supernode module?
 There are a lot of academic work behind goalbit protocol, currently we are in version 3.0 and most documentation is about 1.0.
 Yes, GoalBit Plus provide you with super nodes (currently streaming servers) in order to help in the delivery.
 In summary, our solution includes all the necessary pieces in order to deliver live content to end users, you must provide a live streaming URL (for example an RTMP from Adobe live encoder) and our server does the rest, including:
@@ -258,7 +263,7 @@ In summary, our solution includes all the necessary pieces in order to deliver l
 - 根据用户情况在服务器之间进行负载平衡
 - 对于不兼容的设备，用传统的流（HLS）传输。对于android和PC，用P2P的方式交付内容。
 
-5. If we want to collect the information of our peer clients, to what degree can goalbit plus support? 
+5. If we want to collect the information of our peer clients, to what degree can goalbit plus support?
 We provide real time stats from our servers, as you can see in:
     http://www.goalbit-solutions.com/demo
     and with more details in: http://trial.goalbit-solutions.com/goalbit-media-server/tracker/stats/bigbangtheory
@@ -270,10 +275,10 @@ We also works with google analytics in order to collect and summarize the monthl
 【可以看到连接的结点数，每个结点的ip，通过P2P下载或是上传的数据量，从服务器下载的数据量。】
 为了收集和汇总每月的数据，我们也用google analytics处理数据。
 
-6. Now, we are in China Mainland. It takes more than 5 minutes to wait your demo to play. It's too long to tolerate. If we brodcast the video from China, can it start to play in a tolerable interval? 
+6. Now, we are in China Mainland. It takes more than 5 minutes to wait your demo to play. It's too long to tolerate. If we brodcast the video from China, can it start to play in a tolerable interval?
 Yes. Please read our last performance test: http://www.goalbit-solutions.com/www/download/goalbitPlus-testingPlanResults.pdf
 We worked a lot in order to have the same buffer than traditional streaming.
-The problem with your 5 minutes is that our trial streaming server is far away from you. 
+The problem with your 5 minutes is that our trial streaming server is far away from you.
 You can validate it, please go to http://trial.goalbit-solutions.com/goalbit-misc/gpa/play/ and try:
     GPA disable (i.e. traditional streaming in HLS)
     GPA requeried (i.e. p2p streaming)
@@ -285,7 +290,7 @@ You can validate it, please go to http://trial.goalbit-solutions.com/goalbit-mis
 GPA disable （传统方式）和 GPA required （P2P方式），你会发现两者的缓冲时间差不多。
 如果服务器离用户近，缓冲时间会得到改善。）
 
-7. If we buy your products, which form of products would you provide? software or hardware? 
+7. If we buy your products, which form of products would you provide? software or hardware?
 We offer SaaS (including hosting from a 3rd party) or selfhosted (where you provide the hosting infrastructure)
 Both have a monthly price based in the size of the deployment.
 In order to give you a quotation you must provide us with information about your company (name, address, contact, etc.)
@@ -362,7 +367,7 @@ best regards,
 
 <<<<
 Dear Wu,
-It is Monday 6/30 at 9.30pm. 
+It is Monday 6/30 at 9.30pm.
 I do not see you online (skype nor gmail). I will close the chat now.
 Please define a new date for the call.
 Best regards,
@@ -527,13 +532,13 @@ VideoLAN是一个开发通过局域网（LAN）播放视频及其他媒体格式
 大部分的VLS功能都逐渐整合進VLC，所以就將VLC改名為VLC media player。
 ** make install on centOS
 1. git clone git://git.code.sf.net/p/goalbit/code goalbit-code
-2. No configure file; autoconf -v; 
+2. No configure file; autoconf -v;
    #+BEGIN_EXAMPLE
    configure.ac:446: error: m4_undefine: undefined macro: AC_DEPLIBS_CHECK_METHOD
    configure.ac:446: the top level
    autom4te: /usr/bin/m4 failed with exit status: 1
    #+END_EXAMPLE
-3. ./bootstrap; 
+3. ./bootstrap;
    #+BEGIN_EXAMPLE
    configure.ac:5366: error: possibly undefined macro: AM_PATH_LIBGCRYPT
       If this token and others are legitimate, please use m4_pattern_allow.
@@ -615,7 +620,7 @@ VideoLAN是一个开发通过局域网（LAN）播放视频及其他媒体格式
  |
  +--include
  |     +--goalbit
- |     |     +--generic_tools.h (generic queue operations and new vlc list)  
+ |     |     +--generic_tools.h (generic queue operations and new vlc list)
  |     |     +--goalbit_status.h (structure of goalbit status, include quality, goalbit_status_bt_t)
  |     |     +--goalbit_suite_tools.h (get goalbit suits of network)
  |     |     +--gui_tools.h (bt_channel_stats_t, bt_tracker_t, bt_stats_query_t)
@@ -687,7 +692,7 @@ KAD RBT Red Black Tree
 ** make torrent
 - pkg install gtorrentview
 - pkg install mktorrent
-  : mktorrent -a http://192.168.109.144/announce -c "local gaoyuanlan.mp4 torrent" -n gaoyuanlan -v -w http://192.168.109.144/gaoyuanlan.mp4 ~/media/gaoyuanlan.mp4 
+  : mktorrent -a http://192.168.109.144/announce -c "local gaoyuanlan.mp4 torrent" -n gaoyuanlan -v -w http://192.168.109.144/gaoyuanlan.mp4 ~/media/gaoyuanlan.mp4
 - start http service
   : sudo service apache24 onestart
   : ln -s gaoyuanlan.mp4 /usr/local/www/apache24/data/
@@ -793,7 +798,7 @@ sopcast  15:39:37
 3. tar xzvf /path/to/Popcorn-Time-2.7-Linux-64.tgz
 4. run Popcorn.
    #+BEGIN_EXAMPLE
-   $ ./Popcorn-Time 
+   $ ./Popcorn-Time
    ./Popcorn-Time: /lib64/libc.so.6: version `GLIBC_2.14' not found (required by ./Popcorn-Time)
    ./Popcorn-Time: /lib64/libc.so.6: version `GLIBC_2.15' not found (required by ./Popcorn-Time)
    ./Popcorn-Time: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.15' not found (required by ./Popcorn-Time)
@@ -965,8 +970,8 @@ It works by breaking the overall stream into a sequence of small HTTP-based
 file downloads, each download loading one short chunk of an overall
 potentially unbounded transport stream.
 
-Though encoded using the /H.264 video codec/ and /AAC/ audio codec, 
-audio/video streams must be segmented into chunks in an *MPEG-2 transport stream* with a .ts extension. 
+Though encoded using the /H.264 video codec/ and /AAC/ audio codec,
+audio/video streams must be segmented into chunks in an *MPEG-2 transport stream* with a .ts extension.
 
 ** encryption
 *** AES encryption
@@ -1096,7 +1101,7 @@ tar -zxvf mp4split-2.2.0.tar.gz
 
 server manifest
 
-ismv = ISMV file is an IIS Smooth Streaming Video. 
+ismv = ISMV file is an IIS Smooth Streaming Video.
 ism = IIS Smooth Streaming Server Manifest Data
 
 Try apache multimedia serve
@@ -1181,7 +1186,7 @@ Apple recommends using the HTML5 video tag for deploying HLS video on a website.
    hexKey=`cat $keyfile | hexdump -e '16/1 "%02x"'`
    echo $hexKey
    hexIV='0'
-   
+
    for seg in $(ls *.ts)
    do
    echo "Encrypting $seg ..."
@@ -1200,7 +1205,7 @@ Apple recommends using the HTML5 video tag for deploying HLS video on a website.
    A script for create keys for each ts:
    #+BEGIN_SRC
    #!/bin/bash
-   
+
    for seg in $(ls *.ts)
    do
    echo "Encrypting $seg ..."
@@ -1231,4 +1236,3 @@ kankan.baidu.com
 产品：摄象头 + android app.
 It costs 600+
 看孩子，看宠物。
-

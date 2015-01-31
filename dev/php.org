@@ -1,0 +1,28 @@
+
+php中文手册, http://php.net/manual/zh/
+php代码在线执行, http://www.mcqyy.com/RunCode/php/
+
+* 字符串
+单引号和双引号都能表示字符串。
+但双引号字符串可以包含转义字符串，而单引号不能。
+
+* BOOLEAN
+php中有boolean类型吗？如何表示?
+0和0.0是FALSE吗？(c中是，java中是, lisp中是吗, python中是吗，javascript似乎是)
+""是FALSE吗？
+"0"是FALSE吗？
+空数组 =array()= 是不是FALSE?
+NULL是不是FALSE？
+
+* 面向对象
+** 从关联数组生成对象
+#+BEGIN_SRC php
+<?php
+$obj = (object) array('foo' => 'bar', 'property' => 'value');
+echo $obj->foo; // prints 'bar'
+?>
+#+END_SRC
+
+1. 强制类型转换, =(type)expression=.
+2. 数组定义, ~array('key' => 'value', 'key' => 'value', ...)~;
+3. 对象访问成员, ->.
