@@ -24,7 +24,7 @@ I had to install jdk6 from the source repository, then I can
 run java gui program without problem. But the eclipse can't
 startup after a splash yet.
 
-the content of the log file: 
+the content of the log file:
 
 #+BEGIN_EXAMPLE
  !SESSION 2012-04-29 20:26:28.692 -----------------------------------------------
@@ -33,7 +33,7 @@ the content of the log file:
  java.vendor=Sun Microsystems Inc.
  BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=zh_CN
  Command-line arguments:  -os linux -ws gtk -arch x86_64 -clean
- 
+
  !ENTRY org.eclipse.osgi 4 0 2012-04-29 20:26:29.713
  !MESSAGE Application error
  !STACK 1
@@ -96,7 +96,7 @@ To support build apk, you need **ant 1.8.0** or later.
    android程序，那么在一年后导入这个app的时候很可能出现debug
    keystore过期，导致你无法生成 apk文件。此时你只要删除debug
    keystore就行，系统又会为你生成有效期为一年的私钥。
-   
+
    解决方法：
    进入C:\Documents and Settings\Administrator\.android(windows)
    或 ~/.android (Linux)  删除路径下的debug.keystore及 ddms.cfg。
@@ -172,7 +172,6 @@ DATE: 2013-08-12
 *卸载应用*
 : ant uninstall
 
-
 * Emacs android模式
 * [转]Android屏幕分辨率详解
 #+begin_quote
@@ -180,21 +179,21 @@ TAG: android, vga, hvga, wvga, qvga\\
 DATE: 2013-08-12
 #+end_quote
 
-这些术语都是指屏幕的分辨率。 
-+ VGA：Video Graphics Array，即：显示绘图矩阵，相当于640×480 像素； 
-+ HVGA：Half-size VGA；即：VGA的一半，分辨率为480×320； 
-+ QVGA：Quarter VGA；即：VGA的四分之一，分辨率为320×240； 
-+ WVGA：Wide Video Graphics Array；即：扩大的VGA，分辨率为800×480像素； 
-+ WQVGA：Wide Quarter VGA；即：扩大的QVGA，分辨率比QVGA高，比VGA低，一般是：400×240，480×272； 
+这些术语都是指屏幕的分辨率。
++ VGA：Video Graphics Array，即：显示绘图矩阵，相当于640×480 像素；
++ HVGA：Half-size VGA；即：VGA的一半，分辨率为480×320；
++ QVGA：Quarter VGA；即：VGA的四分之一，分辨率为320×240；
++ WVGA：Wide Video Graphics Array；即：扩大的VGA，分辨率为800×480像素；
++ WQVGA：Wide Quarter VGA；即：扩大的QVGA，分辨率比QVGA高，比VGA低，一般是：400×240，480×272；
 
 
-发展历程不一样，wm的手机一开始作为商务机，分辨率就是320*240，后边提高到640*480，再到后来的800*480。HVGA没有作为wm手机的重点，或者说基本忽略了在这个分辨率级别。 
-再谈谈android，我个人认为安卓是效仿iphone的设计思路。 
+发展历程不一样，wm的手机一开始作为商务机，分辨率就是320*240，后边提高到640*480，再到后来的800*480。HVGA没有作为wm手机的重点，或者说基本忽略了在这个分辨率级别。
+再谈谈android，我个人认为安卓是效仿iphone的设计思路。
 
 + HVGA基本上属于性价比比较好的方案。分辨率适中，不像320*240的颗粒感那样严重。
   因为如果提高分辨率就要提高机器的图像处理组件，也就是对硬件的要求相应提高，
   价格自然是不低。
-+ 谷歌手机一开始推广就是用这个分辨率，例如G1，G2等都是采用HVGA的分辨率。 
++ 谷歌手机一开始推广就是用这个分辨率，例如G1，G2等都是采用HVGA的分辨率。
 + 现在android的软件基本上都会自动适应HVGA（还包含别的，例如VGA,WVGA等，这个就要看软件作者的了）
 
 * Android程序的调试
@@ -251,13 +250,13 @@ android的res目录是固定的，只能是下面的几种，如果加了其他�
 不能提供相应的象Resources.getDrawable() and Resources.getColor(),
 Resources.openRawResource() 去引用资源。
 
-+ anim 
-+ drawable 
-+ layout 
-+ values 
-+ xml 
-+ raw 
-+ color 
++ anim
++ drawable
++ layout
++ values
++ xml
++ raw
++ color
 
 此外，是不是能采用子目录的方式呢？这样编辑器是可以通过的，不会报错。
 注：采用子目录的方式可以编译通过，但是通过R无法找到子目录和子目录中的资源
@@ -265,7 +264,7 @@ Resources.openRawResource() 去引用资源。
 关于 =drawable= 目录， 在android sdk 1.5之前只有 =drawable= 一个目录，对其他
 的目录，它是不认的； 在1.6以后将 =drawable= 目录分解为
 drawable-mdpi、drawable-ldpi、drawable-hdpi 三个目录。
- 
+
 drawable-mdpi、drawable-ldpi、drawable-hdpi三个，这三个主要是为了支持多分辨率。
 区别如下：
 
@@ -283,4 +282,5 @@ InputStream stream = getResources().openRawResource(R.raw.file);
 BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 #+END_SRC
 
-
+* Android开发
+- 一个Android应用的包布局应该是：一个包负责数据持久化，一个包负责UI，一个包是逻辑控制代码。即所谓的 MVC 结构。
