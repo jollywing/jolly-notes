@@ -56,6 +56,40 @@ http://www.w3cschool.cc/jsref/dom-obj-document.html
 个别元素用 =value=.
 ** TDD
 http://stackoverflow.com/questions/300855/javascript-unit-test-tools-for-tdd/680713#680713
+
+I choose *Qunit*
+- What: "a powerful, easy-to-use JavaScript unit testing framework. It's used by the jQuery, jQuery UI and jQuery Mobile projects and is capable of testing any generic JavaScript code, including itself!"
+- Who: Developed by JQuery Team.
+- Where: http://qunitjs.com/, http://github.com/jquery/qunit
+
+How to use QUnit:
+(The cookbook url: http://qunitjs.com/cookbook/)
+
+1. download qunit.js and qunit.css (for the styles of test result)
+2. include in your html.
+   #+BEGIN_SRC html
+   <!DOCTYPE html>
+   <html>
+   <head>
+     <meta charset="utf-8">
+     <title>QUnit Example</title>
+     <link rel="stylesheet" href="//code.jquery.com/qunit/qunit-1.17.1.css">
+   </head>
+   <body>
+     <div id="qunit"></div>
+     <div id="qunit-fixture"></div>
+     <script src="//code.jquery.com/qunit/qunit-1.17.1.js"></script>
+     <script src="tests.js"></script>
+     <script>Quit.test(...)</script>
+   </body>
+   </html>
+   #+END_SRC
+3. write tests.js
+   #+BEGIN_SRC js
+   QUnit.test( "hello test", function( assert ) {
+     assert.ok( 1 == "1", "Passed!" );
+   });
+   #+END_SRC
 * Json
 我写的json入门: http://segmentfault.com/blog/jollywing/1190000002521169
 * Bootstrap
@@ -107,7 +141,7 @@ xmlhttp.send();
 </html>
 #+END_SRC
 
-运行结果看这里: http://www.w3cschool.cc/try/try.php?filename=tryajax_first		
+运行结果看这里: http://www.w3cschool.cc/try/try.php?filename=tryajax_first
 
 所有现代浏览器均支持 XMLHttpRequest 对象（IE5 和 IE6 使用 ActiveXObject）。
 
