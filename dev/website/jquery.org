@@ -1,0 +1,72 @@
+#+TITLE: JQuery笔记
+#+AUTHOR: jollywing (jiqing\_wu@126.com)
+#+LANGUAGE: gbk
+
+** What is JQuery
+JQuery 是一个 javascript 库，主要用于Web UI设计。
+
+** 使用
+
+两种方法:
+1. 从 http://jquery.com/download/ 下载 jquery. 然后在 html 头部添加：
+   : <script src="jquery-1.10.2.min.js"></script>
+2. 引用CDN上的jquery.
+   - 百度: ~<script src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js">~
+   - 新浪: ~<script src="http://lib.sinaapp.com/js/jquery/2.0.2/jquery-2.0.2.min.js">~
+   - 微软: ~<script src="http://ajax.htmlnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js">~
+
+** 语法
+1. =$(selector).action()=. =selector= 和css选择元素一样
+   + $("p") 元素选择器，选择所有段落
+   + $(".test") 类选择器
+   + $("div#main") ID选择器
+   + $("p.important em") 后代选择器
+   + $(this) 选择当前元素
+   + $("p:first") 伪类选择器， 选择第一个段落元素
+   + $("[href]") 选择带有 href 属性的元素
+   + $("a[target='_blank']"), $(a[target!='_blank'])
+   + $("tr:even") 偶数位置的tr, $("tr:odd") 奇数位置的tr
+   + $(":button") 所有 type 为 button 的元素
+
+2. 事件 =$(selection).event(function)=, 相当于注册事件。
+
+** 文档就绪事件
+所有的 JQuery 函数位于一个document ready函数中
+#+BEGIN_SRC js
+$(document).ready(function() {
+  // jquery code ...
+});
+#+END_SRC
+
+也可以简写为
+#+BEGIN_SRC js
+$(function() {
+  // jquery code ...
+});
+#+END_SRC
+
+** JQuery事件
+1. 鼠标事件(click, dblclick, mouseenter, mouseleave, hover)
+2. 键盘事件(keydown, keyup, keypress)
+3. 表单事件(submit, change, focus, blur), 其中 blur 表示失去焦点.
+4. 文档、窗口事件 (load, unload, resize, scroll)
+
+值得特别注意的是 hover（鼠标悬停） 事件, 它需要传递两个 function 做参数。
+#+BEGIN_SRC js
+$("pre").hover(function() {
+  $(this).css("background-color", "#ccf");
+}, function() {
+  $(this).css("background-color", "#fff");
+});
+#+END_SRC
+
+** 元素的隐藏显示
+- 元素的隐藏, =$("p.em").hide()=, hide 的原型为 =hide([speed], [callback])=, speed可以取值 'slow', 'fast' 或是毫秒数。 callback是动作执行完之后所执行的函数。
+- 元素的显示, =$("p.em").show()=, show 的原型为 =show([speed], [callback])=.
+- 元素的显示隐藏切换, =$("p.em").toggle()=, toggle 的原型为 =toggle([speed], [callback])=.
+
+** 元素的淡入淡出
+- 元素的淡入, =$('a[href]').fadeIn()=, fadeIn原型为 =fadeIn([speed], [callback])=, 参数的含义和 =hide/show/toggle= 相同.
+- 元素的淡出, =$('a[href]').fadeOut()=, fadeOut原型为 =fadeOut([speed], [callback])=
+- 淡入淡出切换, =$('a[href]').fadeToggle()=, fadeToggle原型为 =fadeToggle([speed], [callback])=
+- fadeTo, =fadeTo(speed, opacity, [callback]);= 变为给定的不透明度opacity [0, 1]. 0 为完全透明。

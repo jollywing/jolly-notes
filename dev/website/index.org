@@ -3,11 +3,38 @@
 ** Javascript notes
 file:javascript.org
 ** JQuery
-
-
 * CSS
-** CSS参考手册
+** 选择器
+1. 选择器大全, http://www.w3cschool.cc/cssref/css-selectors.html
+*** 类选择器
+: h1.article-title {xxx:xxx;xxx:xxx;}
+: <h1 class='article-title'>xxx</h1>
+一个元素也可以应用多个类的样式
+: <h1 class='article-title emph'>xxx</h1>
+多个类的样式属于平级，谁的样式覆盖谁，只看样式的加载顺序。
+*** 后代选择器
+: p.nav a {...}
+表明p.nav内的所有a元素。
+
+和子元素选择器有何区别？
+: p.nav>a {...}
+表明p.nav内的子元素a. 子元素选择器选择的元素可能少于后代选择器.
+** CSS属性参考手册
 1. http://www.w3school.com.cn/css/index.asp
+** 特殊属性说明
+*** display
+display: inline-block
+行内块元素, CSS 2.1之后支持.
+和 inline 有何分别?
+
+display: list-item
+将作为列表项显示.
+
+*** font-weight
+value: normal | bold | bolder | lighter
+也可以用数字: 100, 200, 300, 400, 500, 600, 700, 800, 900
+由细到粗，其中400表示normal.
+
 ** 技巧
 *** 禁止元素选中:
 http://stackoverflow.com/questions/826782/css-rule-to-disable-text-selection-highlighting
@@ -47,12 +74,48 @@ function makeUnselectable(node) {
 
 makeUnselectable(document.getElementById("foo"));
 #+END_SRC
+*** 给文字增加模糊阴影
+text-shadow, CSS 3新特性.
+: text-shadow: h-shadow v-shadow [blur] [color]
+- h-shadow是阴影的横向位移，可以为负值
+- v-shadow是阴影的纵向位移，可以为负值
+- blur 阴影边缘模糊的距离，（让阴影和背景柔和地过度）
+- color 阴影的颜色.
+
+如带黑色阴影的白色文本。
+#+BEGIN_SRC css
+color:white;
+text-shadow:2px 2px 4px #000000;
+#+END_SRC
+
 *** CSS动画
 1. css动画简介 http://www.ruanyifeng.com/blog/2014/02/css_transition_and_animation.html
+*** 按钮样式
+1. 怎么做类似github的按钮? http://code.ciaoca.com/style/css3-github-btn/, source: https://github.com/necolas/css3-github-buttons/blob/master/gh-buttons.css
+
 * HTML
 ** HTML header
+** HTML5
+HTML5 中的一些有趣的新特性：
+
+- 用于绘画的 canvas 元素
+- 用于媒介回放的 video 和 audio 元素
+- 对本地离线存储的更好的支持
+- 新的特殊内容元素，比如 article、footer、header、nav、section
+- 新的表单控件，比如 calendar、date、time、email、url、search
+
+现代的浏览器都支持 HTML5。
+
+* PHP
+
+** frameworks
+*** ci(CodeIgniter)
+1. http://codeigniter.org.cn, CI 中国.
 * Design
-1. Responsive网页设计: http://www.ruanyifeng.com/blog/2012/05/responsive_web_design.html
+** Responsive Design
+1. 阮一峰的日志: http://www.ruanyifeng.com/blog/2012/05/responsive_web_design.html
+2. 外国网站: http://zurb.com/university/responsive-design
+
 2. http://jsfiddle.net, Test your JavaScript, CSS, HTML or CoffeeScript online with JSFiddle code editor.
 * 美工
 ** 为什么要切片
