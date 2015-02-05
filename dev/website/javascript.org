@@ -31,6 +31,35 @@ i="真值"||"其他真值";//->i="真值"
 i="真值"||"";//->i="真值"
 #+END_EXAMPLE
 
+** Array
+*** 定义和初始化
+#+BEGIN_SRC js
+var arr1 = new Array();
+arr1[0] = 'Hello';
+arr1[1] = 'Good';
+
+var arr2 = new Array('Hello', 'Good');
+
+var arr3 = new Array('Hello');
+arr3.push('Good');
+#+END_SRC
+
+*** 数组的遍历
+1. for 循环
+#+BEGIN_SRC js
+for(var i = 0; i < arr.length; i++) {
+}
+#+END_SRC
+2. Array.forEach
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
+3. for...of
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of
+4. for...in
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in
+
+** OO
+Javascript不支持class关键字，下面这篇文章总结了模拟class的方法.
+http://www.ruanyifeng.com/blog/2012/07/three_ways_to_define_a_javascript_class.html
 ** HTML DOM
 http://www.w3cschool.cc/jsref/dom-obj-document.html
 
