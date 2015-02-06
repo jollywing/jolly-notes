@@ -108,14 +108,43 @@ HTML5 中的一些有趣的新特性：
 
 * PHP
 
-** frameworks
-*** ci(CodeIgniter)
-1. http://codeigniter.org.cn, CI 中国.
 * Design
+** How to Setup a website
+source: http://stackoverflow.com/questions/3292866/web-project-planning-tutorial
+
+1. Read [[http://programmers.stackexchange.com/questions/46716/what-technical-details-should-a-programmer-of-a-web-application-consider-before][What should a developer know before building a public web site?]]
+2. Define and document scope
+3. Define and document functional requirements
+4. Look for existing solutions - if you can leverage a CMS or eCommerce package you can save a lot of development time
+5. Design database (ER Diagram)
+6. Design website structure (sections, links, navigation)
+7. Design page layout - wireframe tools or even paper/pencil are useful for this
+8. Design application structure - high level class structure
+9. Identify libraries and frameworks, e.g., Doctrine, Zend, CodeIgnitor, etc
+10. Technical design decisions - naming conventions, logging strategy, exception handling
+11. Testing Plan
+12. Implementation Plan
+
+PHP project planning for idiots
+PHP Application Development (part 1 and part 2)
+Web Application Development - A Guide to Success
+StackOverflow
+How to plan my web based project before starting code ?
+Web Design Process - Planning Stage…
+How to design/plan for web application development?
+Planning web applications
+http://stackoverflow.com/search?q=[web-development]+plan
+shareedit
+answered Nov 3 '10 at 22:34
+
+BenV
+3,74231442
+
 ** Responsive Design
 1. 阮一峰的日志: http://www.ruanyifeng.com/blog/2012/05/responsive_web_design.html
 2. 外国网站: http://zurb.com/university/responsive-design
 
+* Tools
 2. http://jsfiddle.net, Test your JavaScript, CSS, HTML or CoffeeScript online with JSFiddle code editor.
 * 美工
 ** 为什么要切片

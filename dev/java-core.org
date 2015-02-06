@@ -1,0 +1,621 @@
+#+TITLE: 我的 Java 笔记
+
+| 作者   | jiqing Wu          |
+| 邮箱   | jiqingwu@gmail.com |
+| Update | 2013-09-07         |
+
+
+* 编码规范
+
+- 类名：单词连写，每个单词首字母大写。
+- 对象名：单词连写，第一个单词全小写，其它单词首字母大写。
+- 字段（数据成员）名：单词连写，第一个单词全小写，其它单词首字母大写。
+- 方法名：单词连写，第一个单词全小写，其它单词首字母大写。
+- 静态常量 (用static final修饰)：所有单词全大写，以下划线连接。
+- 包名 (package)：全小写。
+- 尽量采用静态常量来代替程序中的常数。
+- 变量名不能以数字开头。
+
+* 基本语法
+
+** 数据类型
+
+- float：单精度浮点数。默认的 ``1000.67`` 是double类型的常量，
+  float类型的常量后面加F，如 ``1000.67F`` 。
+
+** 类型转换
+
+- 扩展转换：如果a类型表示的值包含所有b类型表示的值，
+  从b转换到a类型叫做扩展转换。
+- 缩小转换：如果a类型不能包含所有b类型能表示的值，
+  从b向a类型转换叫做缩小转换，java不允许缩小转换。
+
+
+** 其它
+
+- *java中的垃圾回收机制*: =System.gc()= 强制垃圾回收器回收资源。 
+
+* 数据结构
+
+- 堆栈也称做LIFO链表，而队列称做FIFO链表。
+
+* 面向对象
+** 类成员修饰符
+
+java中有四种成员访问的修饰符：public, private, protected和package;
+
++ public: 同一个程序中其它所有的方法可以访问。
++ private: 只有该类的方法可以访问。子类也不行。
++ protected: 该类和子类中的方法可以访问。
++ package: 如果没有修饰符，默认是package。
+  同一个包中（同一个目录）的所有方法都可以访问它。
+
+*final* 的用法：
+
++ final property 的值不能被改变。（定义时必须赋值？）
++ final method 不能被覆盖。
++ final class 不能被继承，它的方法自动具有 final 属性。final类具有较快的加载和执行速度。
+
+*static* 的用法：
+
++ static property 静态成员，不需要构造类的实例即可访问。
++ static method 静态方法，不需要构造类的实例即可访问。
++ static class 静态类，通常用于修饰内部类，因为非静态内部类不允许有静态成员。
+  另外，静态内部类的实例可以直接创建，不需要依附于外部类的实例。静态内部类的
+  限制是，不能访问外部类的非静态成员。
+
+** 类的构造函数和终结函数
+
+- 当实例化一个子类的对象时，在进行任何初始化之前，它的超类的一个构
+  造函数将被隐式地或显式地调用。使用super(param list)显示调用父类
+  的构造函数。
+- 子类终结函数的最后一句应该是对超类终结函数的调用：super.finalize()。
+- 调用自己的构造函数，使用 =this= ，如：
+  #+BEGIN_SRC java
+  public class AA { 
+      private String a;
+      private String b;
+   
+      public AA(String a){ 
+          this.a = a;
+      } 
+     
+      public AA(String a, String b){ 
+          this(a);
+          this.b = b;
+      } 
+  }
+  #+END_SRC
+
+** 函数
+
+1. 类内部的函数可以只声明不实现吗?
+
+   If a method has no definition, it is a abstract method.
+
+   Another case is the method is a native method.
+   "A native method is a Java method whose implementation is provided by non-java code."
+   so it need not defined in java code.
+
+** 继承
+
++ Excepting Object, which has no superclass, every class has one and only
+  one direct superclass (single inheritance).
++ 子类对象继承了它的超类的所有非私有实例变量和方法。
++ A subclass inherits all of the public and protected members (fields,
+  methods, and nested classes) of its superclass no matter what package the
+  subclass is in.
++ If the subclass is in the same package as its parent, it also inherits
+  the package-private members of the superclass.
++ Constructors are not members, so they are not inherited by subclasses,
+  but the constructor of the superclass can be invoked from the subclass.
++ You can declare a field in the subclass with the same name as the one in
+  the superclass, thus hiding it (not recommended).
++ You can write a new instance method in the subclass that has the same
+  signature as the one in the superclass, thus overriding it.
++ You can write a new static method in the subclass that has the same
+  signature as the one in the superclass, thus hiding it.
++ You can write a subclass constructor that invokes the constructor of the
+  superclass, either implicitly or by using the keyword super.
++ 子类不会继承父类的私有成员。然而，如果父类有public或protected方法访问其
+  private成员，子类仍然可以调用这些方法。
++ 内嵌类能访问外层类的所有私有成员。因此，如果子类继承了父类的一个public或
+  protected的嵌套类，该嵌套类仍然可以访问父类的私有成员。
++ 子类引用赋值给父类引用叫做向上转换，是合法的；
+  超类引用赋值给子类引用叫做向下转换，是非法的。
+  因为一个超类对象不一定是子类对象。
+
+
+** 多态
+
++ 一个被声明为final类型的方法不能被子类重写，因此不能展示多态行为。
+  但是因此java可以对final方法进行优化，加快执行速度。
++ 声明为static和private的方法自动具有final类型。
++ 声明为final的类不可能是一个超类，因为它的任何部分都不能被重写。
+  它的方法自动具有final类型。
++ 为了使多态性能够工作，多态性方法必须在父类和所有的子类中声明。
+  但是父类中的方法可能根本不会使用，定义他们只是劳动力的浪费。
+  可以使用抽象方法来解决这个问题，抽象方法不需要写出函数体。
+  包含抽象方法的类是抽象类。public abstract double calc(double hours);
+
+** 接口
+
++ 接口仅包含一些方法的签名（也可能包含一些常量）。
+  接口定义了一种标准的、公共的指明类的行为的方式。
+  如果一个类实现了接口，它必须实现接口中定义的所有方法。
+  一个接口可以只包含一些常量。
++ 使用接口的基本原因是：一个类只能从它的直接父类处继承，
+  但它能够实现许多不同的接口。(在java中，一个类不能同时是几个类的子类？)
+
+* Swing GUI
+
+AWT = Abstract Window Toolkit.
+AWT的图形函数和操作系统的图形函数一一对应。
+当我们使用AWT时，实际上在使用操作系统的图形库。
+为了保证平台无关性，AWT牺牲了部分功能，
+只保留了通用操作系统提供的图形功能的交集。
+
+SWing大幅度扩充了AWT的功能。
+使用纯净的java代码，利用AWT的画图功能，实现了更复杂的控件。
+从而既保证了平台无关性，又丰富了绘图功能，唯一的代价就是运行速度。
+
+和SWing相比，AWT是基于本地方法的c/c++实现，所以运行速度快。
+所以在嵌入式系统中开发GUI程序，首选AWT。
+而在PC机等资源不受限的环境中，使用SWing更方便。
+
+两个最重要的图形对象是组件和容器。组件是一种包含文本和图形的可视化
+对象，它能够响应键盘或鼠标的输入。容器能够容纳组件和其他容器。最重
+要的容器是框架(frame)，它实现了应用程序的窗口，由
+javax.swing.JFrame实现。仿射变换是用户自定义的平移、缩放、旋转和切
+变的组合。
+
+java gui需要四种基本元素：组件、容器、布局管理器和事件处理程序。
+
+容器包括：
+
+- Box  没有边框和标题栏，使用BoxLayout(多个组件水平或垂直分布)布局。
+- JDialog  用于显示错误和消息的简单容器。
+- JFrame  一个有边框和标题栏的容器，默认布局是BorderLayout。
+- JPanel  没有边框和标题栏，默认布局是FlowLayout(从左到右，从上到下)。
+
+布局管理器：
+
+- BorderLayout  东西南北中， JFrame的默认布局。
+- FlowLayout  从左到右，从上到下，JPanel的默认布局。
+- BoxLayout  水平或垂直分布，Box的默认布局。
+- CardLayout  像纸牌一样堆叠在一起。
+- GridLayout  布局在一个严格的网格中。
+- GridBagLayout  布局在一个灵活的网格中。
+
+组件包括：JLabel, JTextField, JPasswordField, 
+JButton, JRadioButton, JCheckBox, JComboBox,
+JList, JTable, JDialog.
+
+** JLabel：
+
+构造函数：
+
+- public JLabel();
+- public JLabel(String s);
+- public JLabel(String s, int horizontalAlignment);
+- public JLabel(Icon image);
+- public JLabel(Icon image, int horizontalAlignment);
+- public JLabel(String s, Icon image, int horizontalAlignment);
+
+方法：
+
+- public Icon getIcon();
+- public String getText();
+- public void setIcon(Icon image);
+- public void setText(String s);
+- public void setHorizontalAlignment( int alignment);
+- # 设置文本相对于图像的位置，LEFT，CENTER，RIGHT:
+  public void setHorizontalTextPosition(int textPosition);
+- # 设置文本或图像的垂直布局：TOP、CENTER、BOTTOM:
+  public void setVerticalAlignment(int alignment);
+- # 设置文本相对于图像的位置，TOP、CENTER、BOTTOM。
+  public void setVerticalTextPosition(int textPosition);
+
+** JButton：
+
+构造函数：
+
+- public JButton();
+- public JButton(String s);
+- public JButton(Icon image);
+- public JButton(String s, Icon image);
+
+方法：
+
+- public void addActionListener( ActionListener l);
+- public Icon getIcon();
+- public void setIcon(Icon icon);
+- public void setDisabledIcon(Icon icon);
+- public void setPressedIcon(Icon icon);
+- public String getLabel();
+- public void setLabel(String s);
+- # 设置动作命令字符串，当按钮按下时，将产生这个动作命令:
+  public void setActionCommand(String s);
+- public void setEnabled(boolean b);
+- public void setMnemonic(char mnemonic); # mnemonic是帮助记忆的意思
+- public void setToolTipText(String text);
+- public void setHorizontalAlignment( int alignment);
+- # 设置文本相对于图像的位置，LEFT，CENTER，RIGHT:
+  public void setHorizontalTextPosition(int textPosition);
+- # 设置文本或图像的垂直布局：TOP、CENTER、BOTTOM。
+  public void setVerticalAlignment(int alignment);
+- # 设置文本相对于图像的位置，TOP、CENTER、BOTTOM。
+  public void setVerticalTextPosition(int textPosition);
+
+** JTextField和JPasswordField
+
+构造函数
+
+- public JTextField();
+- public JTextField(int cols);
+- public JTextField(String s);
+- public JTextField(String s, int cols);
+- public JPasswordField();
+- public JPasswordField(int cols);
+- public JPasswordField(String s);
+- public JPasswordField(String s, int cols);
+
+方法
+
+- public String getText();
+- public String getSelectedText();
+- #设置当文本字段按下时，它所产生的命令字符串
+  public void setActionCommand(String s);
+- public void setEditable(boolean b);
+- public void setText(String s);
+- public void setToolTipText(String s);
+
+** JCheckBox
+
+构造函数：
+
+- public JCheckBox(String s);
+- public JCheckBox(String s, boolean state);
+- public JCheckBox(Icon Image);
+- public JCheckBox(Icon image, boolean state);
+- public JCheckBox(String s, Icon image);
+- public JCheckBox(String s, Icon image, boolean state);
+
+方法：
+
+- public Icon getIcon();
+- public void setIcon(Icon icon);
+- public String getLabel();
+- public void setLabel(String s)
+- public boolean isSelected();
+- public void setSelected(boolean b);
+ 
+- public void setActionCommand(String s)
+- public void setMnemonic(char mnemonic);
+- public void setToolTipText(String text);
+- public void setDisabledIcon(Icon icon);
+- public void setEnabled(boolean b);
+ 
+- public void setHorizontalAlignment(int alignment);
+- public void setHorizontalTextPosition(int textPosition);
+- public void setVerticalAlignment(int alignment);
+- public void setVerticalTextPosition(int textPosition);
+
+** JRadioButton
+
+构造函数：
+
+- public JRadioButton( String s);
+- public JRadioButton( String s, boolean state);
+- public JRadioButton( Icon image);
+- public JRadioButton( Icon image, boolean state );
+- public JRadioButton( String s, Icon image);
+- public JRadioButton( String s, Icon image, boolean state );
+ 
+# 把一组RadioButton放在一个ButtonGroup中，才能保证互斥
+
+- public ButtonGroup(); # button group 的构造函数
+- # ButtonGroup的方法
+- public void add(AbstractButton b);
+- public void remove(AbstractButton b);
+
+** JComboBox
+
+构造函数：
+
+- public JComboBox();
+- public JComboBox( Object [] );
+- public JComboBox( Vector );
+
+方法：
+
+- public void addActionListener( ActionListener l);
+- public void addItem( Object o);
+- public void removeItem(Object o);
+- public void removeItemAt(int index);
+- public Object getItemAt( int index);
+- public int getItemCount();
+- public int getSelectedIndex();
+- public Object getSelectedItem();
+- public boolean isEditable();
+- public void setEditable(boolean b);
+- public void setToolTipText( String text);
+- public void insertItemAt( Object o, int i);
+
+** JComponent(画布)
+
+方法:
+
+- setMinumumSize( Dimension d );
+- setMaximumSize( Dimension d );
+- setPreferredSize( Dimension d);
+- public void paintComponent( Graphics g);
+- public void repaint();
+
+** JList
+
+构造函数：
+
+- public JList();
+- public JList( Object[] o);
+- public JList( Vector v);
+
+方法：
+
+- void addListSelectionListener( ListSelectionListener );
+- public void clearSelection(); #清除所有选中的项。
+- public int getMaxSelectionIndex();
+- public int getMinSelectionIndex();
+- public int getSelectedIndex(); #获得第一次选中值的索引
+- public int[] getSelectedIndices(); #获得所有选中值的索引
+- public Object getSelectedValue();
+- public Object[] getSelectedValues();
+- public boolean isSelectedIndex(int i); #如果i被选中，返回true
+- public boolean isSelectionEmpty(); #如果没有返回任何其项，返回true
+- public void setSelectedIndex(int i); #设定选中值的索引
+- public void setSelectedIndices( int[] i);
+- public void setSelectedInterval( int i1, int i2);
+
+** 菜单
+
+先创建JMenuBar，然后向JMenuBar中添加JMenu，然后向JMenu中添加菜单项
+（JMenuItem、JCheckBoxMenuItem、JRadioButtonMenuItem）。
+
+JMenuBar的构造函数：
+
+- public JMenuBar();
+
+JMenuBar的方法
+
+- public void add(JMenu m);
+- public JMenu getHelpMenu();
+- public void setHelpMenu( JMenu m );
+- public JMenu getMenu( int i );
+- public int getMenuCount();
+
+JMenu的构造函数：
+
+- public JMenu( String label );
+
+JMenu的方法：
+
+- public JMenuItem add( JMenuItem mi );
+- public void addSeparator();
+- public JMenuItem getItem(int index);
+- public int getItemCount();
+- public void insert( JMenuItem mi, int pos);
+
+JMenuItem的构造函数：
+
+- public JMenuItem( String label);
+- public JMenuItem( Icon image);
+- public JMenuItem( String label, Icon image );
+- public JMenuItem( String label, int mnemonic); #mnemonic是快捷键提示
+
+其实最好的方法还是查阅java document。
+
+** 主窗体的定制
+
++ this.show(true); 与setVisible作用相同，但这个函数已过时
++ this.setUndecorated(true);	去掉窗体边框
++ this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); 禁用关闭按钮
+
+* SWT
+
+swt是eclipse团队开发的java图形库，用于使java程序的界面风格与宿主操
+作系统的界面风格一致。为了swt更便于使用，封装了jface。jface与swt的
+关系就好比是mfc与windows sdk的关系。
+
+只能在swt线程里处理UI事件。
+
+如果我们想在非UI线程里弹出对话框，可以用如下代码：
+
+#+BEGIN_SRC java
+	Display.getDefault().asyncExec(new Runnable(){
+		@Override
+		public void run(){
+			MessageDialog.openInformation(null, 
+					"接收到数据", "从营机接到气象通报和目标数据");
+		}
+	});
+#+END_SRC
+
+
+* 高级特性
+** 语法糖
+原文地址： http://www.iteye.com/topic/1116141
+
+语法糖（Syntactic Sugar），也叫糖衣语法，是英国计算机科学家彼得·约翰·兰达
+(Peter J. Landin)发明的一个术语。指的是，在计算机语言中添加某种语法，这种语
+法能使程序员更方便的使用语言开发程序，同时增强程序代码的可读性，避免出错的机
+会；但是这种语法对语言的功能并没有影响。
+
+Java中的泛型，变长参数，自动拆箱/装箱，条件编译等都是，下面做简单的介绍和分析。
+
+*** 泛型
+
+与C#中的泛型相比，Java的泛型可以算是“伪泛型”了。在C#中，不论是在程序源码中、
+在编译后的中间语言，还是在运行期泛型都是真实存在的。Java则不同，Java的泛型只
+在源代码存在，只供编译器检查使用，编译后的字节码文件已擦除了泛型类型，同时在
+必要的地方插入了强制转型的代码。
+
+泛型代码： 
+#+BEGIN_SRC java
+public static void main(String[] args) {    
+    List<String> stringList = new ArrayList<String>();    
+    stringList.add("oliver");    
+    System.out.println(stringList.get(0));    
+}   
+#+END_SRC
+
+将上面的代码的字节码反编译后： 
+#+BEGIN_SRC java
+public static void main(String args[])    
+{    
+    List stringList = new ArrayList();    
+    stringList.add("oliver");    
+    System.out.println((String)stringList.get(0));    
+}    
+#+END_SRC
+
+*** 自动拆箱/装箱 
+
++ 自动拆箱/装箱是在编译期，依据代码的语法，决定是否进行拆箱和装箱动作。 
++ 装箱过程：把基本类型用它们对应的包装类型进行包装，使基本类型具有对象特征。 
++ 拆箱过程：与装箱过程相反，把包装类型转换成基本类型。 
++ 需要注意的是：包装类型的“==”运算在没有遇到算数运算符的情况下不会自动拆箱，
+  而其包装类型的equals()方法不会处理数据类型转换，所以：
+
+#+BEGIN_SRC java
+Integer a = 1;    
+Integer b = 1;    
+Long c = 1L;    
+System.out.println(a == b);    
+System.out.println(c.equals(a));   
+#+END_SRC
+
+这样的代码应该尽量避免自动拆箱与装箱。 
+
+*** 循环历遍（foreach）
+
+语法： 
+#+BEGIN_SRC java
+List<Integer> list = new ArrayList<Integer>();    
+for(Integer num : list){    
+    System.out.println(num);    
+}   
+#+END_SRC
+
+Foreach要求被历遍的对象要实现Iterable接口，由此可想而知，foreach迭代也是调用
+底层的迭代器实现的。反编译上面源码的字节码：
+#+BEGIN_SRC java
+List list = new ArrayList();    
+Integer num;    
+Integer num;    
+for (Iterator iterator = list.iterator(); iterator.hasNext(); System.out.println(num)){    
+    num = (Integer) iterator.next();    
+}    
+#+END_SRC
+
+*** 条件编辑
+很多编程语言都提供了条件编译的途径，C，C++中使用#ifdef。Java语言并没有提供这
+种预编译功能，但是Java也能实现预编译。
+#+BEGIN_SRC java
+if(true){    
+    System.out.println("oliver");    
+}else{    
+    System.out.println("lee");    
+}    
+#+END_SRC
+
+这段代码的字节码反编译后只有一条语句： 
+#+BEGIN_SRC java
+System.out.println("oliver");    
+#+END_SRC
+
+在编译器中，将会把分支不成立的代码消除，这一动作发生在编译器解除语法糖阶段。 
+所以说，可以利用条件语句来实现预编译。 
+
+*** 枚举
+枚举类型其实并不复杂，在JVM字节码文件结构中，并没有“枚举”这个类型。 
+其实源程序的枚举类型，会在编译期被编译成一个普通了类。利用继承和反射，这是完全可以做到的。 
+看下面一个枚举类： 
+
+#+BEGIN_SRC java
+public enum EnumTest {    
+    OLIVER,LEE;    
+}    
+#+END_SRC
+
+反编译字节码后： 
+#+BEGIN_SRC java
+public final class EnumTest extends Enum {    
+    
+    private EnumTest(String s, int i) {    
+        super(s, i);    
+    }    
+    
+    public static EnumTest[] values() {    
+        EnumTest aenumtest[];    
+        int i;    
+        EnumTest aenumtest1[];    
+        System.arraycopy(aenumtest = ENUM$VALUES, 0,    
+                aenumtest1 = new EnumTest[i = aenumtest.length], 0, i);    
+        return aenumtest1;    
+    }    
+    
+    public static EnumTest valueOf(String s) {    
+        return (EnumTest) Enum.valueOf(EnumTest, s);    
+    }    
+    
+    public static final EnumTest OLIVER;    
+    public static final EnumTest LEE;    
+    private static final EnumTest ENUM$VALUES[];    
+    
+    static {    
+        OLIVER = new EnumTest("OLIVER", 0);    
+        LEE = new EnumTest("LEE", 1);    
+        ENUM$VALUES = (new EnumTest[] { OLIVER, LEE });    
+    }    
+}   
+#+END_SRC
+
+至于更多细节，可以参考父类 =Enum= 。 
+
+*** 变长参数
+变长参数允许我们传入到方法的参数是不固定个数。 
+对于这个方法： 
+
+#+BEGIN_SRC java
+public void foo(String str,Object...args){    
+    
+}  
+#+END_SRC
+  
+我们可以这样调用： 
+#+BEGIN_SRC java
+foo("oliver");    
+foo("oliver",new Object());    
+foo("oliver",new Integer(1),"sss");    
+foo("oliver",new ArrayList(),new Object(),true,1);    
+#+END_SRC
+
+参数args可以是任意多个。 
+其实，在编译阶段，args是会被编译成Object [] args。 
+#+BEGIN_SRC java
+public transient void foo(String s, Object aobj[])    
+{    
+}   
+#+END_SRC
+
+这样，变长参数就可以实现了。 
+但是要注意的是，变长参数必须是方法参数的最后一项。 
+
+*** 总结
+除了上面介绍的语法糖，还有内部类，断言以及 /JDK7/ 的 /switch支持字符串/ ，
+/自动关闭资源（在try中定义和关闭）/ 等。 
+感兴趣的同学可以反编译字节码了解它们的本质。 
+
+无疑，语法糖方便了程序员的开发，提高了开发效率，提升了语法的严谨也减少了编码
+出错误的几率。我们不仅仅在平时的编码中依赖语法糖，更要看清语法糖背后程序代码
+的真实结构，这样才能更好的利用它们。

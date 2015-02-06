@@ -26,3 +26,64 @@ echo $obj->foo; // prints 'bar'
 1. 强制类型转换, =(type)expression=.
 2. 数组定义, ~array('key' => 'value', 'key' => 'value', ...)~;
 3. 对象访问成员, ->.
+
+** public, private, protected
+http://php.net/manual/en/language.oop5.visibility.php
+
+方法默认的可见范围是 public.
+#+BEGIN_QUOTE
+Class methods may be defined as public, private, or protected. Methods declared without any explicit visibility keyword are defined as public.
+#+END_QUOTE
+
+同一个类的实例可以互相访问private和protected成员.
+#+BEGIN_QUOTE
+Objects of the same type will have access to each others private and protected members even though they are not the same instances. This is because the implementation specific details are already known when inside those objects.
+#+END_QUOTE
+
+* frameworks
+** ci(CodeIgniter)
+1. http://codeigniter.org.cn, CI 中国.
+*** Load library
+http://stackoverflow.com/questions/17132177/codeigniter-where-and-when-should-i-call-this-load-database
+
+You have three choices (that I can think of).
+
+If you require it almost everywhere in your project, use the /application/config/autoload.php file, in which you'll find the following statement:
+
+: $autoload['libraries'] = array();
+which you can change to
+
+: $autoload['libraries'] = array('database');
+
+This is the easiest method, but it does add overhead since the database class will be loaded even when you do not require it.
+
+If you find that you need to use it for almost every method in a particular model you can call $this->load->database(); in the constructor of that particular model, for example:
+
+#+BEGIN_SRC php
+class Forums_model extends CI_Model{
+
+   function __construct()
+   {
+       // Call the parent constructor
+       parent::__construct();
+
+       $this->load->database();
+   }
+
+   function get_records()
+   {
+       $this->db->get('table'); 
+       //this now works in every method in this model
+   }
+}
+#+END_SRC
+
+which will make the database class available to every method in that model. This is a more efficient option than the second and not as tedious as the third, probably making it the most balanced option.
+
+You can also, of course, choose to load it in every method that requires it using $this->load->database(); This adds the least overhead, theoretically making it the most efficient. However, doing this is very tedious.
+
+All three will work, it's your choice whether you want it to be easy, or efficient. (My personal recommendation is choice 2)
+
+*** $this->load
+*** TDD
+http://taiar.github.io/php/2013/11/08/testing-codeigniter-applications-with-phpunit.html

@@ -1,0 +1,27 @@
+
+#+TITLE: Django笔记
+#+LANGUAGE: gbk
+
+* 模板
+1. 模板必须放在应用的 templates 目录下。
+2. 变量标签 ={{variableName}}=
+3. 块标签
+   #+BEGIN_SRC html
+   {% for xxx in yyy %}
+   {% endfor %}
+   #+END_SRC
+
+* MVC
+1. Model 应用数据如何存储
+2. View 应用数据如何显示
+3. Controller 让用户可以请求和操作数据.
+   一个应用可以有多个控制器，例如GUI应用或是命令行工具.
+
+View组成了Django应用程序里很多的逻辑，有时几乎是全部逻辑。
+MVC架构在django中变为了MTV (Model, Template, View).
+
+*DRY* Don't Repeat Yourself.
+
+* 拓展和其它选择
+- Django模板的替代方案： Kid, Cheetah.
+- Django ORM的替代方案: SQLAlchemy, SQLObject.
