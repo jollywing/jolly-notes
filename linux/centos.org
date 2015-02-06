@@ -50,7 +50,7 @@ If you want mount a share folder in a Linux virtual machine.
 1. bsc : Qt based Total Commander
 ** network
 : vi /etc/sysconfig/network-script/ifcfg-p4p1
-add 
+add
 : BOOTPROTO="dhcp"
 then
 : # service network restart
@@ -60,6 +60,10 @@ yum install <pkgname>
 yum remove <pkgname>?
 yum search <str list>
 yum clean all # clear cache
+yum check-update
+=yum update= will upgrade the old packages.
+=yum list installed pkgA* pkgB= list the installed packages whose name matches 'pkgA*' or 'pkgB'.
+=rpm -ql make= list the files installed by =make= package.
 
 source:
 /etc/yum.repos.d/CentOS-Base.repo
@@ -77,3 +81,7 @@ yum install --enablerepo=rpmforge-extras xyz
 | Restart the background service        | /sbin/service [name] restart | /usr/sbin/service [name] restart       |
 | Display the background service status | /sbin/service [name] status  | /usr/sbin/service [name] status        |
 
+** Systemd
+systemctl list-unit-files
+
+Run =systemctl --help= to check the functions of *systemctl*.
