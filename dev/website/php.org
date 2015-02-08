@@ -40,6 +40,8 @@ Class methods may be defined as public, private, or protected. Methods declared 
 Objects of the same type will have access to each others private and protected members even though they are not the same instances. This is because the implementation specific details are already known when inside those objects.
 #+END_QUOTE
 
+* TDD
+http://tddftw.com/adding-tests-to-legacy-code-part-1/
 * frameworks
 ** ci(CodeIgniter)
 1. http://codeigniter.org.cn, CI 中国.
