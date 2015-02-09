@@ -109,6 +109,7 @@ HTML5 中的一些有趣的新特性：
 * PHP
 
 * Design
+1. http://www.csdn.net/article/2013-07-17/2816256-whats-new-for-designers
 ** How to Setup a website
 source: http://stackoverflow.com/questions/3292866/web-project-planning-tutorial
 

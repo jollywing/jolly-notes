@@ -17,6 +17,11 @@ Control + Shift，所以叫 *Emacs* 。
 - 键序列是大小写敏感的。如果你的键序列输入一半，你又改变了注意，可以按
   C-g 或者 Esc Esc Esc，取消键入的命令。
 
+** Good reference
+1. [EmacsWiki](http://www.emacswiki.org)
+2. [CmdMarkdown](https://www.zybuluo.com/mdeditor)
+3. [sacha chua, an awsome girl](http://sachachua.com/blog/)
+
 * 启动Emacs时的选项
 
 - -nw 在终端下启动emacs，不使用gui。
@@ -67,13 +72,13 @@ http://www.gnu.org/software/emacs/manual/html_node/emacs/GTK-resources.html
       bg[ACTIVE] = "gray75"
       fg[NORMAL] = {0.0, 0.2, 0.05}
     }
-    
+
     widget "*menubar*" style "emacs-menu"
     widget "*emacs-menuitem*" style "emacs-menu"
 #+END_SRC
 
 现在重启 Emacs 看看，菜单栏是不是变样了？
-    
+
 * 与文件有关的操作
 
 - C-x C-f    查找文件并且在新缓冲区中打开。
@@ -139,7 +144,7 @@ http://www.gnu.org/software/emacs/manual/html_node/emacs/GTK-resources.html
 和vim相同，所有删除都是剪切操作。
 
 在 EMACS 中所谓的 kill-ring 是指一个存放从文件缓冲区中删除和
-复制的文本的地方。文本在缓冲区中是消失了， 但却储存在kill-ring。 
+复制的文本的地方。文本在缓冲区中是消失了， 但却储存在kill-ring。
 EMACS 可以有许多的缓冲区，但却只有一个 kill-ring。
 EMACS 所设计共享的 killing-ring 的用意是让被遗弃的文件可以找回， 而且各
 缓冲区彼此也可借由killing-ring 来建立一个互通的管道。
@@ -252,7 +257,7 @@ EMACS 所设计共享的 killing-ring 的用意是让被遗弃的文件可以找
 - C-x r f R: frame-configuration-to-register, 将各帧的窗口布局, 缓
   冲区等配置存入R, 同样用C-x r j R来恢复. C-u C-x r j R在恢复
   frame configuration时, 会删除 frame configuration 不包含的帧.
-- C-u NUMBER C-x r n R: 将数字NUMBER存入R. 如果没有参数, 
+- C-u NUMBER C-x r n R: 将数字NUMBER存入R. 如果没有参数,
   会把0存入R. 同样用C-x r i R来插入.
 - C-u NUMBER C-x r + R: 给R中存储的数字增加NUMBER, 如果没有参数, 增加1.
 - (set-register ?R '(file . "PATH"))会把文件名存入R, C-x r j R会打开该文件.
@@ -311,7 +316,7 @@ EMACS 所设计共享的 killing-ring 的用意是让被遗弃的文件可以找
 - C-x 4 f  在别的窗口打开文件
 - C-x 4 b  切换其它窗口中的缓冲区
 - C-x 1    当前缓冲区满屏显示（常用的按键）, 或者按Esc Esc Esc关
-  闭其它窗口. 
+  闭其它窗口.
 - C-x 2    创建上下排列的窗口
 - C-x 3    创建左右排列的窗口
 - C-x o    在窗口之间移动
@@ -361,7 +366,7 @@ EMACS 所设计共享的 killing-ring 的用意是让被遗弃的文件可以找
 - M-\\     删除连续的空格, =C-u M-\\= 只删除 point 前面的空白字符.
 - M-(      输入 =()=
 - Esc, Tab (M-Tab)     用字典补全输入。
-- 插入/覆盖模式切换：M-x overwrite-mode是用来转换 insert mode 
+- 插入/覆盖模式切换：M-x overwrite-mode是用来转换 insert mode
   与 overwrite mode ，按Insert键可以实现同样的功能。
 - C-i 相当于TAB，M-i 输入制表符。
 - C-m 相当于RET；C-o在光标后重开一行，但光标保持不动。
@@ -507,7 +512,7 @@ C-SPC在全局的标记位置内跳转。
 - M-x bookmark-load     从特定的文件读取书签列表
 
 - C-x r l   打开书签列表，下面是书签列表的一些快捷键：
-  
+
   - f: 显示光标所在的书签
   - t: 是否显示和书签关联的文件路径
   - q: 退出书签列表
@@ -515,7 +520,7 @@ C-SPC在全局的标记位置内跳转。
   - v: 显示被标记的书签，如果没有标记的书签，就显示光标所在的书签
   - d: 做删除的标记
   - x: 删除被标记删除的书签
-  - u: 移除标记 
+  - u: 移除标记
 
 
 * 使用在线帮助
@@ -551,9 +556,9 @@ C-SPC在全局的标记位置内跳转。
 
 - C-h a apropos-command, 查看哪些命令包含了某个子字符串。参数可以
   是单个关键字, 关键字列表 和 正则表达式.
-- C-u C-h a, show apropos commands or functions. 
+- C-u C-h a, show apropos commands or functions.
   When looking for command by apropos-command, you can call it with 【Ctrl+u】 first.
-  It'll then also list functions. 
+  It'll then also list functions.
 - M-x apropos 查看哪些命令或变量包含了某个子串。默认不显示与命令对
   应的按键, C-u M-x apropos会显示对应的按键(如果有绑定按键的话).
 - M-x apropos-variable 列出用户可以定制的变量, 如果用C-u 做前缀,
@@ -772,8 +777,8 @@ C-h m 列出目前的mode的特殊说明。
 global相当于ctags + cscope。
 
 + 在工程目录运行 =gtags= 生成TAG文件
-+ 在emacs中 =M-x gtags-mode= 
-+ 然后 =M-x gtags-visit-rootdir= 
++ 在emacs中 =M-x gtags-mode=
++ 然后 =M-x gtags-visit-rootdir=
 + 就可以使用 =M-.= 定位tag，使用 =M-*= 返回
 + 而且可以通过 =M-x gtags-find-rtag= 定位tag被访问的位置
 
