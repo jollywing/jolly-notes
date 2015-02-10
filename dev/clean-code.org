@@ -1,0 +1,31 @@
+* Naming rules
+** Intention Revealing
+选择好名字要花时间，但是值得
+要不断改进，使用更好的命名
+如果一个名字还需要注释，那么这个名字没有反应它的意图。
+** Avoid disinformation
+不要用类似Unix平台上的变量缩写
+不要误导程序员，如果account不是放在一个List容器中，就不要用accountList, 用accounts更好。
+变量名之间最好有足够大的差异，方便读代码的人区分。
+** Make Meaningful Distinctions
+避免用序号区分变量。
+
+警惕噪音词，variable不应该出现在变量名中。nameString和name有什么不同呢？
+moneyAmount和money有什么不同呢？ accountData和account又有什么不同？
+** Use Pronounceable Names
+(I have an annoying habit of pronouncing everything as written)
+** Use Searchable Names
+单字符变量名和数字常量都是对搜索不友好的。
+My personal preference is that single-letter names can ONLY be used as local vari-
+ables inside short methods.
+** Avoid Encodings
+对于Windows API来说，匈牙利命名法是很重要的。
+但是现在，匈牙利命名法和其它类型编码的命名法都没有必要。
+如果使用类型编码，你修改变量类型的时候，还要修改变量的名字。
+成员前缀(m_)也没有必要。
+** Avoid Mental Mapping
+One difference between a smart programmer and a professional programmer is that
+the professional understands that clarity is king.
+
+类命应该是名词或名词词组.
+方法名应该是动词或动词词组。如 save, deletePage.

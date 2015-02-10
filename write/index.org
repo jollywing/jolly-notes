@@ -1,6 +1,6 @@
 
 * Publish
-
+  
 ** Amazon
 1. 在亚马逊出版自己的电子书, http://www.guokr.com/article/52367/
 2. prepare kindlegen, https://aur.archlinux.org/packages/kindlegen/

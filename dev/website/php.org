@@ -27,6 +27,9 @@ echo $obj->foo; // prints 'bar'
 2. 数组定义, ~array('key' => 'value', 'key' => 'value', ...)~;
 3. 对象访问成员, ->.
 
+** 构造与析构
+因为php不支持重载，所以不能有多个构造函数。
+
 ** public, private, protected
 http://php.net/manual/en/language.oop5.visibility.php
 
@@ -42,6 +45,16 @@ Objects of the same type will have access to each others private and protected m
 
 * TDD
 http://tddftw.com/adding-tests-to-legacy-code-part-1/
+
+http://scar.tw/article/2013/01/09/php-phar-create-and-use/Phar
+(PHP Archive)它是PHP的extension，就像是Java的jar一樣可以用來打包程式碼，可讓專案易於散佈並安裝使用
+
+PHP Warning:  realpath(): open_basedir restriction in effect. File(/usr/bin/phpunit) is not within the allowed path(s): (/srv/http/:/home/:/tmp/:/usr/share/pear/) in /usr/bin/phpunit on line 3
+PHP Warning:  Phar::mapPhar(): open_basedir restriction in effect. File(/usr/bin/phpunit) is not within the allowed path(s): (/srv/http/:/home/:/tmp/:/usr/share/pear/) in /usr/bin/phpunit on line 714
+
+PHPUNIT https://phpunit.de/
+中文手册 https://phpunit.de/manual/current/zh_cn/phpunit-book.html
+支持的assert方法 https://phpunit.de/manual/current/zh_cn/phpunit-book.html#appendixes.assertions
 * frameworks
 ** ci(CodeIgniter)
 1. http://codeigniter.org.cn, CI 中国.
