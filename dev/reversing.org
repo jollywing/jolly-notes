@@ -1,0 +1,3 @@
+Reverse engineering is a discovery process.
+reverse engineering of software came of age in 1990.
+The tool is not inherently good or bad.

@@ -29,3 +29,26 @@ the professional understands that clarity is king.
 
 类命应该是名词或名词词组.
 方法名应该是动词或动词词组。如 save, deletePage.
+* Working Effectively with Legacy Code
+** What is legacy code?
+什么是遗产代码？就是我们从他人那里得到的代码。对于程序员来说，通常用来指难以修改的代码。对于我（《Working Effectively with Legacy Code》一书的作者）来说，遗产代码就是没有测试的代码。如果有测试，我们就能自信且迅速地改变代码的行为。没有测试，我们就无法知道我们的修改使代码变好还是变坏了。
+
+(Legacy code is code that we've gotten from someone else.
+In the industry, legacy code is often used as a slang term for difficult-to-change code that we don't understand.
+To me, legacy code is simply code without tests. With tests, we can change the behavior of our code quickly and verifiably. Without them, we really don't know if our code is getting better or worse.
+This book is about being able to confidently make changes in any code base.)
+** primary reasons to change software.
+1. Adding a feature
+Behavior is the most important thing about software. It is what users depend on. Users like it when we add behavior (provided it is what they really wanted), but if we change or remove behavior they depend on (introduce bugs), they stop trusting us.
+
+2. Fixing a bug
+3. Improving the design
+The act of improving design without changing its behavior is called refactoring.
+
+4. Optimizing resource usage
+Preserving existing behavior is one of the largest challenges in software development.
+
+Work on legacy code base, we need ask:
+1. What changes do we have to make?
+2. How will we know that we've done them correctly?
+3. How will we know that we haven't broken anything?
