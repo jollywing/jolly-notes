@@ -148,6 +148,22 @@ BenV
 
 * Tools
 2. http://jsfiddle.net, Test your JavaScript, CSS, HTML or CoffeeScript online with JSFiddle code editor.
+** Balsamiq Mockup
+*** register
+Name: personal
+Key: eJzzzU/OLi0odswsqilILSrOz0vMqbFEAjXONYY1fu6ufgA/CA4X
+
+Name: helloWorld
+Key: eJzzzU/OLi0odswsqslIzcnJD88vykmpsUQCNc41hjV+7q5+AF74Ds8=
+
+Name: china
+Key: eJzzzU/OLi0odswsqknOyMxLrLFEAjXONYY1fu6ufgAJ5gy2
+
+Name: ketty
+Key: eJzzzU/OLi0odswsqslOLSmprLFEAjXONYY1fu6ufgAOOwzk
+** DB Design
+1. Mysql workbench
+2. phpMyAdmin http://stackoverflow.com/questions/2663468/mysql-workbench-vs-phpmyadmin
 * 美工
 ** 为什么要切片
 为了图片快速下载和显示。

@@ -30,6 +30,8 @@ the professional understands that clarity is king.
 类命应该是名词或名词词组.
 方法名应该是动词或动词词组。如 save, deletePage.
 * Working Effectively with Legacy Code
+在遗产代码上工作的三要素： sensing, separation, seams.
+
 ** What is legacy code?
 什么是遗产代码？就是我们从他人那里得到的代码。对于程序员来说，通常用来指难以修改的代码。对于我（《Working Effectively with Legacy Code》一书的作者）来说，遗产代码就是没有测试的代码。如果有测试，我们就能自信且迅速地改变代码的行为。没有测试，我们就无法知道我们的修改使代码变好还是变坏了。
 
@@ -52,3 +54,15 @@ Work on legacy code base, we need ask:
 1. What changes do we have to make?
 2. How will we know that we've done them correctly?
 3. How will we know that we haven't broken anything?
+** Unit Testing
+如果一个测试设计下列方面，就不是单元测试：
+1. 该测试操作了实际的数据库
+2. 该测试进行了实际的网络通信
+3. 该测试访问了文件系统
+4. 为了运行测试，你需要修改程序的运行环境，比如编辑配置文件
+** Algorithm to work with legacy code
+1. 确定要改变的行为
+2. 找到要加测试的地方
+3. 去除依赖
+4. 写测试（针对程序的新行为先写测试）
+5. 改写代码和重构
