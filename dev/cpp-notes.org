@@ -3,5 +3,6 @@ Whenever ordinary integers and unsigned integers combine in an expression,
 the ordinary integers are converted to unsigned.
 
 ** google test
-1. install: =pkg install googletest=.
+1. install: =pkg install googletest=. =pacman -S gtest=
 2. http://code.google.com/p/googletest/wiki/V1_7_Primer
+http://www.cnblogs.com/coderzh/archive/2009/03/31/1426758.html
