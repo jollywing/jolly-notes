@@ -2,3 +2,11 @@
 ** java工具
 izpack
 java工程打包工具
+
+** 测试
+JUnit
+下载: https://github.com/junit-team/junit/wiki/Download-and-Install
+
+TestCase inclues testXXX
+Add TestCase into TestSuite.
+TestRunner.run(TestSuite test);

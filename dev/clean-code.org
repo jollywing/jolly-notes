@@ -66,3 +66,37 @@ Work on legacy code base, we need ask:
 3. 去除依赖
 4. 写测试（针对程序的新行为先写测试）
 5. 改写代码和重构
+** Fake Object
+Sensing应该被翻译成感知。如果我们的代码中依赖另一个类，对这个类的行为的结果不可感知，我们就无法测试。这是可以把该行为抽象到接口中，然后继承这个接口实现一个Fake Object.
+
+第三章的内容主要是用Fake Object达到sensing的目的。
+有的语言还集成了Mock框架，可以针对特定的类生成Mock类型。
+Mock类型里包含了一系列预期。比FakeObject用起来更方便。
+
+关于Fake和mock的区别， http://www.cnblogs.com/2018/archive/2012/09/18/2681117.html 有解释。
+1. Dummy. An object that is passed around but never used. Typically used to fulfill the parameter list of a method.
+2. Stub. An object that always returns the same canned response. May also hold some dummy state.
+3. Fake. An actual working implementation (not of production quality or configuration) that can replace the real implementation.
+4. Mock. An object that represents a series of expectations and provides canned responses.
+
+** Seams
+第四章主要讲了Seams. Seam的定义是不改变生产代码行为的前提下在测试代码中改变行为。
+
+对于c语言的项目，可以使用预处理Seam. 通过 =#include=, =#define= 替换某个函数的行为，例如
+
+#+BEGIN_SRC c
+#ifdef TESTING
+#define a_global_fun(x) {do something; do other things;}
+#endif
+#+END_SRC
+
+对于用有链接阶段的语言，都可以使用 Link Seam.
+如 c++ 项目依赖某个图形库，为了进行单元测试，我们可以实现一个假的图形库，在链接测试程序时，让它链接我们的假图形库。
+Java项目也可以偷梁换柱，在执行时通过classpath指定我们替换过的类。
+
+最常见的是对象Seam. 为了改变要测试类的某个行为。
+比如 Item::loadData(string filepath); 要从文件系统读取文件。
+我们可以建一个Item的子类 TestItem，然后改变它 `loadData` 的行为。
+这样就可以去除对文件系统的依赖。
+
+对于面向对象的语言，尽量使用Object Seam。

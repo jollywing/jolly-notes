@@ -1,0 +1,48 @@
+http://www.pixeljoint.com/forum/forum_posts.asp?TID=11299
+
+** What is Pixel art?
+
+像素画由像素组成，但由像素组成的不一定是像素画。
+如果一个像素画失去了像素感，不能算作是像素画。
+
+It is when the pixels hold importance to the nature of the work which defines it as pixelart. - Alex HW
+
+像素画区别于其它像素艺术，因为其注重控制和精度。对于一个像素艺术家来说，每个像素都是刻意放置的。
+
+其它数字艺术使用许多工具，但像素画不需要。因为这些工具可能会以不可预测的方式放置像素。像素画是完全控制的艺术。
+（这就是我喜欢的原因）
+
+那些工具对像素画艺术家来说是 `dirty tools`， 会放置很多新的颜色。
+
+像素画家不是拒绝用油漆桶和画线工具。重要的是他在单个像素级别创造作品。
+
+** II. Where do I start?
+
+把注意力放在像素上。
+
+从小画布开始。
+
+用颜色受限的调色板，如果你不能用4种颜色画好一个精灵，用40种颜色也没用。
+GameBoy的4色调色板对于初学者来说不错，因为你需关心值，不用关心色调和饱和度。
+
+对于像素画有大量的免费程序可以选择，我用Grafx2，但 GraphicsGale, Pro Motion, Photoshop, Pixen, 和 MS Paint 的用户更多。
+我选择Grafx2，因为它可以用键盘快速地操作。
+
+新手的普遍错误是把他们的作品存成JPEG/JPG。注意，因为压缩，JPG会损害像素画的质量。
+存成PNG或GIF是不错的选择。但是要小心一些程序（比如微软画板）不能正确地支持GIF，会毁了你的图像。
+
+怎么开始画图？
+取决于你，一些艺术家先从线条开始，然后增加颜色。
+另一些艺术家以画刷布局开始，然后逐步细化，达到像素级别。
+两者都很好，看你习惯了，也要视具体情况而定。
+
+** III. Terms to know
+
+Anti-aliasing (AA):
+使边缘看的平滑。对像素画家来说，AA是靠手工完成的。
+
+Dithering (抖动):
+用于两种颜色间的过度，而无需其它颜色。也用于产生纹理。
+最常见的抖动模式是 50/50 抖动。也叫做 50%抖动。
+The most common form of dithering you'll see is a 50/50 dither, also known as a 50% dither or a checkerboard pattern.
+http://site.douban.com/163509/widget/notes/8695193/note/248516206/

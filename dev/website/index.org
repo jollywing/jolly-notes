@@ -1,5 +1,6 @@
 
 1. https://github.com/HabitRPG/habitrpg
+2. http://blog.sina.com.cn/s/blog_6e1bd8350101kf2n.html 为何使用go
 * Javascript
 ** Javascript notes
 file:javascript.org
