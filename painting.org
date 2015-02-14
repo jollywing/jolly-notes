@@ -1,5 +1,125 @@
 http://www.pixeljoint.com/forum/forum_posts.asp?TID=11299
+http://www.8bittt.com/
+http://www.8bittt.com/tools/grafx2-keyboard-shortcuts
 
+移动画布：	Up Down Lef Right
+快速移动画布：	shift + Up Down Lef Right
+慢速移动画布：	alt + Up Down Lef Right
+鼠标笔触移动 1像素：	ctrl + Up Down Lef Right （绘制高精度图形时很有用）
+模拟鼠标左键点击：	空格
+模拟鼠标右键点击：	shift + 空格
+隐藏/显示工具栏：	F10
+隐藏/显示鼠标：	F9
+快速将画笔调至1px大小：	Del
+选择画笔：	F4
+进入单色画笔模式：	shift+F4 （将自定义画笔转换为单色模式，画笔不透明颜色将替换为前景色）
+自由画笔工具：	D （左键前景色/右键背景色，后面部分绘图工具也是这样）
+切换自由画笔模式：	shift+D （模式：连续、不连续、点、填充）
+切换自由画笔为连续模式：	ctrl+D
+直线工具：	L
+多段直线模式：	shift+L
+喷枪：	A
+喷枪选项：	shift+A
+填充工具：	F
+颜色替换工具：	shift+F （点击左键/右键，将鼠标所指颜色替换为前景色/背景色）
+曲线：	I
+高级曲线：	shift+I （通过更多的切点，来画复杂的曲线，比如S型）
+空心矩形：	R
+实心矩形：	shift+R
+空心正圆：	C
+空心椭圆：	ctrl+C
+实心正圆：	shift+C
+实心椭圆：	shift+ctrl+C
+空心多边形：	N
+自由空心多边形：	ctrl+N
+实心多边形：	shift+N
+自由实心多边形：	ctrl+shift+N
+矩形渐变：	alt+R
+渐变选项：	alt+G
+圆形渐变：	alt+C
+椭圆渐变：	alt+shift+C
+移动画布：	小键盘5
+画布选项：	shift+小键盘5
+绘图效果选项：	E
+着色模式开关：	F5 （允许在一定颜色范围内加深或减淡颜色）
+着色模式选项：	shift+F5
+快速着色模式：	ctrl+F5
+快速着色模式选项：	shift+ctrl+F5
+加锁模式：	F6 （允许锁定特点颜色不被修改）
+加锁模式菜单：	shift+F6
+蒙板模式开关：	alt+F6 （允许你遮罩多余部分的颜色）
+蒙板模式选项：	alt+shift+F6
+对齐网格：	G
+网格菜单：	shift+G
+滤网模式：	ctrl + G
+滤网模式选项：	ctrl + shift+G
+滤网反色：	ctrl + alt + G
+上色模式：	F7 （1、2-9 、0快速调整透明度）
+上色模式选项：	Shift + F7
+平滑边缘：	F8
+涂片模式：	alt+F8
+铺砖模式：	alt+B
+铺砖模式选项：	alt + shift + B
+矩形笔刷截取模式：	B
+套索笔刷截取模式：	ctrl+B
+使用前一个笔刷图案：	shift+B
+水平翻转笔刷图案：	X
+垂直翻转笔刷图案：	Y
+90°旋转图案：	Z
+180°旋转图案：	shift+Z
+将笔刷放大缩小：	S
+扭曲笔刷：	shift+S
+描边画笔：	O （使用前景色描边）
+收缩画笔：	shift+O
+将画笔扩大2倍：	shift+H
+将画笔宽度扩大2倍：	shift+X
+将画笔高度扩大2倍：	shift+Y
+获取笔刷颜色（？）：	F11
+自定义笔刷重上色（？）：	F12
+旋转画笔：	W
+拾色器：	`
+前景背景色切换：	shift+`
+放大：	M，滑轮
+放大倍数：	shift+M
+放大1个级别：	小键盘+
+缩小1个级别：	小键盘-
+笔刷效果选项：	ctrl+shift+B
+文字：	T
+分辨率：	回车
+统计颜色数：	shift+F1
+切换前后文件：	Tab
+复制到新文件：	shift+Tab
+保存：	shift+F2
+另存为：	F2
+载入：	F3
+重新载入：	shift+F3
+保存笔刷：	ctrl+F2
+载入笔刷：	ctrl+F3
+增大、减小笔刷：	. ,
+设置：	shift+F10
+上一步：	U
+重做：	shift+U
+清除上一步：	shift+Del
+清除画布：	退格
+使用背景色清楚画布：	shift+退格
+退出：	Q
+色板选项：	P
+第二色板选项：	shift+P
+排除颜色选项：	ctrl+P
+卷动色板：	PageUp PageDown
+快速卷动色板：	shift+PageUp shift+PageDown
+设置前景色为色板中相邻颜色：	[ ]
+设置背景色为色板中相邻颜色：	shift+[ shift+]
+设置前景色为自定义色板中相邻颜色：	- =
+设置背景色为自定义色板中相邻颜色：	shift+- shift+=
+菜单：	alt+Home
+新建层：	alt+Insert
+删除：	alt+Del
+合并：	alt+End
+上移：	alt+PageUp
+下移：	alt+PageDown
+
+http://beaconguide.me/
 ** What is Pixel art?
 
 像素画由像素组成，但由像素组成的不一定是像素画。
