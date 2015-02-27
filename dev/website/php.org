@@ -2,6 +2,8 @@
 php中文手册, http://php.net/manual/zh/
 php代码在线执行, http://www.mcqyy.com/RunCode/php/
 
+* 环境部署
+在windows下安装PHP，可以安装XAMPP(https://www.apachefriends.org/zh_cn/index.html)。下载windows后安装即可，可以定制要安装的程序。
 * 字符串
 单引号和双引号都能表示字符串。
 但双引号字符串可以包含转义字符串，而单引号不能。

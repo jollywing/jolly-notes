@@ -2,6 +2,7 @@ http://www.pixeljoint.com/forum/forum_posts.asp?TID=11299
 http://www.8bittt.com/
 http://www.8bittt.com/tools/grafx2-keyboard-shortcuts
 
+插画中国: http://bbs.chahua.org/thread.php?fid=23
 移动画布：	Up Down Lef Right
 快速移动画布：	shift + Up Down Lef Right
 慢速移动画布：	alt + Up Down Lef Right
@@ -166,3 +167,6 @@ Dithering (抖动):
 最常见的抖动模式是 50/50 抖动。也叫做 50%抖动。
 The most common form of dithering you'll see is a 50/50 dither, also known as a 50% dither or a checkerboard pattern.
 http://site.douban.com/163509/widget/notes/8695193/note/248516206/
+** 透视
+http://wenku.baidu.com/link?url=ASz7zDrohgD6PfL00ZoUssBdCchmWyUTx7k4jLocunQzpQ521UbV5YGyYmKKfAQzkzU32vDtsDh-NBJ3NXBQwVDVTu4hYusLff_H1fciy4i
+人物的透视: http://wenku.baidu.com/view/041927ee102de2bd9605882b.html
