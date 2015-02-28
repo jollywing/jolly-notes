@@ -59,4 +59,28 @@
 - `/data/data` 存放所有软件（包括/system/app 和 /data/app 和 /mnt/asec中装的软件）的一些lib和xml文件等数据信息；
 - `/data/dalvik-cache` 存放程序的缓存文件，这里的文件都是可以删除的。
 
+##  Android Dalvik和JVM的区别 ##
+1. `JVM`运行的Java字节码，它从`.class`文件或Jar包中加载字节码然后执行； `Dalvik` 运行的是 `dex` 文件(Dalvik Executable)，生成APK时，Dx工具把所有`.class`文件编译成一个 `dex` 文件。
+2. `JVM`是基于栈的，而 `Dalvik` 是基于寄存器实现的。因此 `Dalvik` 比`JVM`有更好的性能，只是硬件通用性差些。
+3. 相对于`JVM`来说， `Dalvik` 占用的CPU资源和内存空间都比较少。
 
+2015-02-28 周六
+
+## 设置环境变量ANDROID_SDK_HOME有什么用？ ##
+
+默认情况下，开发者创建的AVD(Android Virtual Device)存放在家目录的.android下。
+
+如果是Linux，其路径就是 `/home/<your_user_name>/.android`。
+
+如果用windows XP，其路径就是 `C:\documents and settings\<your_user_name>\.android`。（win7和win8略有不同）。
+
+如果想更改AVD的存放位置，可以设置环境变量 `ANDROID_SDK_HOME`。
+
+比如在windows下设置 `ANDROID_SDK_HOME` 的值为 `e:\jollywing\`，则你的AVD就会存放在 `e:\jollywing\.android` 目录下。
+
+2015-02-28 周六
+
+## android命令 ##
+- android list 会同时列出target和AVD.
+- android list avd 列出可用的虚拟设备
+- android list target 列出可用的API.
