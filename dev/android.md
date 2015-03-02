@@ -84,3 +84,13 @@
 - android list 会同时列出target和AVD.
 - android list avd 列出可用的虚拟设备
 - android list target 列出可用的API.
+
+## Android TDD ##
+<http://www.cnblogs.com/jacktu/archive/2009/04/17/1438270.html>
+
+android create project -n exercise -t 3 -p ./exercise -k org.jollywing -a MainActivity
+
+mkdir org/jollywing/test
+Edit `org/jollywing/test/TestActivity.java`.
+ant install
+adb shell am instrument -e class org.jollywing.test.TestActivity -w org.jollywing/android.test.InstrumentationTestRunner

@@ -69,7 +69,7 @@
 =atq= 输出时，告诉我： You have mail in /var/spool/mail/jolly.
 （其中jolly是我的用户名）。
 =cat /var/spool/mail/jolly= 查看邮件，内容是：
-: (feh:2632): Gdk-WARNING **: cannot open display: 
+: (feh:2632): Gdk-WARNING **: cannot open display:
 
 display后面是空的，证明feh执行的时候没有指定display。
 再加入上述任务：
@@ -107,3 +107,6 @@ echo "env DISPLAY=:0 feh ~/pics/girl.png" |at now+25 minutes
 
 2014-03-21 Fri
 
+* Wifi上网
+create_ap
+create_ap wlan0 ppp0 my_ap mypasswd
