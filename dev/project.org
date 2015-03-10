@@ -7,6 +7,7 @@
 2. 用户全局配置：git config --global key=value
    会把配置写入 ~/.gitconfig.
    On Windows 7, it maybe c:\Users\Administrator\.gitconfig
+   On Windows Xp, it maybe c:\Document and Settings\Administrator
    You can use =git config --global --edit= whatever platform you are using.
 3. 换行符问题。 *autocrlf*
    #+BEGIN_EXAMPLE
@@ -112,6 +113,8 @@ Solution:
 *** errors
 1. non-fast-forward error, somebody else has commited something to the remote repository,
    before you push, you nell pull at first.
+2. =error: cannot spawn git: No such file or directory=,
+
 *** github
 1. delete a repository. Open the repository page, click /settings/ in the
    right pane, click the button "delete this repository" in the bottom.
