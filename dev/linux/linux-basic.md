@@ -129,3 +129,89 @@ makefile写好后，运行 `make build` 将会构建 libmylib.a， 运行 `make 
 如果你在 windows 上使用 mingw，和Linux下生成静态库的方法是一样的。
 
 2015-03-10 Tue
+
+# Linux动态库生成与使用指南 #
+
+Linux下动态库文件的文件名形如 `libxxx.so`，其中so是 Shared Object 的缩写，即可以共享的目标文件。
+
+在链接动态库生成可执行文件时，并不会把动态库的代码复制到执行文件中，而是在执行文件中记录对动态库的引用。
+
+程序执行时，再去加载动态库文件。如果动态库已经加载，则不必重复加载，从而能节省内存空间。
+
+Linux下生成和使用动态库的步骤如下：
+
+1. 编写源文件。
+2. 将一个或几个源文件编译链接，生成共享库。
+3. 通过 `-L<path> -lxxx` 的gcc选项链接生成的libxxx.so。
+4. 把libxxx.so放入链接库的标准路径，或指定 `LD_LIBRARY_PATH`，才能运行链接了libxxx.so的程序。
+
+下面通过实例详细讲解。
+
+## 编写源文件
+
+建立一个源文件： max.c，代码如下：
+
+    int max(int n1, int n2, int n3)
+    {
+        int max_num = n1;
+        max_num = max_num < n2? n2: max_num;
+        max_num = max_num < n3? n3: max_num;
+        return max_num;
+    }
+
+编译生成共享库：
+
+    gcc -fPIC -shared -o libmax.so max.c
+
+我们会得到libmax.so。
+
+实际上上述过程分为编译和链接两步， -fPIC是编译选项，PIC是 Position Independent Code 的缩写，表示要生成位置无关的代码，这是动态库需要的特性； -shared是链接选项，告诉gcc生成动态库而不是可执行文件。
+
+上述的一行命令等同于：
+
+    gcc -c -fPIC max.c
+    gcc -shared -o libmax.so max.o
+
+## 为动态库编写接口文件
+
+为了让用户知道我们的动态库中有哪些接口可用，我们需要编写对应的头文件。
+
+建立 max.h ，输入以下代码：
+
+    #ifndef __MAX_H__
+    #define __MAX_H__
+
+    int max(int n1, int n2, int n3);
+
+    #endif
+
+## 测试，链接动态库生成可执行文件
+
+建立一个使用`max`函数的test.c，代码如下：
+
+    #include <stdio.h>
+    #include "max.h"
+
+    int main(int argc, char *argv[])
+    {
+        int a = 10, b = -2, c = 100;
+        printf("max among 10, -2 and 100 is %d.\n", max(a, b, c));
+        return 0;
+    }
+
+`gcc test.c -L. -lmax` 生成a.out，其中`-lmax`表示要链接`libmax.so`。
+`-L.`表示搜索要链接的库文件时包含当前路径。
+
+注意，如果同一目录下同时存在同名的动态库和静态库，比如 `libmax.so` 和 `libmax.a` 都在当前路径下，
+则gcc会优先链接动态库。
+
+## 运行
+
+运行 `./a.out` 会得到以下的错误提示。
+
+    ./a.out: error while loading shared libraries: libmax.so: cannot open shared object file: No such file or directory
+
+找不到libmax.so，原来Linux中搜索动态库的路径并不包含程序的当前目录。
+
+ld.so.conf
+ld.so.cache
