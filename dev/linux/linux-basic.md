@@ -132,6 +132,8 @@ makefile写好后，运行 `make build` 将会构建 libmylib.a， 运行 `make 
 
 # Linux动态库生成与使用指南 #
 
+相关阅读: [Linux静态库生成指南](http://www.cnblogs.com/jiqingwu/p/4325382.html)
+
 Linux下动态库文件的文件名形如 `libxxx.so`，其中so是 Shared Object 的缩写，即可以共享的目标文件。
 
 在链接动态库生成可执行文件时，并不会把动态库的代码复制到执行文件中，而是在执行文件中记录对动态库的引用。
@@ -211,7 +213,70 @@ Linux下生成和使用动态库的步骤如下：
 
     ./a.out: error while loading shared libraries: libmax.so: cannot open shared object file: No such file or directory
 
-找不到libmax.so，原来Linux中搜索动态库的路径并不包含程序的当前目录。
+找不到libmax.so，原来Linux是通过 `/etc/ld.so.cache` 文件搜寻要链接的动态库的。
+而 `/etc/ld.so.cache` 是 ldconfig 程序读取 `/etc/ld.so.conf` 文件生成的。
+（注意， `/etc/ld.so.conf` 中并不必包含 `/lib` 和 `/usr/lib`，`ldconfig`程序会自动搜索这两个目录）
 
-ld.so.conf
-ld.so.cache
+如果我们把 `libmax.so` 所在的路径添加到 `/etc/ld.so.conf` 中，再以root权限运行 `ldconfig` 程序，更新 `/etc/ld.so.cache` ，`a.out`运行时，就可以找到 `libmax.so`。
+
+但作为一个简单的测试例子，让我们改动系统的东西，似乎不太合适。
+还有另一种简单的方法，就是为`a.out`指定 `LD_LIBRARY_PATH`。
+
+    LD_LIBRARY_PATH=. ./a.out
+
+程序就能正常运行了。`LD_LIBRARY_PATH=.` 是告诉 `a.out`，先在当前路径寻找链接的动态库。
+
+> 对于elf格式的可执行程序，是由ld-linux.so*来完成的，它先后搜索elf文件的 `DT_RPATH` 段, 环境变量 `LD_LIBRARY_PATH`, /etc/ld.so.cache文件列表, /lib/,/usr/lib目录, 找到库文件后将其载入内存. (http://blog.chinaunix.net/uid-23592843-id-223539.html)
+
+## makefile让工作自动化
+
+编写makefile，内容如下：
+
+    .PHONY: build test clean
+
+    build: libmax.so
+
+    libmax.so: max.o
+    	gcc -o $@  -shared $<
+
+    max.o: max.c
+    	gcc -c -fPIC $<
+
+    test: a.out
+
+    a.out: test.c libmax.so
+    	gcc test.c -L. -lmax
+    	LD_LIBRARY_PATH=. ./a.out
+
+    clean:
+    	rm -f *.o *.so a.out
+
+`make build`就会生成`libmax.so`， `make test`就会生成`a.out`并执行，`make clean`会清理编译和测试结果。
+
+2015-03-11 Wed
+
+# 动态库的版本 #
+
+gcc 似乎无法指定要链接的动态库的版本， 但我们在 `/usr/lib` 目录下看到每个动态库都带有版本号。
+比如 jpeg 的动态库，文件名是 `libjpeg.so.8.0.2`。那我们要链接jpeg的动态库时，是怎么链接到。
+
+/usr/lib/libjpeg.so -> libjpeg.so.8.0.2
+
+# untitled #
+mmap 用于建立一段两个或更多程序都能访问的内存。
+实际上文件描述符指向的内容并没有载入内存。
+但你可以用访问内存的方法去访问文件中的数据。
+
+    #include <sys/mman.h>
+    void *mmap(void *addr, size_t len, int prot, int flags,
+        int fildes, off_t off);
+
+`addr`是映射的起始地址，你可以为它指定一个值。如果你传递0给它，系统将自动分配一个地址。
+`len`是内存映射的长度。如果你传递0给`len`，则mmap调用会失败。
+`prot`用于设置内存段的访问权限。
+`PROT_READ`(可读), `PROT_WRITE`(可写), `PROT_EXEC`(可执行), `PROT_NONE`(不可访问).
+`flags`控制对映射数据段的操作造成的影响。
+`MAP_SHARED`(改变是共享的，对映射数据的修改会影响真实的对象),
+`MAP_PRIVATE`(改变是私有的，对映射数据的修改不影响真实的对象),
+`MAP_FIXED`(精确地翻译地址，告诉mmap返回的地址就是addr的值。不是所有实现都支持),
+`fildes` 是文件描述符，`off`是文件的起始偏移，

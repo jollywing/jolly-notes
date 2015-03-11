@@ -1,10 +1,12 @@
-# unnamed #
+# 用Grub4dos引导，硬盘安装ArchLinux #
 
 本来在工作机上用winXP，最近想深入Linux开发，于是决定装个Linux。家里的archLinux + awesome用得很好，
 于是决定在工作机上也装一套。
 
 不想刻盘，也不想用U盘，通过Grub引导吧。从网上搜了一下，这方面的经验分享很多，我参考的是这一篇。
 http://blog.csdn.net/xiaoyanghuaban/article/details/22613987
+
+## 准备grub4dos
 
 下载grub4dos，[这里](http://grub4dos.chenall.net/)是作者的网站？可以下载到最新版。
 
@@ -52,12 +54,13 @@ hd0表示第一个硬盘，如果你只有一个硬盘，它一定是`hd0`。
     ln -s /dev/loop6 /dev/disk/by-label/ARCH-201503
     exit
 
-因为我们帮忙挂载好了镜像，系统完成了引导。
-（注意，如果你的C盘是Fat32分区，就把`-ntfs`改为`-vfat`。
+因为我们帮忙挂载好了镜像，系统完成了引导，进入系统，我们得到一个root用户的提示符。
+
+（注意，如果你的C盘是Fat32分区，就把`-ntfs`改为`-vfat`。）
 
 ## 准备分区
 
-用fdisk添加三个分区，
+运行 `fdisk /dev/sda`，添加三个分区，
 
 - /dev/sda7 (512M, 用于`/boot`)，
 - /dev/sda8 (30G，用于根系统，即 `/`),
@@ -76,7 +79,7 @@ hd0表示第一个硬盘，如果你只有一个硬盘，它一定是`hd0`。
     # mount /dev/sda7 /mnt/boot
     # mount /dev/sda9 /mnt/home
 
-# 安装
+## 安装 ##
 
 为了加快软件下载速度，我们先改一下源列表，编辑 `/etc/pacman.d/mirrorlist`。
 搜索China，把中国的镜像站点都保留下来，其余的都删掉。
@@ -113,5 +116,36 @@ hd0表示第一个硬盘，如果你只有一个硬盘，它一定是`hd0`。
 你可以 `lspci -v`看一下，发现所有的设备都已经被驱动起来。这就是ArchLinux爽的地方。
 
 为xserver安装显示驱动: `# pacman -S xf86-video-ati xf86-video-intel`。
-Ati驱动
-接下来，就是我常用的软件了。
+Ati驱动独立显卡，intel驱动GPU。
+
+检查有没有 `startx` 程序，如果没有，就安装 `xorg-xinit`。
+
+接下来，就是我常用的软件了，我最爱的编辑器Emacs和最喜欢的窗口管理器Awesome。
+
+对了，还有fcitx输入法。因为我用双拼，所以不觉得Linux下的输入法有多逊。
+
+编辑 ~/.xinitrc，内容如下：
+
+    export LC_CTYPE="zh_CN.UTF-8"
+    export XMODIFIERS=@im=fcitx
+    fcitx -d
+    exec dbus-launch awesome
+
+注意， awesome 前面的 dbus-launch 是必要的。这样，文件管理器才会显示可以挂载的卷和移动设备。
+
+`startx`，开始工作吧。
+
+笔记本之前用 winxp 系统，风扇老是呜呜叫，现在灰常安静有没有。
+
+2015-03-11 Wed
+
+
+## flash player plugin ##
+/usr/lib/mozilla/plugins/libflashplayer.so
+pacman -S flashplugin
+
+## GTK主题设置 ##
+https://wiki.archlinux.org/index.php/GTK%2B
+
+驱动触摸板
+pacman -S xf86-input-synaptics
