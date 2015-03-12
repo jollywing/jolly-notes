@@ -149,3 +149,26 @@ https://wiki.archlinux.org/index.php/GTK%2B
 
 驱动触摸板
 pacman -S xf86-input-synaptics
+
+## 如果装好Linux，没有声音，怎么办？ ##
+
+现代的Linux发行版对声卡的支持都应该没有问题。系统装好，声卡就应该正常工作。
+（尤其是ArchLinux，我觉得对硬件支持最跟得上时代步伐。）
+
+可是我用mplayer播放mp3文件却没有声音，但也没有看到报错信息。
+
+`lspci -v` 发现声卡驱动确实载入。
+
+`alsa-mixer`(需要安装alsa-utils)把Master的音量也调到了最大。
+
+百思不得其解啊。
+
+查看 [Arch wiki](https://wiki.archlinux.org/index.php/Advanced_Linux_Sound_Architecture#Unmuting_the_channels) 才知道，alsa默认把所有通道静音。
+
+打开`alsa-mixer`，如果发现Master下面显示MM，则表示Master通道被静音。我的果然是MM。
+
+用左右方向键选中Master通道，按`m`键，切换静音状态，会发现`MM`变为了`00`，这时Master通道的静音状态就被取消了。
+
+再用mplayer播放歌曲，就正常发声了。
+
+2015-03-12 Thu
