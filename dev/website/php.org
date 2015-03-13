@@ -10,6 +10,11 @@ Linux Apache Mysql Php.
 Linux Nginx Mysql Php. 其中 Nginx 发音同 engine x。
 国内目前用Nginx的用户多于Apache用户。
 
+*** php-fpm
+
+FastCGI Process Manager for PHP
+nginx 就是靠转发php脚本给 fastcgi服务器，来解析php脚本的。
+
 * 字符串
 单引号和双引号都能表示字符串。
 但双引号字符串可以包含转义字符串，而单引号不能。
