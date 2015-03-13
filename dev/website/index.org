@@ -177,3 +177,7 @@ ImageMagick
 GIMP
 1. 从选区建立参考线，然后 滤镜 | Web | slice，会生成html的table布局。http://docs.gimp.org/en/python-fu-slice.html
 2. webSplit插件 http://www.arakne.es/en/dessign/gimp-websplit-new-version/, 通过路径建立切片，生成div布局。如何使用websplit: http://tieba.baidu.com/p/3238938081
+* 开源的Web产品
+** odoo(openERP)
+ERP = enterprise Resource Planning, 企业资源规划。
+在github上。
