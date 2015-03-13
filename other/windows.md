@@ -80,3 +80,6 @@ bug.n 和同类的windows上的tiling wm相比，就是文档很全。
     Config_rule=WebChat*;.*;;1;0;0;0;0;0;
 
 2015-03-03 周二
+
+# 虚拟桌面 #
+虚拟桌面工具 mDesktop, dexpot

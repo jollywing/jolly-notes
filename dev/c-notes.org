@@ -151,6 +151,18 @@ void main(){
 
 - =double _hypot(double x, double y)= 计算直角三角形斜边长度。
 
+* 时间库函数
+: #include <time.h>
+
+~clock_t~ 和 ~time_t~ 都是长整型。
+~clock_t~ 表示逝去的处理器时间，而 ~time_t~ 表示日历时间。
+
+- 获取当前时间: ~time_t now = time(0);~
+- 获得本地时间的字符串: ~char * time_str = ctime(&now)~
+- 获得UTC时间结构: ~struct tm * universal_time = gmtime(&now);~
+- 获得本地时间结构: ~struct tm * local_time = localtime(&now);~ 注意，对于中国用户来说，本地时间比全球时间早8个小时
+- 转换时间结构到字符串，格式和ctime相同: ~char *time_str = asctime(local_time);~
+- 转换时间结构到自定义格式字符串: ~strftime(char * result, size_t max_chars, const char *FORMAT, const struct tm *time_struct);~
 
 * 预处理
 
