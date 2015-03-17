@@ -175,3 +175,6 @@ ntfs-3g
 再用mplayer播放歌曲，就正常发声了。
 
 2015-03-12 Thu
+
+
+[ArchWiki上关于默认应用的文章](https://wiki.archlinux.org/index.php/Default_applications)
