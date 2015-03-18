@@ -96,6 +96,8 @@ text-shadow:2px 2px 4px #000000;
 1. 怎么做类似github的按钮? http://code.ciaoca.com/style/css3-github-btn/, source: https://github.com/necolas/css3-github-buttons/blob/master/gh-buttons.css
 
 * HTML
+** 插入图像
+: <img src='xxx.jpg' alt='xxx' width='xx' height='xx'>
 ** HTML header
 ** HTML5
 HTML5 中的一些有趣的新特性：
