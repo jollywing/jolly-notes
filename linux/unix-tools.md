@@ -1,24 +1,17 @@
-================================
-UNIX那些实用工具
-================================
+# UNIX那些实用工具 #
 
-:author: Jiqing Wu
-:email: jiqingwu@gmail.com
-:update: |date|
+    :author: Jiqing Wu
+    :email: jollywing@foxmail.com
+    :update: 2015-03-20 Fri
 
-.. |date| date::
-
-.. contents:: 目录
-
-用户
-================================
+## 用户 ##
 
 - id 可以看自己加入了哪些组。
 - who 看都有谁在系统上。
 - adduser username groupname和 deluser username groupname
+- usermod 可以更改所属组
 
-硬件信息
-================================
+## 硬件信息 ##
 
 - cat /proc/cpuinfo  查看cpu信息
 - cat /proc/meminfo  查看硬盘信息
@@ -29,8 +22,7 @@ UNIX那些实用工具
   的大小。相当于 du -csh。
 - du -ks是以K为单位显示大小，而du -ms是以兆为单位。
 
-文件系统
-=================================
+## 文件系统 ##
 
 mkdir 加参数 -p 可以一次建立一个很深的目录，中间如果有原来不存在的目录
 ，会自动建立。
@@ -42,8 +34,7 @@ mv的几个有用选项
 - -i 礼貌的，如果目的文件存在，会询问是否要覆盖。
 - -u 只有当源文件比目的文件新或者目的文件不存在时才移动。
 
-查看目录：ls
-++++++++++++++++++++++++++++++++++
+### 查看目录：ls ###
 
 - ls -F可以对目录下的文件分类显示，例如目录后显示/，可执行文件后显示*。
 - ls -X 按文件类型分类显示
@@ -55,8 +46,7 @@ mv的几个有用选项
   -h = --human-readable
 - ls -R 递归的显示一个目录及其子目录下的文件。
 
-目录栈
-====================================
+### 目录栈 ###
 
 - 查看目录栈：dirs。如果目录栈为空，则只显示当前的工作目录。
 - 切换到新目录：pushd newpath。新路径会放在栈顶。
@@ -70,8 +60,7 @@ mv的几个有用选项
 - popd +n 把从栈顶算起第n项弹出，目录并不切换。
 - popd -n 把从栈底算起第n项弹出，目录并不切换。
 
-建立链接 ln
-===================================
+### 建立链接 ln ###
 
 ln [参数] <目标> [链接名]
 
@@ -79,153 +68,122 @@ ln [参数] <目标> [链接名]
 - -s 创建符号链接
 - -t 在指定目录创建链接
 
-显示和设置系统时间：date
-================================
+## 显示和设置系统时间：date ##
 
 用date查看时间大概每个人都知道，但有几个人会用date设置系统时间呢？
 
-::
-
-  date --set=STRING
-  set time described by STRING
+    # set time described by STRING
+    date --set=STRING
 
 问题的关键是那个STRING应该怎么写，经实验表明，
 按照date输出的格式写设定时间的字符串即可。
 这个date真的很好用，不用担心系统重启后时钟又改回去，
 可能用date写入系统时钟的同时已写入硬件时钟了。
 
-文件补丁：diff 和 patch
-==============================
+## 文件补丁：diff 和 patch ##
 
 这两个古老而实用的Unix工具！
 
-::
-
-  diff a.txt b.txt > 1.diff
+    diff a.txt b.txt > 1.diff
 
 生成一个补丁。
 
-::
-
-  patch a.txt 1.diff
+    patch a.txt 1.diff
 
 对a.txt应用补丁，将把a.txt变得和b.txt一模一样。
 
 diff是按行为单位比较文件的，也比较容易读懂：
 
-::
-
-  0a1
-  > hehe!
+    0a1
+    > hehe!
 
 表示在第0行生成第1行：hehe!
 
-::
-
-  1c1
-  < aaaa
-  ---
-  > hehe!
+    1c1
+    < aaaa
+    ---
+    > hehe!
 
 表示把第1行由aaaa修改成hehe!
 
-::
-  2,3d1
-  < bbbb
-  < hello
+    2,3d1
+    < bbbb
+    < hello
 
 删除第2，3行。
 
 
-归档文件 tar
-===================================
+## 归档文件 tar ##
 
 我现在有两个文件a.txt和b.html，想用tar将它们归档，用什么命令？
 
-::
-
-  tar -c -f ab.tar a.txt b.html
+    tar -c -f ab.tar a.txt b.html
 
 -c表示生成归档文件，-f后面指定我们要生成的归档文件的名称，
 这个参数是必须的。后面跟要打包的文件或文件夹。通常为了简洁，
 我们会把多个选项连起来写，如上面的命令可以写为：
 
-::
-
-  tar -cf ab.tar a.txt b.html
+    tar -cf ab.tar a.txt b.html
 
 注意，f后面要立即跟归档文件名。所以当多个选项连起来写时，f会写在最后。
 加上-v选项会显示正在归档的文件名，一般在前台压缩都会使用这个选项，
 另外，连字符也可以省略：
 
-::
-
-  tar cvf ab.tar a.txt b.html
+    tar cvf ab.tar a.txt b.html
 
 现在，我们不仅要归档a.txt和b.html，而且还要压缩减少它们占的空间。
 我们可以：
 
-::
+    tar cjvf ab.tar.bz2 a.txt b.html
 
-  tar cjvf ab.tar.bz2 a.txt b.html
-  或：
-  tar czvf ab.tar.gz a.txt b.html
+或：
+
+    tar czvf ab.tar.gz a.txt b.html
 
 加上-j选项，会使用bzip2压缩归档文件，而加上-z选项会用gzip压缩归档文件。
 bzip2的压缩比很高，但是压缩时间也长一些。
 
 现在，给定ab.tar或ab.tar.bz2，我们怎么查看它里面有哪些文件呢？
 
-::
+    tar tf ab.tar.bz2
 
-  tar tf ab.tar.bz2
-  或
-  tar jtf ab.tar.bz2
+或
+
+    tar jtf ab.tar.bz2
 
 -t是查看归档文件的内容，不能和-c同时使用。如果加上-v选项，则会显示
 归档文件中文件的详细信息。
 
 那么，给定ab.tar.bz2，怎么从中解出文件呢？
 
-::
-
-  tar xjvf ab.tar.bz2
+    tar xjvf ab.tar.bz2
 
 -x表示从归档文件中释放文件。
 如果是bzip2压缩过的，就要加上-j；如果是gzip压缩过的，就需要-z。
 
 如果我只想从ab.tar.bz2中加压出a.txt呢？
 
-::
+    tar xjvf ab.tar.bz2 a.txt
 
-  tar xjvf ab.tar.bz2 a.txt
+假设ab.tar.bz2在目录 `dir_c` 下，我们怎么把它解压到dir_d下呢？
 
-假设ab.tar.bz2在目录dir_c下，我们怎么把它解压到dir_d下呢？
-
-::
-
-  cd dir_d
-  tar xjvf dir_c/ab.tar.bz2
+    cd dir_d
+    tar xjvf dir_c/ab.tar.bz2
 
 或者
 
-::
-
-  tar xjvf -C dir_d dir_c/ab.tar.bz2
+    tar xjvf -C dir_d dir_c/ab.tar.bz2
 
 用 -C 选项的另一个好处是，dir_d 可以是一个深目录，如果不存在，会创建它。
 
 如果我想把当前目录的c.odt加入ab.tar.bz2，用什么命令呢？
 如果压缩了，需要解压出ab.tar，然后用-r选项添加c.odt到ab.tar中：
 
-::
-
   tar rvf ab.tar c.odt
 
 对于压缩的归档文件，用-r不行。
 
-搜索某个文件：find
-============================
+## 搜索某个文件：find ##
 
 Linux的高级命令之一。
 
@@ -246,13 +204,10 @@ Linux的高级命令之一。
 
 各个表达式可以用\( 和 \)括起来表示优先级。
 
-::
-
-  find blog/ -name "00*" -o -name "*vim*" -exec cat
+    find blog/ -name "00*" -o -name "*vim*" -exec cat
 
 
-在文件中搜索：grep
-=============================
+## 在文件中搜索：grep ##
 
 grep是global regular expression print的缩写。
 是Unix中的另一个高级命令。
@@ -270,15 +225,15 @@ grep有返回值，如果搜索成功，返回0；如果搜索不成功，返回
 - . **一个** 非换行符的任何字符。
 - \* 零个或多个 **先前字符** ， ``.*`` 代表任意字符串。
 - [] 一个指定范围内的字符，[Gg]匹配G或者g。[A-D]表示ABCD中任一个字符。
-- [^] 匹配一个不在指定范围内的字符，[^ABC]不是ABC的字符。
+- `[^]` 匹配一个不在指定范围内的字符，`[^ABC]` 不是ABC的字符。
 - \\< 单词开始，如 \\<grep 匹配包含以grep开头的单词的行。
 - \\> 单词结束， 如 grep\\> 匹配包含以grep结尾的单词的行。
 - x\\{m\\} 匹配包含连续m个x的行。
 - x\\{m,\\} 匹配包含至少m个连续的x的行。
 - x\\{m,n\\} 匹配包含至少m个至多n个连续的x的行。
-- \\w 匹配字母和数字，相当于[A-Za-z0-9]。
-- \\W 和\\w相反，匹配标点空格等。
-- \(..\) 标记匹配字符。如 ``\(love\).*\(warm\).*\1.*\2`` ，
+- \w 匹配字母和数字，相当于[A-Za-z0-9]。
+- \W 和\w相反，匹配标点空格等。
+- (..) 标记匹配字符。如 `\(love\).*\(warm\).*\1.*\2` ，
   将love标记为1，将warm标记为2，用 \\1 和 \\2 可以直接引用。
 
 有用的选项：
@@ -290,8 +245,11 @@ grep有返回值，如果搜索成功，返回0；如果搜索不成功，返回
 - -n 在匹配的行前打印行号。
 - -v 反检索，打印不匹配的行。
 
-挂载文件系统：mount
-===================================
+在源码中搜索某项内容：
+
+    grep -iRn --include="*.c" GoodStudy
+
+## 挂载文件系统：mount ##
 
 - -t 指定这个分区的文件系统格式，一般不必要，mount会自动识别。
 - -o 附加参数，如挂载光驱或iso文件时，要加loop。有时为避免乱码，
@@ -300,15 +258,14 @@ grep有返回值，如果搜索成功，返回0；如果搜索不成功，返回
 用 `umount mount-point` 卸载已经挂载的文件系统。
 
 
-磁盘分区：fdisk和mkfs
-===================================
+## 磁盘分区：fdisk和mkfs ##
 
 - `fdisk -l` 列出所有磁盘设备的分区表
 - `fidsk -l device` 列出某个磁盘设备的分区表
 
-::
- 
-  fdisk device
+对设备分区
+
+    fdisk device
 
 启动fdisk，对device进行分区操作，device通常是 `/dev/hda` ，
 `/dev/sdb` 等。
@@ -320,8 +277,7 @@ grep有返回值，如果搜索成功，返回0；如果搜索不成功，返回
 磁盘在使用前会被划分为一个或多个逻辑分区。
 这种划分以分区表的方式描述，分区表存在磁盘的第零个扇区。
 
-光盘刻录：mkisofs 和 cdrecord
-==========================================
+## 光盘刻录：mkisofs 和 cdrecord ##
 
 与硬盘不同，CD上的文件系统并非先创建后填充数据的。
 
@@ -352,7 +308,7 @@ grep有返回值，如果搜索成功，返回0；如果搜索不成功，返回
     mount /cdrom
     dd if=/dev/scd0 of=/tmp/diskfile.iso
     cdrecord speed=8 fs=8m -v -eject -dummy /tmp/diskfile.iso
-  
+
   - fs=8m，指定8M缓冲，防止刻录数据中断，默认是4M。
   - -dummy，先排练一次，再真的向目标盘写数据。
 
@@ -360,32 +316,26 @@ grep有返回值，如果搜索成功，返回0；如果搜索不成功，返回
 
 .. _这篇文章: 001burn-cd.html
 
-数码相机：gphoto2
-====================================
+## 数码相机：gphoto2 ##
 
 - gphoto2 --auto-detect：自动检测相机类型
 - gphoto2 --get-all-files：拷出所有文件
 - gphoto2 --delete-all-files：删除所有文件
 
 
-将手机录音amr文件转换成Mp3
-===================================
+## 将手机录音amr文件转换成Mp3 ##
 
 安装必要的套件：
 
-::
-
-  sudo apt-get install amrnb sox lame
+    sudo apt-get install amrnb sox lame
 
 用以下指令转换之：
 
-::
     amrnb-decoder file.amr file.raw # 先轉成 raw 檔
     sox -r 8000 -w -c 1 -s file.raw -r 16000 -w -c 1 file.wav # 再轉為 wav
     lame babycry.wav babycry.mp3 # 最後轉為 mp3
 
-ADSL上网
-===================================
+## ADSL上网 ##
 
 用pppoe，ubuntu已经内置了，如果没有则安装之。
 
@@ -402,8 +352,7 @@ ADSL上网
 查看连接情况：plog和 ifconfig ppp0
 
 
-查看系统进程：ps
-====================================
+## 查看系统进程：ps ##
 
 - ps aux|grep xxx：查看和xxx有关的进程，相当于pgrep xxx。
 - ps aux：以BSD方式显示所有进程
@@ -432,8 +381,7 @@ ADSL上网
   ps -eo pid,comm,s | grep Z
 
 
-增加和删除用户
-===================================
+## 增加和删除用户 ##
 
 增加一个用户用useradd [参数] [用户名]
 
@@ -446,8 +394,7 @@ ADSL上网
 - -r 把这个用户的家目录一起干掉。
 
 
-wget: 小巧而强悍的下载工具
-===================================
+## wget: 小巧而强悍的下载工具 ##
 
 - -r: 递归下载
 - -l num: --level=num 指定递归深度
@@ -458,8 +405,6 @@ wget: 小巧而强悍的下载工具
 - -c: 断点续传的下载。
 
 用下面的代码可以爬取整个网站。
-
-::
 
     wget -r -p -k -np http://hi.baidu.com/jiqing0925
 
@@ -472,8 +417,9 @@ wget: 小巧而强悍的下载工具
 然后用 ``wget --proxy=on --proxy-user=username
 --proxy-passwd=passwd someUrl`` 下载。
 
-其它有用的命令
-===================================
+替代 `wget` 的工具有 `aria2c`，还可以下载bt链接
+
+## 其它有用的命令 ##
 
 - cal：字符模式的日历
 - iconv ：转换文件的编码
