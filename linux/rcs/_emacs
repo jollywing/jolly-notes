@@ -1,0 +1,343 @@
+;; jiqing's .emacs
+;; for Emacs23
+;; create on 20080325
+;; update on 20100326
+;; update on 20110115
+
+;;;;;;;;;;;;;;font config ;;;;;;;;;;;;;;;;;;;;;;;;;
+;(create-fontset-from-fontset-spec
+;  "-*-clean-*-*-*-*-*-*-*-*-*-*-fontset-global, 
+;  chinese-gb2312:-*-simhei-*-*-*-*-17-*-*-*-*-*-gb2312.1980-*")
+;(set-default-font "fontset-global")
+;; let new frame use fontset-global
+;(setq default-frame-alist 
+;	  (append '((font . "fontset-global")) default-frame-alist))
+;
+
+;(set-default-font "Bitstream Vera Sans Mono-14")
+(set-frame-font "courier 10 pitch-12")
+(set-fontset-font "fontset-default" 'unicode '("SimHei" . "unicode-bmp"))
+
+(setq default-frame-alist 
+(append 
+'((font . "courier 10 pitch-12")
+  (background-color . "#c6e6c6")
+  (foreground-color . "black")
+  (cursor-color . "orange"))
+ default-frame-alist)) 
+
+
+;;;;;;;;;;;;;;;;;;;user information;;;;;;;;;;;;;;;;;;;;;;
+(setq user-full-name "Jiqing Wu")
+(setq user-mail-address "jiqingwu@gmail.com")
+
+;;;;;;;;;;;;;;;;;;; plugins ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; set load-path
+(setq load-path (cons "/home/jiqing/.emacs-site-lisp/" load-path))
+(load-file "/home/jiqing/.emacs-site-lisp/graphviz-dot-mode.el")
+
+(autoload 'no-word "no-word" "word to txt")
+(add-to-list 'auto-mode-alist '("\\.doc\\'" . no-word))
+
+(setq no-word-coding-systems '(("iso-8859-1" "8859-1.txt")
+                               ("utf-8" "UTF-8.txt"))
+      no-word-default-coding "utf-8")
+;;(require 'tabbar)
+;;(tabbar-mode)
+
+;;(require 'color-theme)
+
+;;;;;;;;;;;;;;;;;;;;; encodings ;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; before emacs 22 for gbk. it is not neccessary now.
+;; (require 'mule-gbk)
+
+;; check whether is chinese when open file
+;; For cp936, gb2312
+(set-language-environment 'Chinese-GB)
+;; encoding method of write file
+(set-buffer-file-coding-system 'utf-8)
+;; encoding method of new file
+(setq default-buffer-file-coding-system 'utf-8)
+;; According to your locale of ctype
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+;; encoding method of reading and writing file name
+;; 'utf-8 is good selection under linux
+(setq file-name-coding-system 'utf-8)
+(set-clipboard-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+(setq-default pathname-coding-system 'utf-8)
+
+;;;;;;;;;;;;;;;;;;;;;;;;shell ;;;;;;;;;;;;;;;;;;;;;;;;
+(global-set-key (kbd "<f5>") 'shell)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;; UI ;;;;;;;;;;;;;;;;;;;;;;;
+
+;;(mouse-avoidance-mode 'animate)
+(mouse-avoidance-mode 'jump)
+;; turn on mouse in console mode
+(xterm-mouse-mode t)
+;; no cursor blink
+(blink-cursor-mode -1)
+
+;; if under terminal, remove menu
+;;(if (equal window-system nil) (menu-bar-mode -1))
+;; no menu bar
+(menu-bar-mode -1)
+;; no tool bar
+(tool-bar-mode -1)
+;; tooltip ...
+(tooltip-mode -1)
+;; no scrollbar
+(scroll-bar-mode -1)
+
+;; show line number and column number in state bar
+(setq line-number-mode t)
+(setq column-number-mode t)
+
+;; highlight the mark region
+(setq transient-mark-mode 1)
+
+(setq inhibit-startup-message t)
+
+(setq frame-title-format "emacs@%b")
+
+;; show date in state bar
+;;(display-time-mode 1)
+;;(setq display-time-24hr-format t)
+;;(setq display-time-day-and-date t)
+
+(global-font-lock-mode t)       ;sytax on
+
+;; show matched bracket
+(show-paren-mode 1)
+(setq show-parent-style 'parenthesis)
+
+;; highlight the current line
+(setq hl-line-sticky-flag nil)
+;; it is a minor mode, don't set it in this way
+;;(hl-line-mode t)
+
+;; show picture in emacs
+(auto-image-file-mode)
+(auto-compression-mode 1)
+
+;; Theme 1
+;;(set-background-color "DarkSlateGray")
+;;(set-background-color "gray20")
+;;(set-foreground-color "wheat")
+;;(set-cursor-color "yellow")
+;; Theme 2
+;;(set-background-color "gray80")
+;;(set-foreground-color "black")
+;;(set-cursor-color "blue")
+
+;; auto line break
+(setq truncate-partial-width-windows nil)
+
+;; show key strokes quickly
+(setq echo-keystrokes 0.1)
+
+;;;;;;;;;;;;;;;;;;;;;; Edit ;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; when all characters in a line are removed, 
+;; this line is also deleted 
+(setq-default kill-whole-line t)
+
+(setq default-major-mode 'text-mode)
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+(add-hook 'text-mode-hook 'hl-line-mode)
+
+(auto-fill-mode t)
+(setq default-fill-column 70)
+
+(setq-default line-spacing 2)
+
+(setq x-select-enable-clipboard t)
+
+(setq mouse-yank-at-point t)
+
+;; function set
+(fset 'yes-or-no-p 'y-or-n-p)
+
+(setq sentence-end-double-space nil)
+
+;; inhibit autosave
+(setq auto-save-default nil)
+
+;; inhibit backup
+(setq-default make-backup-files nil)
+(setq delete-auto-save-files t)
+
+(setq c-basic-offset 4)
+(setq-default indent-tabs-mode nil)
+(setq default-tab-width 4)
+
+(iswitchb-mode 1)
+
+;; when you already are located at the last line, you
+;; ask Emacs to go to the next line, where a newline is 
+;; inserted (or not, where bell rings)
+;;(setq next-line-add-newlines t)
+(setq next-line-add-newlines nil)
+
+;; key bings for going to the matching starting or ending
+;; brace called forward-sexp and backward-sexp
+;; Note that this is done by default in XEmacs
+(global-set-key [(meta left)] 'backward-sexp)
+(global-set-key [(meta right)] 'forward-sexp)
+
+;; go to a line by giving its number,
+;; which is bound to M-g in XEmacs
+(global-set-key [(meta g)] 'goto-line)
+
+;; Undo
+(global-set-key [(f7)] 'advertised-undo)
+
+;; smart expand
+(global-set-key [(meta ?/)] 'hippie-expand)
+(setq hippie-expand-try-functions-list
+      '(try-expand-dabbrev
+        try-expand-dabbrev-visible
+        try-expand-line
+        try-complete-file-name
+        try-complete-file-name-partially
+        try-expand-dabbrev-all-buffers
+        try-expand-dabbrev-from-kill
+        try-expand-all-abbrevs
+        try-expand-list
+        try-complete-lisp-symbol-partially
+        try-complete-lisp-symbol))
+
+;; If non-nil, whenever the cursor is at the end of the line,
+;; stick to the end of the line when moving the cursor up or down;
+;; otherwise, stay in the column where the cursor is.
+(setq track-eol nil)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;; org-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq org-log-done 'time)
+(setq org-agenda-files (list "~/blog/gtd/todo.org"
+                             "~/blog/gtd/someday.org"))
+;;;;;;;;;;;;;;;;;;;;;;;;;; latex ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq latex-run-command "xelatex")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;; Coding ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(global-set-key [(f10)] 'compile)
+(global-set-key [(f9)] 'next-error)
+
+(global-set-key [(f8)] 'other-window)
+
+;;(add-hook 'python-mode-hook 'hs-minor-mode)
+;;(global-set-key [(control c) (z)] 'hs-hide-block)
+;;(global-set-key [(control c) (x)] 'hs-show-block) 
+;;(global-set-key [(control c) (h)] 'hs-hide-all)
+;;(global-set-key [(control c) (s)] 'hs-show-all) 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;; w3m ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;(require 'w3m-load)
+;(require 'w3m-e21)
+;(provide 'w3m-e23)
+;(setq w3m-use-favicon nil)
+;(setq w3m-command-arguments '("-cookie" "-F"))
+;(setq w3m-use-cookies t)
+;(setq w3m-home-page "~/blog/index.html")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;; dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(put 'dired-find-alternate-file 'disabled nil)
+(setq dired-recursive-deletes t)
+(setq dired-recursive-copies t)
+(require 'dired-x)
+;; press C-x C-j jump into dired of your current dir
+(global-set-key [(control x) (control j)] 'dired-jump)
+(setq dired-guess-shell-alist-user
+      (list
+       (list "\\.chm$" "chmsee * &")
+       (list "\\.pdf$" "xpdf * &")
+       (list "\\.mkv$" "mplayer * >/dev/null 2>&1 &")
+       (list "\\.avi$" "mplayer * >/dev/null 2>&1 &")
+       (list "\\.rmvb$" "mplayer * >/dev/null 2>&1 &")
+       (list "\\.rm$" "mplayer * >/dev/null 2>&1 &")
+       (list "\\.mp3$" "playsound * &")
+       ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;; emms ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'emms-setup)
+;;(emms-minimalistic)
+(emms-standard)
+(setq emms-player-list '(emms-player-mplayer)
+      emms-player-mplayer-command-name "mplayer"
+      emms-player-mplayer-parameters '("-slave"))
+(setq emms-repeat-playlist nil
+      emms-source-file-default-directory "/data/music/"
+      emms-lyrics-dir "/data/music/"
+      emms-lyrics-coding-system nil
+      emms-playlist-buffer-name "*EMMS*")
+;; show info at mode-line
+;;(require 'emms-mode-line)
+;;(emms-mode-line 1)
+;; show time of music
+;;(require 'emms-playing-time)
+;;(emms-playing-time 1)
+;; show lyrics
+;;(require 'emms-lyrics)
+;;(emms-lyrics 1)
+;; auto identify encode
+;;(require 'emms-i18n)
+;; auto save and import playlist
+;;(require 'emms-history)
+;;(emms-history-load)
+
+(global-set-key (kbd "C-c e g") 'emms-play-directory)
+(global-set-key (kbd "C-c e d") 'emms-play-dired)
+(global-set-key (kbd "C-c e v") 'emms-playlist-mode-go)
+(global-set-key (kbd "C-c e x") 'emms-start)
+(global-set-key (kbd "C-c e SPC") 'emms-pause)
+(global-set-key (kbd "C-c e s") 'emms-stop)
+(global-set-key (kbd "C-c e n") 'emms-next)
+(global-set-key (kbd "C-c e p") 'emms-previous)
+
+;;;;;;;;;;;;;;;;;;;;;;;; sdcv ;;;;;;;;;;;;;;;;;;;;;;;;;;
+(global-set-key (kbd "C-c t") 'insert-date)
+(global-set-key (kbd "C-c g f") 'ffap-other-window)
+(defun insert-date ()
+  (interactive)
+  (insert (format-time-string "%Y-%m-%d"))
+)
+;;;;;;;;;;;;;;;;;;;;;;;; sdcv ;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; author: pluskid
+;; 调用 sdcv 来查辞典
+;; 如果选中了 region 就查询 region 的内容，否则查询当前光标所在的单词
+;; 查询结果在一个叫做 *sdcv* 的 buffer 里面显示出来，在这个 buffer 里面
+;; 按 q 可以把这个 buffer 放到 buffer 列表末尾，按 d 可以查询单词
+(global-set-key (kbd "C-c d") 'kid-sdcv-to-buffer)
+(defun kid-sdcv-to-buffer ()
+  (interactive)
+  (let ((word (if mark-active
+                  (buffer-substring-no-properties
+                   (region-beginning) (region-end))
+                  (current-word nil t))))
+    (setq word (read-string
+                (format "Search the dictionary for (default %s): " 
+                        word) nil nil word))
+    (set-buffer (get-buffer-create "*sdcv*"))
+    (buffer-disable-undo)
+    (erase-buffer)
+    (let ((process (start-process-shell-command "sdcv" "*sdcv*"
+                                                "sdcv" "-n" word)))
+      (set-process-sentinel
+       process
+       (lambda (process signal)
+         (when (memq (process-status process) '(exit signal))
+           (unless (string= (buffer-name) "*sdcv*")
+             (setq kid-sdcv-window-configuration
+                   (current-window-configuration))
+             (switch-to-buffer-other-window "*sdcv*")
+             (local-set-key (kbd "d") 'kid-sdcv-to-buffer)
+             (local-set-key (kbd "q") (lambda ()
+                                        (interactive)
+                                        (bury-buffer)
+                                        (unless (null (cdr (window-list))) ; only one window
+                                          (delete-window)))))
+           (goto-char (point-min))))))))

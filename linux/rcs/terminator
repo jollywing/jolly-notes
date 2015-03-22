@@ -1,0 +1,19 @@
+# path: ~/.config/terminator/config
+
+use_system_font = False
+font = Bitstream Vera Sans Mono 12
+background_color = #000000
+foreground_color = #afafbb
+cursor_color = #e28106
+cursor_blink = False
+scrollbar_position = disabled
+titlebars = False
+handle_size = 1
+# focus = sloppy
+force_no_bell = True
+
+background_type = transparent
+background_darkness = 0.8
+
+palette = #22cc22dd22ee:#aaee44774477:#669966cc5599:#cc77cc9933dd:#66ff9999bb44:#aaaa88ccbbff:#6688bb44bb11:#770077667788:#aa33aa55aa66:#eeee66336633:#9900aa5577dd:#dd00cc5544dd:#77cc9966bb00:#88ff44cc7700:#22dd88228855:#ee22ee22ee22
+

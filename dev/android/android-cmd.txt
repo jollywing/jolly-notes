@@ -1,0 +1,146 @@
+﻿ 柒尅编程之家-编程天空、编程世界http://www.cnblogs.com/bcsky
+博客园社区首页新随笔联系管理订阅 随笔- 5  文章- 36  评论- 6  使用命令行方式开发Android应用 一般来说Android应用开发的标准工具组合是JDK + Android SDK + ADT (Android Development Tools) + Eclipse，大家基本上是通过IDE GUI进行开发操作的。不过我个人更喜欢命令行，所以这次我也尝试探索了一下使用命令行方式开发Android应用的方法。
+
+入门的第一步就是搭建开发环境。关于Android开发环境搭建的资料早已汗牛充栋，不过我也看了一下这些资料多是关于如何在Windows下使用Eclipse搭建环境的，而在Linux环境下不用Eclipse的手工搭建环境的资料甚少。而我用的是Ubuntu 10.04，所以在这里我想说说Ubuntu下搭建Android开发环境的过程，以及在此过程中遇到的诸多问题的解决。
+
+Android应用主要用Java语言开发，所以JDK是不可缺少的，这是一个前提条件。关于JDK的安装以及环境变量配置，这里就不赘述了。我在Ubuntu下安装的是Oracle（原Sun）提供的JDK 1.6版本。
+
+Android开发环境搭建的核心就是SDK。不过大陆的程序员们真的很悲哀，原因你懂的。为了下载一个SDK，到处翻山越岭，跋山涉水啊，好不痛苦。不过还好，领导们还给我们留下了一线生机。那就是http://dl-ssl.google.com/android/repository，这里可以下载到Android SDK相关组件包。
+
+首先你可以下载这个库的导航文件repository.xml(wget -c http://dl-ssl.google.com/android/repository/repository.xml)。打开这个文件，通过里面的注释你会看到这个文件大约包含了四个部分：
+. PLATFORMS
+. PLATFORM-TOOLS
+. TOOLS
+. DOCS
+
+这恰恰是Android SDK包的几个主要组成部分：
+. 其中TOOLS对应的就是Android SDK Tools，主要用于SDK自身组件安装、卸载管理，提供模拟器工具以及其他开发所需的第三方工具。
+. 其中PLATFORMS对应的是Android SDK Platform，这些包为Android应用开发提供了各个版本的虚拟设备（AVD）。比如Android 2.2、Android 2.3.3等虚拟设备。
+. 其中PLATFORM-TOOLS对应的是Android SDK Platform-tools，这些包提供了与虚拟设备管理和调试相关的工具，如ADB。
+
+我们如何通过这些组件包来组装成一个完整的Android SDK包呢？步骤大致如下：
+. 下载Android SDK Tools包，也就是Repository中对应的TOOLS部分。我这里找到的是tools_r11-linux.zip(wget -c http://dl-ssl.google.com/android/repository/tools_r11-linux.zip)。
+. 在本地建立android-sdk-linux_86目录，将下载的tools_r11-linux.zip放到该目录下，解压，我们得到tools_r11-linux目录。
+. 将android-sdk-linux_86目录下的tools_r11-linux目录改名为tools。
+. 在android-sdk-linux_86目录下建立两个新目录：add-ons和platforms。（如果没有这两个目录，下一步中的android启动会失败）
+. 进入android-sdk-linux_86/tools下，执行./android，启动Android SDK and AVD Manager。
+. 在启动的Android SDK and AVD Manager对话框的"Installed Packages"里你会看到我们已经安装了“Android SDK Tools, revision 11”。
+
+到这里，我们算是迈出了坚实的第一步。接下来，我们有两种方式继续我们的安装过程：
+一种是通过SDK/AVD Manager在线安装SDK其余组件。在"Installed Packages"里点击"Update All"按钮，等待一会，你会看到可以安装的组件。这里我们至少需要一个Platform包（比如Android 2.3.3 API 10, revision 1）以及Platform-tools包（比如Android SDK Platform-tools, revision 4）。选择你要的组件包后，就可以install了。安装后，一个完整的Android SDK就呈现在你的眼前了。这种方式也是最快捷、最方便的方式了。
+
+另外一种是离线安装方式。如果你和我一样，使用的是公司的代理网络，那么你很可能无法在线安装，即使SDK/AVD Manager支持配置网络代理。这样你就需要进行离线安装了，也就是需要你手工下载各个组件包，然后安装到指定的目录下。我这里就做了如下操作：
+. 执行下面命令下载各组件包：
+  wget -c http://dl-ssl.google.com/android/repository/android-2.2_r02-linux.zip
+  wget -c http://dl-ssl.google.com/android/repository/android-2.3.3_r01-linux.zip
+  wget -c http://dl-ssl.google.com/android/repository/platform-tools_r04-linux.zip
+. 将android-2.2_r02-linux.zip拷贝到android-sdk-linux_86/platforms目录下，并解压。
+. 将android-2.3.3_r01-linux.zip拷贝到android-sdk-linux_86/platforms目录下，并解压。
+. 将platform-tools_r04-linux.zip拷贝到android-sdk-linux_86目录下，解压，并改名为platform-tools。
+
+至此，SDK各组件安装完毕。执行tools/android，在"Installed Packages"下，你就会看到上述已经安装的组件包了。(笔者最后又发现了一个可以下载Android SDK的地方：http://dl.google.com/android[/android-sdk_r08-linux_86.tgz]，在这里你下载到的SDK包内platforms和add-ons目录都已经建立完毕了，SDK tools在tools目录下，其余组件的安装方法和上面一致。)
+
+为了方便后续使用，我们可将SDK目录下的platform-tools和tools两个路径添加到PATH环境变量中。接下来，我们就可以创建一个虚拟设备了。Android虚拟设备其实是一组配置，tools下的emulator使用这些配置启动一个特定版本的Android模拟程序，用来部署、运行和测试你开发的Android应用。
+
+我们可以通过"android list targets"命令来查看当前系统中可以创建哪些平台的虚拟设备，在我的系统下，这条命令的执行结果如下：
+
+Available Android targets:
+id: 1 or "android-8"
+     Name: Android 2.2
+     Type: Platform
+     API level: 8
+     Revision: 2
+     Skins: WVGA854, QVGA, WVGA800 (default), WQVGA400, WQVGA432, HVGA
+id: 2 or "android-10"
+     Name: Android 2.3.3
+     Type: Platform
+     API level: 10
+     Revision: 1
+     Skins: WVGA854, QVGA, WVGA800 (default), WQVGA400, WQVGA432, HVGA
+
+我们有两个Platform可选，这里我们创建一个Android 2.3.3的虚拟设备。创建的命令如下：
+
+$> android create avd -n helloandroid -t 2
+Android 2.3.3 is a basic Android platform.
+Do you wish to create a custom hardware profile [no]
+
+Created AVD 'helloandroid' based on Android 2.3.3,
+with the following hardware config:
+hw.lcd.density=240
+vm.heapSize=24
+hw.ramSize=256
+
+其中-n 用于指定avd的名字，-t则用于指定platform，也就是target，之前我们已经列出系统中的Targets，我们只需选择一个，并使用target的id即可。
+
+创建后，我们可以通过android list avd来查看系统中都创建了哪些avd：
+$> android list avd
+Available Android Virtual Devices:
+    Name: helloandroid
+    Path: /media/winD/tonybai/android-sdk-linux_86/.android/avd/helloandroid.avd
+  Target: Android 2.3.3 (API level 10)
+    Skin: WVGA800
+
+有了avd，我们就可以启动emulator了。执行emulator -avd helloandroid，我们得到了如下错误信息：
+“emulator: ERROR: the user data image is used by another emulator. aborting”
+
+这条错误信息的字面意思是有另外一个emulator使用了这个avd，但是我找了半天，发现我并未启动任务其他emulator，系统进程列表中也没有其他emulator的信息。又到网上找了一些资料，都说是因emulator异常退出，导致没有解锁avd配置目录下的.lock文件导致的。但我到avd配置目录下，根本没有找到什么.lock文件。
+
+我又通过调试模式执行了一遍：emulator -avd helloandroid -verbose -debug-all，这回我得到的信息如下：
+... 这里省略了几百行日志....
+emulator: found system.img in search dir: /media/winD/tonybai/android-sdk-linux_86/platforms/android-2.3.3_r01-linux/images/
+emulator: found userdata-qemu.img in content directory
+emulator:     locking user data image at /media/winD/tonybai/android-sdk-linux_86/.android/avd/helloandroid.avd/userdata-qemu.img
+emulator: ERROR: the user data image is used by another emulator. aborting
+
+从上面的错误日志来看，似乎emulator在对userdata-qemu.img加锁时出现了问题。这个问题古怪了些。我的SDK部署在FAT32分区，难道是跨分区文件锁有问题。无奈下把SDK搬移到我的HOME路径下，并修改PATH环境变量。重新启动emulator，这回emulator启动成功了。不过第一次启动emulator可真是够慢的，大约有5、6分钟之多，才看到Android的界面。不过还有一个问题，那就是emulator启动的模拟器画面太大，出了屏幕边界（我的本子是12寸屏幕的）。我们来修改一下avd的配置，调整屏幕属性：
+
+在android-sdk-linux_86/.android/avd/helloandroid.avd目录下，我们打开config.ini，将下面三项配置：
+hw.lcd.density=240
+skin.name=WVGA800
+skin.path=platforms/android-2.3.3_r01-linux/skins/WVGA800
+修改为：
+hw.lcd.density=160
+skin.name=HVGA
+skin.path=platforms/android-2.3.3_r01-linux/skins/HVGA
+
+重新启动emulator，这回整个模拟器的画面都在屏幕以内了。
+
+万事俱备，只欠东风！下面我们就可以开始创建我们第一个HelloAndroid工程了。在~/proj/android下建立helloandroid目录，进入helloandroid目录，执行下面命令：
+
+$> android create project --name helloandroid --activity HelloAndroid --path ./ --package com.examples.helloandroid --target 2
+
+Created directory /home/tonybai/proj/android/helloandroid/src/com/examples/helloandroid
+Added file ./src/com/examples/helloandroid/HelloAndroid.java
+Created directory /home/tonybai/proj/android/helloandroid/res
+Created directory /home/tonybai/proj/android/helloandroid/bin
+Created directory /home/tonybai/proj/android/helloandroid/libs
+Created directory /home/tonybai/proj/android/helloandroid/res/values
+Added file ./res/values/strings.xml
+Created directory /home/tonybai/proj/android/helloandroid/res/layout
+Added file ./res/layout/main.xml
+Created directory /home/tonybai/proj/android/helloandroid/res/drawable-hdpi
+Created directory /home/tonybai/proj/android/helloandroid/res/drawable-mdpi
+Created directory /home/tonybai/proj/android/helloandroid/res/drawable-ldpi
+Added file ./AndroidManifest.xml
+Added file ./build.xml
+Added file ./proguard.cfg
+
+Build该工程： ant release（注意对于2.3的SDK，ant要使用1.8以上版本）。一切很顺利，Build成功后，在bin下面出现了"helloandroid-unsigned.apk"文件。
+
+那么如何将apk文件部署到模拟器中运行呢？如果系统内仅有一个device在运行（可通过adb devices命令查看），那么我们可以直接执行ant install，这样我们的apk就会自动被部署到emulator中了（这期间使用的是调试版的数字签名）。
+
+部署后，你就会在emulator的界面上看到一个绿机器人图标且名字为“HelloAndroid”的程序了。点击其执行，我们得到一行文字：Hello World, HelloAndroid。这个文字是工程被创建时默认自带的，你当然也可以修改它了。
+
+另外如果要卸载这个应用也很简单，执行ant uninstall就是了。
+
+如果系统有多个AVD在运行，那么我们同样可以通过adb命令来选择一个device安装我们的应用，如果一个device的名字是emulator-5554(通过adb devices查看)，那么我们可以先执行ant debug，生成bin/helloandroid-debug.apk，然后通过"adb -s emulator-5554 install bin/helloandroid-debug.apk"将应用安装到emulator-5554上去。
+
+ 
+分类: Android开发
+绿色通道：好文要顶关注我收藏该文与我联系  柒尅
+关注 - 0
+粉丝 - 1+加关注00(请您对文章做出评价)« 博主前一篇：C#中Dictionary的用法及用途实例
+
+posted @ 2011-05-25 10:32 柒尅 阅读(1520) 评论(3) 编辑 收藏 
+
+发表评论

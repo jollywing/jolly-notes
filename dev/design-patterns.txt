@@ -1,0 +1,49 @@
+
+TITLE： 设计模式——可复用面向对象软件的基础\\
+ENGLISH TITLE: Design Patterns, Elements of Reusable Object-Oriented Software\\
+AUTHOR： 软件界四人帮 (Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides)
+
+本书共讲了23个常用的设计模式。
+
+创建型模式
+
+1. 抽象工厂 (abstract factory)
+2. 生成器 (builder)
+3. 工厂方法 (factory method)
+4. 原型 (prototype)
+5. 单件 (singleton)
+
+结构型模式
+
+1. 适配器 (adapter)
+2. 桥接 (bridge)
+3. 组合 (composite)
+4. 装饰 (decorator)
+5. 外观/表面 (facade)
+6. 享元/轻量级共享对象 (flyweight)
+7. 代理 (proxy)
+
+行为模式
+
+1. 职责链 (Chain of responsibility)
+2. 命令 (command)
+3. 解释器 (interpreter)
+4. 迭代器 (iterator)
+5. 中介者 (mediator)
+6. 备忘录 (memento)
+7. 观察者 (observer)
+8. 状态 (state)
+9. 策略 (strategy)
+10. 模板方法 (template method)
+11. 访问者 (visitor)
+
+每个模式我都读了两遍，基本掌握了，剩下的就是练习。
+感觉收获很大，对分析现有的软件系统更有信心了。
+在实现自己的应用时，也会好好设计一番，看看能否用上一招半式。
+“针对接口编程，而不是针对实现编程。”这句话对我启发很大。
+
+本书是一本好书，但机械工业出版社翻译的中文版并不太好。
+可能由于翻译者的水平，一些专业术语翻译得不好。
+另外排版问题也不少：错别字，丢字，重复字，丢标点符号。这些低级错误应该有不下十处。
+
+2014-01-23 Thu

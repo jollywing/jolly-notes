@@ -1,0 +1,70 @@
+!!!!!!!!!!!!!!!!!!!!!
+! .larswmrc example !
+!!!!!!!!!!!!!!!!!!!!!
+
+! These are the windows I want tiled
+!
+larswm.dotileclass.0: XTerm~xterm
+larswm.dotileclass.1: navigator:browser~Mozilla
+larswm.dotileclass.2: Mozilla-bin
+
+! Some tool windows
+!
+larswm.toolclass.0: XLoad~xload
+larswm.toolclass.1: XBiff~xbiff
+larswm.toolclass.2: XClock~xclock
+
+! Windows that should always stay above other windows
+!
+larswm.floatclass.0: XCalc~xcalc
+larswm.floatclass.1: Gaim
+larswm.floatclass.2: larsmenu~larsmenu
+
+! Windows that should be visible on all virtual desktops
+!
+larswm.stickyclass.0: larsmenu~larsmenu
+
+! Assign all new web browser windows to the WWW desktop
+!
+larswm.dtclass.0: navigator:browser~Mozilla
+larswm.dtnum.0: 1
+larswm.dtclass.1: Mozilla-bin
+larswm.dtnum.1: 1
+
+! Use a wider left track on the WWW desktop
+!
+larswm.?.1.left_track_width: 80
+
+! Do not resize windows on the WWW desktop
+!
+larswm.?.1.tile_resize: False
+
+! Automatically shift focused window to the left track on WWW desktop
+!
+larswm.?.1.skip_focus: False
+
+! larswm Menu - Middle Mousebutton
+!
+larswm.button2.application: larsmenu -popup '*  LARSWM  *:exit' 'R E S T A R T:larsremote restart' 'E X I T:larsremote exit' '*  Exit Menu  *:exit'
+
+! Start Menu - Right Mousebutton
+!
+larswm.button3.application: larsmenu -popup '*  START  *:exit' 'XTerm:xterm' 'Mozilla:mozilla' 'Emacs:emacs' 'GVim:gvim' 'Instant Messenger:gaim' 'Calculator:xcalc' '*  Exit Menu  *:exit'
+
+! larswm Menu - Alt+Escape
+!
+larswm.application.0: larsmenu -popup '*  LARSWM  *:exit' 'R E S T A R T:larsremote restart' 'E X I T:larsremote exit' '*  Exit Menu  *:exit'
+larswm.application_key.0: Escape
+larswm.application_mod.0: Alt
+
+! Start Menu - Alt+Return
+!
+larswm.application.1: larsmenu -popup '*  START  *:exit' 'XTerm:xterm' 'Mozilla:mozilla' 'Emacs:emacs' 'GVim:gvim' 'Instant Messenger:gaim' 'Calculator:xcalc' '*  Exit Menu  *:exit'
+larswm.application_key.1: Return
+larswm.application_mod.1: Alt
+
+! XTerm - Shift+Control+Return
+!
+larswm.application.2: xterm
+larswm.application_key.2: Return
+larswm.application_mod.2: Shift+Control

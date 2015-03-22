@@ -1,0 +1,221 @@
+#
+# jiqing's TWMrc
+# 2009-03
+
+# twm should not grab the server when popping up menus 
+# and moving opaque windows.
+NoGrabServer    
+# borders should not be highlighted to track the location of pointer
+NoHighlight
+RestartPreviousState
+DecorateTransients
+RandomPlacement
+TitleFont "-adobe-helvetica-bold-r-normal--*-100-*-*-*-*-*-*"
+ResizeFont	"-*-dejavu serif-*-r-normal--*-100-*-*-*-*-*-*"
+MenuFont    "-*-dejavu serif-*-r-normal--*-100-*-*-*-*-*-*"
+IconFont	"-*-dejavu serif-*-r-normal--*-100-*-*-*-*-*-*"
+IconManagerFont "-adobe-helvetica-bold-r-normal--*-100-*-*-*"
+BorderWidth 3
+OpaqueMove
+#	ClientBorderWidth
+SqueezeTitle
+MenuBorderWidth 1
+
+TitleButtonBorderWidth 0
+ButtonIndent 0
+NoDefaults # twm should not use default icons and bindings
+RightTitleButton "/home/jiqing/.twm/close" = f.delete
+LeftTitleButton "/home/jiqing/.twm/icon" = f.iconify
+#RightTitleButton "/home/jiqing/.twm/resize" = f.resize
+#RightTitleButton "/home/jiqing/.twm/fullsize" = f.zoom
+
+Pixmaps
+{
+    TitleHighlight "/usr/include/X11/bitmaps/hlines3"
+}
+
+Color
+{
+    BorderColor "grey70"
+    DefaultBackground "rgb:5/5/5"
+    DefaultForeground "gray80"
+    TitleBackground "rgb:5/5/5"
+    TitleForeground "gray80"
+    MenuBackground "rgb:5/5/5"
+    MenuForeground "gray80"
+    MenuTitleBackground "gray80"
+    MenuTitleForeground "rgb:5/5/5"
+    MenuBorderColor "gray60" 
+    IconBackground "rgb:4/4/4"
+    IconForeground "gray80"
+    IconBorderColor "gray70"
+    IconManagerBackground "rgb:5/5/5"
+    IconManagerForeground "gray80"
+}
+
+
+Cursors
+{
+	Title "top_left_arrow"
+	Frame "top_left_arrow"
+	Icon "top_left_arrow"
+	IconMgr "top_left_arrow"
+    Move    "fleur"
+	Menu "sb_left_arrow"
+	Button "hand2"
+    Wait "watch"
+	Root "top_right_arrow"
+}
+
+ForceIcons
+UnknownIcon "home/jiqing/.twm/fish"
+Icons
+{
+	"Firefox-bin" "/home/jiqing/.twm/fish"
+	"MPlayer" "/home/jiqing/.twm/Bach"
+    "Stardict" "/usr/include/X11/bitmaps/sipb"
+	"UXTerm" "/usr/include/X11/bitmaps/Term"
+	"xterm" "/usr/include/X11/bitmaps/terminal"
+	"Gvim" "/home/jiqing/.twm/penguin"
+    "Gimp"  "/home/jiqing/.twm/gimp"
+    "Thunar" "/home/jiqing/.twm/file"
+    "Rox-filer" "/usr/include/X11/bitmaps/letters"
+    "xosview" "/usr/include/X11/bitmaps/xlogo32"
+
+}
+
+MoveDelta	3 
+Function "move-or-lower" { f.move f.deltastop f.lower }
+Function "move-or-raise" { f.move f.deltastop f.raise }
+Function "move-or-iconify" { f.move f.deltastop f.iconify }
+
+# button bindings
+Button1 = : root : f.menu "main"
+Button3 = : root : f.menu "exec"
+Button1 = m : window|icon : f.function "move-or-raise" 
+Button3 = m : window|icon : f.resize
+Button1 = : title : f.function "move-or-raise"
+Button3 = : title : f.menu "zoom"
+Button1 = : icon : f.function "move-or-iconify"
+Button1 = : iconmgr : f.iconify
+Button1 = : frame : f.resize
+
+
+# these windows should not have titlebars
+NoTitle
+{
+#"xmms"
+#"gkrellm"
+"xosview"
+"xclock"
+"oclock"
+"xload"
+"xbiff"
+"MPlayer"
+"feh"
+}
+
+menu "main"
+{
+"Debian-TWM"	f.title
+"Zoom"      f.menu "zoom"
+"Info"      f.identify
+"Iconify"   f.iconify
+"Resize"    f.resize
+"Move"      f.move
+"Raise"		f.raise
+"Lower"		f.lower
+"Focus"		f.focus
+"Unfocus"	f.unfocus
+"Kill"		f.destroy
+"-------------"	f.nop
+"Show Iconmgr"	f.showiconmgr
+"Hide Iconmgr"	f.hideiconmgr
+"-------------"	f.nop
+"Restart"	f.restart
+"Exit"	("gray80":"#773333")	f.menu "exit"
+}
+
+menu "zoom"
+{
+    "Vzoom"     f.zoom
+    "Hzoom"     f.hzoom
+    "Maximize"  f.fullzoom
+    "Topzoom"   f.topzoom
+    "Bottomzoom"    f.bottomzoom
+    "Leftzoom"  f.leftzoom
+    "Rightzoom" f.rightzoom
+}
+
+menu "exit"
+{
+"Are you sure ?" ("gray80":"#773333") f.title
+"No"	f.nop
+"Yes"	f.quit
+}
+
+menu "exec"
+{
+":: Applications ::"	f.title
+"Xterm"		f.exec "exec /usr/bin/xterm &"
+"Uxterm"    f.exec "exec /usr/bin/uxterm &"
+"-------------"	f.nop
+"GVim"      f.exec "exec /usr/bin/gvim &"
+"Mousepad"  f.exec "exec /usr/bin/mousepad &"
+"-------------"	f.nop
+"Thunar"    f.exec "exec /usr/bin/thunar &"
+"Rox"       f.exec "exec /usr/bin/rox-filer &"
+"-------------"	f.nop
+"FireFox"	f.exec "exec /usr/bin/firefox &"
+"OpenOffice" f.exec "exec /usr/bin/ooffice &"
+"GIMP"	f.exec "exec /usr/bin/gimp &"
+"Dia"	f.exec "exec /usr/bin/dia &"
+"Stardict" f.exec "exec /usr/bin/stardict &"
+"-------------"	f.nop
+#"Mozilla"	f.exec "exec /usr/local/bin/mozilla/mozilla &"
+#"Mozilla Mail"	f.exec "exec /usr/local/bin/mozilla/mozilla -mail &"
+#"aMule"	f.exec "exec /usr/bin/amule &"
+#"Xmag"	f.exec "exec /usr/bin/xmag &"
+"Screenshot"    f.exec "exec scrot -d 1"
+"xtools"    f.menu "xtools"
+"-------------"	f.nop
+"Debian"		f.menu "/Debian"
+#"gkrellm"	f.exec "/usr/bin/gkrellm &"
+#"XFig"	f.exec "exec /usr/bin/xfig -nosplash &"
+#"Acrobat Reader"	f.exec "exec /usr/bin/acroread &"
+}
+
+menu "xtools"
+{
+"XOsview"   f.exec "exec /usr/bin/xosview &"
+"XLoad"     f.exec "exec /usr/bin/xload &"
+"Oclock"    f.exec "exec /usr/bin/oclock -transparent -geometry -5+5 &"
+"XClock"	f.exec "exec /usr/bin/xclock &"
+}
+
+WindowRing
+{
+#"Mozilla"
+"Firefox"
+"xterm"
+"uxterm"
+#"mlterm"
+#"XMMS"
+"xpdf"
+"Gvim"
+#"RubyRoom v0.3"
+}
+
+# m4 = mod4 (Super_L)
+"x" = m4 : all : f.delete
+"i" = m4 : all : f.iconify
+"l" = m4 : all : f.leftzoom
+"r" = m4 : all : f.rightzoom
+"t" = m4 : all : f.topzoom
+"b" = m4 : all : f.bottomzoom
+"h" = m4 : all : f.hzoom
+"v" = m4 : all : f.zoom
+"F11" = : all : f.fullzoom
+# m1 = mod1 (Alt_L)
+"Tab"	= m1 : all : f.warpring "next"
+

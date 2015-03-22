@@ -1,0 +1,212 @@
+
+* Linux Coding
+** SUID
+** lsof =/a/given/file= 
+查看正在访问该文件的进程。
+** ELF
+executable and Linking Format.
+1995年起，称为linux标准的二进制格式。
+之前Linux的二进制格式是a.out。
+
+** ldd
+ldd = Library Dependence Display. $ldd binary-name 可以显示该程序依赖的共享库。
+** gprof
+可以告诉每个函数被调用的次数，和每个函数执行需要的时间。
+在用gcc或g++编译程序时，要加上 ``-pg`` 选项。程序每次执行时会生成gmon.out，
+gprof用这个文件来分析程序。
+** 文件
+*** 普通文件, 目录文件, 链接文件, 设备文件, 管道文件
+*** 普通文件分为文本文件和二进制文件.
+*** 设备文件使用主设备号(指定设备类型)和次设备号(指定具体设备)来指定某外部设备.
+*** 按数据访问方式的不同, 设备分为字符设备和块设备. 大多数设备能同时支持这两种方式.
+
+
+* Linux Kernel
+** version number
+第一个数从1996年起就是2。
+第二个数是偶数表示稳定版，如果是奇数表示开发版。
+但是从2.6之后，第二个数不再代表稳定和开发中的意思。
+第三个数表示release。
+第四个数表示patch。如2.6.11.12。
+** process
+*** process descriptor
+    CLOSED: [2013-03-31 Sun 09:02]
+**** PC (program counter) and SP (stack pointer)
+**** the general purpose registers
+**** the float point registers
+**** the processor control registers
+**** the memory management registers
+*** address space
+    CLOSED: [2013-03-31 Sun 09:02]
+**** private stack
+**** data area
+**** code area
+**** share
+***** automatic by kernerl
+***** shared memory for interprocess communication
+***** Memory mapping: mmap()
+*** signal and interprocesses communication
+**** System V IPC
+***** semaphores
+semget()
+***** message queues
+msgget(), msgsnd(), msgrcv()
+***** shared memory
+shmget() to create, shmat() to return address, shmdt() to detach
+*** init process
+**** child processes: wait4()
+*** job
+**** process descriptor contains a process group id
+**** each group of processes has a group leader
+whose PID = process group ID
+*** pthread
+pthread = POSIX thread library
+
+*** Task State Segment
+included in 80x86 for storing hardware contexts of processes.
+Linux doesn't use hardware context switching, but it uses TSS for:
+(1) store/fetch the address of the Kernel mode stack;
+(2) sotre I/O Permission Bitmap.
+** UserMode and KernelMode
+*** kernel routine
+**** system call
+**** CPU executing the process signals a exception
+**** peripheral device interrupt
+**** kernal thread
+*** Kernel Mode
+**** reentrant
+several processes may be executing in Kernel Mode at the same time.
+***** reentrant functions
+modify only local variables and do not alter global data structrues
+***** nonreentrant functions and locking mechanisms
+**** synchronize
+***** disabling kernel preemption
+is not enough for multiprocessor systems
+***** disabling hardware interrupts
+is not sufficient for multiprocessor, and reduce hardware efficiency.
+***** semaphore
+in multiprocessor systems, semaphore are not always the best solution
+****** an integar variable
+****** a list of waiting processes
+****** Two atomic methods: up() and down()
+***** spin lock
+fit multiprocessor system and useless in uniprocessor system
+similar to semaphore, without process list, spin around until lock opened.
+***** avoiding deadlock
+linux request locks in predefined order.
+** OS layer
+** File
+*** file name
+可以是任意字符，但不能是 '/' 和 '\0' 。
+*** hard link
+目录不可以有硬链接，因为目录树可能变成一个环。
+只能在相同的文件系统上生成硬链接。
+*** file type
+**** device file
+***** Block oriented file
+***** character oriented file
+**** interprocess communication
+***** pipe or FIFO
+***** socket
+*** File Descriptor and Inode
+*** File handling
+**** fd = open(path, flag, mode)
+flag: read, write, read/write, append;
+mode: access rights of new file.
+**** newoffset = lseek(fd, offset, whence);
+whence表明新的偏移是从文件头、当前指针的位置或是文件尾开始计算。
+**** nread = read(fd, buf, count);
+**** res = close(fd);
+**** res = rename(oldpath, newpath);
+** Memory Management
+*** RAM
+**** kernel image
+kernel code and kernel static data structures
+**** virtual memory
+***** virtual address space
+***** KMA: Kernel Memory Allocator
+*** memory address (80x86)
+Logical address ==segmentation unit==> Linear address
+==paging unit==> physical address
+**** logical address
+segment (16 bit) + offset (32 bit)
+Linux uses segmentation in a vary limited way. 
+Linux preferes paging.
+The 2.6 version of Linux uses segmentation only when required by the 80x86 architechture.
+***** segment descriptor (8 bytes)
+****** GDT/LDT
+****** code segment descriptor
+****** data segment descriptor
+****** task state segment descriptor (TSSD)
+****** local descriptor table descriptor (LDTD)
+***** segmentation registers
+****** cs: code segment register
+2-bit field: CPU privilege Level 0-3, 0: Kernel Mode, 3: User Mode
+****** ss: stack segment register
+****** ds: data segment (contains global and static data) register
+**** Linear address (virtual address)
+**** physical address
+**** page
+page: groups of data; page frame: physical adresses in main memory.
+
+This allows the same page to be stored in a page frame, then
+saved to disk and later reloaded in a different page frame. This
+is the basic ingredient of the virtual memory mechanism (see
+Chapter 17).
+
+***** page directory
+cr3: the physical adress of the page directory.
+***** page table
+***** offset
+***** PAE: physical address extension
+from Pentium Pro, address pins from 32 to 36,
+address from 4GB to 64GB.
+This requires a new paging mechanism that translates 32-bit linear addresses into 36-bit physical ones.
+set PAE flag in ~cr4~
+Page Size flag in page directory enable 2MB size.
+
+**** memory arbiter
+between multiprocessors, processer and DMA
+*** Hardware cache
+between CPU and DRAM (Dynamic RAM)
+static RAM - SRAM
+write-through
+write-back
+*** Translation Lookaside buffers (TLB)
+*** Kernel page tables
+**** Provisional(临时的) kernel page tables
+It is initialized statically during kernel compilation by ~startup_32()~
+***** Page Global Directory = Page Upper Directories = Page Middle Directories
+contained in swapper_pg_dir.
+***** noncontinuous memory allocation
+***** fix-mapped linear addresses
+** Device Driver
+** interrupts
+the code executed by an interrupt or by an exception handler is
+not a process. It is lighter than a process.
+*** Interrupt vector
+Each interrupt or exception is identified by a number ranging
+from 0 to 255
+*** Synchronous interrupts
+produced by CPU control unit
+after terminating the execution of an instruction
+called as ~Exception~
+**** Faults
+can be corrected.
+The saved value of eip is the address of the instruction that caused
+the fault.
+such as =Page Fault=.
+**** Traps
+The saved value of eip is the address of the instruction that should
+be executed after the one that caused the trap.
+The main use of traps is for debugging purposes. 
+**** Aborts
+A serious error occurred;
+this force the affected process to terminate.
+**** Programmed exceptions
+are handled by the control unit as traps;
+they are often called software interrupts. 
+*** Asynchronous interrupts
+**** produced by interval timers and I/O devices
+**** called as ~Interrupts~
+**** Maskable vs Nonmaskable

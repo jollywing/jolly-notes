@@ -1,0 +1,453 @@
+<!--header begin-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<title>debian的个人门户|配置ftp（zz）</title>
+<LINK rel="stylesheet" HREF="../../spring.css">
+</head>
+<!--header end--> 
+<body>
+
+<H1>配置ftp（zz）</H1>
+<table width="100%" border="0" cellpadding="0" cellspacing="0" class="mainbg" id="viewtopic">
+
+<tr> 
+	<td class="lineheight"> <p><font size="3">在众多网络应用中，FTP（文件传输协议）有着非常重要的地位。Internet中一个十分重<br />
+要的资源就是软件资源，而各种各样的软件资源大多数都放在FTP服务器中。与大多数<br />
+Internet服务一样，FTP也是一个客户机/服务器系统。用户通过一个支持FTP协议的客户<br />
+机程序，连接到主机上的FTP服务器程序。用户通过客户机程序向服务器程序发出命令，<br />
+服务器程序执行用户发出的命令，并将执行结果返回给客户机。FTP服务可以根据服务对<br />
+象的不同分为两类：系统FTP服务器只允许系统上的合法用户使用；匿名FTP服务器<br />
+（Anonymous FTP Server）允许任何人登录到FTP服务器去获取文件。<br />
+<br />
+FTP的数据传输模式针对FTP数据连接而言，分为主动传输模式、被动传输模式和单端口传<br />
+输模式三种。 <br />
+<br />
+1．主动传输模式<br />
+当FTP的控制连接建立，客户提出目录列表、传输文件时，客户端发出PORT命令与服务器<br />
+进行协商，FTP服务器使用一个标准端口20作为服务器端的数据连接端口（ftp-data），<br />
+与客户建立数据连接。端口20只用于连接源地址是服务器端的情况，并且端口20没有监听<br />
+进程来监听客户请求。 <br />
+<br />
+在主动传输模式下，FTP的数据连接和控制连接方向相反，由服务器向客户端发起一个用<br />
+于数据传输的连接。客户端的连接端口由服务器端和客户端通过协商确定。 <br />
+<br />
+2．被动传输模式<br />
+当FTP的控制连接建立，客户提出目录列表、传输文件时，客户端发送PASV命令使服务器<br />
+处于被动传输模式，FTP服务器等待客户与其联系。FTP服务器在非20端口的其它数据传输<br />
+端口上监听客户请求。 <br />
+<br />
+在被动传输模式下，FTP的数据连接和控制连接方向一致，由客户端向服务器发起一个用<br />
+于数据传输的连接。客户端的连接端口是发起该数据连接请求时使用的端口。当FTP客户<br />
+在防火墙之外访问FTP服务器时，需要使用被动传输模式。 <br />
+<br />
+3．单端口模式<br />
+除上述两种模式之外，还有一种单端口模式。该模式的数据连接请求由FTP服务器发起。<br />
+使用该传输模式时，客户端的控制连接端口和数据连接端口一致。因为这种模式无法在短<br />
+时间连续输入数据、传输命令，因此并不常用。 <br />
+<br />
+Linux下有很多可用的FTP服务器，其中比较流行的有WU-FTP（Washington University<br />
+FTP）和VSFTP。Red Hat 8.0中自带了WU-FTP和VSFTP两个软件。WU-FTP是一个著名的FTP<br />
+服务器软件，它功能强大，能够很好地运行于众多Unix操作系统中。不过作为后起之秀的<br />
+VSFTP越来越流行，在Red Hat 9.0发行版中就只带有VSFTP。 <br />
+<br />
+VSFTP中VS的意思是&ldquo;Very Secure&rdquo;。从名称可以看出，从一开始，软件的编写者就非常注<br />
+重其安全性。除与生俱来的安全性外，VSFTP还具有高速、稳定的性能特点。在稳定性方<br />
+面，VSFTP可以在单机（非集群）上支持4000个以上的并发用户同时连接。据<br />
+ftp.redhat.com的数据，VSFTP最多可以支持15000个并发用户。 <br />
+<br />
+快速构建FTP服务器 <br />
+<br />
+FTP服务器实现的基本功能是上传下载，下面就分几个步骤来搭建一个可以实现下载功能<br />
+的简易FTP服务器。 <br />
+<br />
+1．安装FTP服务器<br />
+如果在安装系统时没有选择安装FTP服务器，可以通过Red Hat 9.0中的&ldquo;添加/删除应用程<br />
+序&rdquo;工具进行安装。具体方法是，选择&ldquo;主选单&rdquo;&rarr;&ldquo;系统设置&rdquo;&rarr;&ldquo;添加/删除应用程序&rdquo;，在弹<br />
+出的界面中选中FTP服务器，单击&ldquo;更新&rdquo;即可。 <br />
+<br />
+如果无法确认是否安装了该软件，可以使用以下命令查看： <br />
+<br />
+#rpm -qa|grep vsftpd<br />
+vsftpd-1.1.3-8<br />
+<br />
+2．启动FTP服务器<br />
+套用Red Hat 9.0的预设范例直接启动VSFTP。<br />
+# /sbin/service vsftpd start <br />
+<br />
+<br />
+为vsftpd启动vsftpd： [确定] <br />
+<br />
+3．在/var/ftp/pub目录下创建一个名为test.txt的文件，文件内容为&ldquo;This is a test<br />
+file&rdquo;。 <br />
+<br />
+4．测试<br />
+使用FTP客户端登录到本地服务器，然后以匿名身份（anonymous）登录： <br />
+<br />
+# ftp 127.0.0.1<br />
+Connected to 127.0.0.1 (127.0.0.1).<br />
+220 (vsFTPd 1.1.3)<br />
+Name (127.0.0.1:root): anonymous<br />
+331 Please specify the password.<br />
+Password:<br />
+230 Login successful. Have fun.<br />
+Remote system type is UNIX.<br />
+Using binary mode to transfer files.<br />
+<br />
+这样就成功地登录到FTP服务器。可以显示服务器目录列表如下： <br />
+<br />
+ftp&gt; ls<br />
+227 Entering Passive Mode (127,0,0,1,63,15)<br />
+drwxr-xr-x 2 0 0 4096 Dec 04 01:35 pub<br />
+226 Directory send OK. <br />
+<br />
+切换到pub目录下，并显示目录内容，可以找到刚才创建的文件test.txt： <br />
+<br />
+ftp&gt; cd pub<br />
+250 Directory successfully changed.<br />
+ftp&gt; ls<br />
+227 Entering Passive Mode (127,0,0,1,232,34)<br />
+150 Here comes the directory listing.<br />
+-rw-r--r-- 1 0 0 21 Dec 04 01:35 test.txt<br />
+226 Directory send OK. <br />
+<br />
+下载test.txt文件： <br />
+<br />
+ftp&gt; mget test.txt<br />
+mget test.txt? y<br />
+227 Entering Passive Mode (127,0,0,1,186,210)<br />
+150 Opening BINARY mode data connection for test.txt (21 bytes).<br />
+226 File send OK.<br />
+21 bytes received in 0.0108 secs (1.9 Kbytes/sec) <br />
+<br />
+查看本机目录内容，可以看到test.txt已成功下载到本机。 <br />
+<br />
+ftp&gt; !ls<br />
+a EIO_Binders initrd mnt proc tftpboot ylg.txt<br />
+bin etc lib mymnt root tmp<br />
+boot home lost+found myshare sbin usr<br />
+dev id_dsas.pub misc opt test.txt var <br />
+<br />
+尝试上传名为ylg.txt的文件，可以看到请求被拒绝了。 <br />
+<br />
+ftp&gt; put ylg.txt<br />
+local: ylg.txt remote: ylg.txt<br />
+227 Entering Passive Mode (127,0,0,1,243,10)<br />
+550 Permission denied. <br />
+<br />
+退出登录： <br />
+<br />
+ftp&gt; bye<br />
+221 Goodbye. <br />
+<br />
+由测试可以看出，已经可以下载文件，但不能上传文件（也不能在服务器上创建目录和文<br />
+件）。实际上这是一个专门提供下载服务的匿名FTP服务器。 <br />
+<br />
+从上面的步骤可以看出，并不需要做什么配置就可以完成一个简易FTP服务器的架设。这<br />
+是因为Red Hat已经配置好一个缺省的FTP服务器。不过在实际应用中，大部分情况下这个<br />
+简易的服务器并不能满足需求。 <br />
+<br />
+进一步配置FTP服务器 <br />
+<br />
+下面将创建一个能够满足常用需求的FTP服务器。实际应用中，FTP服务器一般要同时提供<br />
+上传和下载功能。此外，出于安全考虑，还需要有用户身份验证、用户权限设置及空间管<br />
+理等。下面就来搭建这样一个FTP服务器。 <br />
+<br />
+1．创建欢迎语。如果希望使用者在进入目录时，能够看到欢迎语或对本目录的介绍，可<br />
+以通过以下方法来实现。 <br />
+<br />
+确定/etc/vsftpd/vsftpd.conf文件中dirmessage_enable=YES，默认情况下，Red Hat<br />
+9.0有此设置。接着，在目录中新增名为.message的文件。本例在/home/ylg目录下创建一<br />
+个.message文件，其内容为&ldquo;欢迎来到我的FTP站点&rdquo;。 <br />
+<br />
+2．更换FTP服务器的默认端口。将预设的21端口改为2121，这样做是基于安全的考虑。更<br />
+改方法为，使用vi打开/etc/vsftpd/vsftpd.conf： <br />
+#vi /etc/vsftpd/vsftpd.conf <br />
+<br />
+在文件最后增加如下一行内容：<br />
+listen_port=2121 <br />
+<br />
+3．取消anonymous登录的功能。在vsftpd.conf文件中找到如下一行，并将其值改为&ldquo;NO&rdquo;： <br />
+anonymous_enable=YES <br />
+<br />
+4．设定使用者不得更改目录。这样做的目的也是基于安全性的考虑。一般情况下，使用<br />
+者的预设目录为/home/username。若是不希望使用者在登录后能够切换至上一层目录<br />
+/home，则可通过以下设置来实现。在/etc/vsftpd/vsftpd.conf文件中找到以下三行内容： <br />
+<br />
+#chroot_list_enable=YES<br />
+# (default follows)<br />
+#chroot_list_file=/etc/vsftpd.chroot_list <br />
+<br />
+将其改为： <br />
+<br />
+chroot_list_enable=YES<br />
+# (default follows)<br />
+chroot_list_file=/etc/vsftpd/chroot_list <br />
+<br />
+新增一个文件/etc/vsftpd/chroot_list，文件内容为两个用户名： <br />
+<br />
+ylg<br />
+user1 <br />
+<br />
+5．针对不同的使用者限制不同的速度。假设用户ylg所能使用的最高速度为500Kb/s，用<br />
+户user1所能使用的最高速度为250Kb/s，可以通过以下方法设置。在<br />
+/etc/vsftpd/vsftpd.conf文件尾部新增以下一行：<br />
+user_config_dir=/etc/vsftpd/userconf <br />
+增加一个名为/etc/vsftpd/userconf的目录： <br />
+#mkdir /etc/vsftpd/userconf <br />
+<br />
+在/etc/vsftpd/userconf下新增一个名为ylg的文件，其内容如下所示： <br />
+local_max_rate=500000 <br />
+<br />
+在/etc/vsftpd/userconf目录下新增一个名为user1的文件，其内容如下所示： <br />
+local_max_rate=250000 <br />
+<br />
+VSFTP对于速度的限制范围大概在80％到120％之间，也就是限制最高速度为100Kb/s，但<br />
+实际的速度可能在80Kb/s到120Kb/s之间。如果频宽不足，数值会低于此限制。 <br />
+<br />
+6．对于每一个联机用户，都以独立的进程来运行。一般情况下，在启动VSFTP时，只会看<br />
+到一个名为vsftpd的进程在运行。但若是读者希望每一个联机用户都能以独立的进程来呈<br />
+现，则可通过在/etc/vsftpd/vsftpd.conf文件中增加以下一行来实现： <br />
+setproctitle_enable=YES <br />
+<br />
+7．保存/etc/vsftpd/vsftpd.conf文件，然后重新启动vsftpd： <br />
+#service vsftpd restart <br />
+<br />
+8．测试刚创建的FTP服务器。 <br />
+以缺省方式登录会被拒绝，因为此时的默认端口号已经更改为2121，所以登录时需指定端<br />
+口。 <br />
+<br />
+# ftp 127.0.0.1<br />
+ftp: connect: Connection refused <br />
+<br />
+此时也不能再使用匿名方式登录： <br />
+<br />
+# ftp 127.0.0.1 2121<br />
+Connected to 127.0.0.1 (127.0.0.1).<br />
+220 (vsFTPd 1.1.3)<br />
+Name (127.0.0.1:root): anonymous<br />
+331 Please specify the password.<br />
+Password:<br />
+530 Login incorrect.<br />
+Login failed. <br />
+<br />
+如果以用户ylg则可以成功登录（指定端口2121），并显示欢迎信息： <br />
+<br />
+# ftp 127.0.0.1 2121<br />
+Connected to 127.0.0.1 (127.0.0.1).<br />
+220 (vsFTPd 1.1.3)<br />
+Name (127.0.0.1:root): ylg<br />
+331 Please specify the password.<br />
+Password:<br />
+230-欢迎来到我的FTP站点<br />
+230 Login successful. Have fun.<br />
+Remote system type is UNIX.<br />
+Using binary mode to transfer files. <br />
+<br />
+因为在设置中设定了不能切换目录，所以下列命令无法正确执行： <br />
+<br />
+ftp&gt; cd /home<br />
+550 Failed to change directory. <br />
+<br />
+再来测试一下上传和下载。首先下载服务器目录中的test.txt文件： <br />
+<br />
+ftp&gt; get test.txt<br />
+local: test.txt remote: test.txt<br />
+227 Entering Passive Mode (127,0,0,1,243,215)<br />
+150 Opening BINARY mode data connection for test.txt (21 bytes).<br />
+226 File send OK.<br />
+21 bytes received in 0.00308 secs (6.7 Kbytes/sec) <br />
+<br />
+可以通过!ls命令看到本机目录中已成功下载该文件。然后上传本机目录中的ylg.txt文件<br />
+到服务器： <br />
+<br />
+ftp&gt; put ylg.txt<br />
+local: ylg.txt remote: ylg.txt<br />
+227 Entering Passive Mode (127,0,0,1,133,248)<br />
+150 Ok to send data.<br />
+226 File receive OK.<br />
+19 bytes sent in 0.0401 secs (0.46 Kbytes/sec) <br />
+<br />
+用ls命令查看服务器目录，会发现该文件已成功上传。 <br />
+<br />
+为了测试不同连机用户使用的是不同进程，可以使用ps -ef指令，显示如下所示： <br />
+<br />
+# ps -ef|grep ftp <br />
+root 12972 1356 0 13:44 pts/1 00:00:00 ftp 127.0.0.1 2121<br />
+nobody 12973 12908 0 13:44 ? 00:00:00 [vsftpd]<br />
+ylg 12975 12973 0 13:44 ? 00:00:00 [vsftpd]<br />
+user1 13013 13011 0 13:46 ? 00:00:00 [vsftpd]<br />
+root 13041 13015 0 13:47 pts/4 00:00:00 grep ftp <br />
+<br />
+到现在为止，一个基本可以满足普通使用需求的FTP服务器就已经架设完成。 <br />
+<br />
+在实际应用中，有时为了增加安全性，会将FTP服务器置于防火墙之后。如本文开头所<br />
+述，被动传输模式适合于带有防火墙的情况。下面就来创建一个防火墙后的FTP服务器，<br />
+该服务器FTP端口为2121，数据传输端口为2020。 <br />
+<br />
+执行以下两行指令，只允许2121和2020端口打开，其余端口关闭： <br />
+<br />
+#iptables -A INPUT -p tcp -m multiport --dport 2121,2020 -j ACCEPT <br />
+#iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset <br />
+<br />
+修改/etc/vsftpd/vsftpd.conf文件，在文本最后添加以下两行： <br />
+<br />
+listen_port=2121<br />
+ftp_data_port=2020 <br />
+<br />
+重新启动vsftpd：<br />
+#service vsftpd restart <br />
+<br />
+有时希望直接在/etc/hosts.allow中定义允许或拒绝某一源地址，可以通过以下配置来实<br />
+现。先确保/etc/vsftpd/vsftpd.conf中tcp_wrappers=YES，Red Hat 9.0中，这是默认<br />
+值。重新启动vsftpd： <br />
+#service vsftpd restart <br />
+<br />
+假设提供168.192.2.1和210.31.8.1到210.31.8.254的连接，则可对/etc/hosts.allow进<br />
+行如下设定： <br />
+<br />
+vsftpd : 168.192.2.1 210.31.8. : allow <br />
+ALL : ALL : DENY <br />
+<br />
+配置虚拟用户FTP <br />
+<br />
+上面配置的FTP服务器有一个特点，就是FTP服务器的用户本身也是系统用户。这显然是一<br />
+个安全隐患，因为这些用户不仅能够访问FTP，也能够访问其它的系统资源。如何解决这<br />
+个问题呢？答案就是创建一个虚拟用户的FTP服务器。虚拟用户的特点是只能访问服务器<br />
+为其提供的FTP服务，而不能访问系统的其它资源。所以，如果想让用户对FTP服务器站内<br />
+具有写权限，但又不允许访问系统其它资源，可以使用虚拟用户来提高系统的安全性。 <br />
+<br />
+在VSFTP中，认证这些虚拟用户使用的是单独的口令库文件（pam_userdb），由可插入认<br />
+证模块（PAM）认证。使用这种方式更加安全，并且配置更加灵活。 下面介绍配置过程。 <br />
+<br />
+1．生成虚拟用户口令库文件。为了建立此口令库文件，先要生成一个文本文件。该文件<br />
+的格式如下，单数行为用户名，偶数行为口令： <br />
+<br />
+#vi account.txt<br />
+ylg<br />
+1234<br />
+zhanghong<br />
+4321<br />
+gou<br />
+5678 <br />
+<br />
+2．生成口令库文件，并修改其权限： <br />
+<br />
+#db_load -T -t hash -f ./account.txt /etc/vsftpd/account.db<br />
+#chmod 600 /etc/vsftpd/account.db <br />
+<br />
+3．新建一个虚拟用户的PAM文件。加上如下两行内容： <br />
+<br />
+#vi /etc/pam.d/vsftp.vu<br />
+auth required /lib/security/pam_userdb.so db=/etc/vsftpd/account<br />
+account required /lib/security/pam_userdb.so db=/etc/vsftpd/account <br />
+<br />
+4．建立虚拟用户，设置该用户所要访问的目录，并设置虚拟用户访问的权限： <br />
+<br />
+#useradd -d /ftpsite virtual_user<br />
+#chmod 700 /ftpsite <br />
+<br />
+经过该步骤的设置，/ftpsite就是virtual_user用户的主目录，该用户也是/ftpsite目录<br />
+的拥有者。除root用户之外，只有该用户具有对该目录的读、写和执行的权限。 <br />
+<br />
+5．生成一个测试文件。先切换至virtual_user用户身份，然后在/ftpsite目录下创建一<br />
+个文件： <br />
+<br />
+#su -virtual_user<br />
+$vi /ftpsite/mytest<br />
+This is a test file.<br />
+$su - root <br />
+<br />
+6．编辑/etc/vsftpd/vsftpd.conf文件，使其整个文件内容如下所示（去掉了注释内容）： <br />
+<br />
+anonymous_enable=NO<br />
+local_enable=YES<br />
+local_umask=022<br />
+xferlog_enable=YES<br />
+connect_from_port_20=YES<br />
+xferlog_std_format=YES<br />
+listen=YES<br />
+write_enable=YES<br />
+anon_upload_enable=YES<br />
+anon_mkdir_write_enable=YES<br />
+anon_other_write_enable=YES<br />
+one_process_model=NO<br />
+chroot_local_user=YES<br />
+ftpd_banner=Welcom to my FTP server.<br />
+anon_world_readable_only=NO<br />
+guest_enable=YES<br />
+guest_username=virtual_user<br />
+pam_service_name=vsftp.vu <br />
+<br />
+上面代码中，guest_enable=YES表示启用虚拟用户；guest_username=virtual则是将虚拟<br />
+用户映射为本地用户，这样虚拟用户登录后才能进入本地用户virtual的目录/ftpsite；<br />
+pam_service_name=vsftp.vu指定PAM的配置文件为vsftp.vu。 <br />
+<br />
+7．重新启动VSFTP： <br />
+#service vsftpd restart <br />
+<br />
+8．以虚拟用户gou（Linux中并无该账号）进行测试： <br />
+<br />
+# ftp 127.0.0.1<br />
+Connected to 127.0.0.1 (127.0.0.1).<br />
+220 Welcom to my FTP server.<br />
+Name (127.0.0.1:root): gou<br />
+331 Please specify the password.<br />
+Password:<br />
+230 Login successful. Have fun.<br />
+Remote system type is UNIX.<br />
+Using binary mode to transfer files. <br />
+<br />
+测试下载服务器目录中的一个文件mytest： <br />
+<br />
+ftp&gt; get mytest<br />
+local: mytest remote: mytest<br />
+227 Entering Passive Mode (127,0,0,1,159,19)<br />
+150 Opening BINARY mode data connection for mytest (21 bytes).<br />
+226 File send OK.<br />
+21 bytes received in 0.00038 secs (54 Kbytes/sec) <br />
+<br />
+测试上传本机目录中的文件vsftpd.conf： <br />
+<br />
+ftp&gt; !ls<br />
+account.db chroot_list k mytest userconf vsftpd.conf<br />
+ftp&gt; put vsftpd.conf<br />
+local: vsftpd.conf remote: vsftpd.conf<br />
+227 Entering Passive Mode (127,0,0,1,117,203)<br />
+150 Ok to send data.<br />
+226 File receive OK.<br />
+4229 bytes sent in 0.00195 secs (2.1e+03 Kbytes/sec) <br />
+<br />
+可以看到，使用没有系统账号的虚拟用户可以成功完成上传、下载的工作。但该FTP虚拟<br />
+服务器只允许虚拟用户登录，其它系统用户无法登录，如系统用户user1不是虚拟用户，<br />
+则不能登录该虚拟服务器。 <br />
+<br />
+# ftp 127.0.0.1<br />
+Connected to 127.0.0.1 (127.0.0.1).<br />
+220 Welcom to my FTP server.<br />
+Name (127.0.0.1:root): user1<br />
+331 Please specify the password.<br />
+Password:<br />
+530 Login incorrect.<br />
+Login failed. <br />
+<br />
+在虚拟FTP服务器中，也可以对各个用户的权限进行设置。方法是在/etc/vsftpd.conf文<br />
+件中添加如下一行： <br />
+user_config_dir=用户配置文件目录 <br />
+<br />
+然后在用户配置文件目录下创建相应的用户配置文件，比如为上述名为gou的用户创建一<br />
+个配置文件（假设配置文件目录为/etc/user_config_dir）： <br />
+<br />
+#vi /etc/user_config_dir/gou<br />
+write_enable=NO<br />
+anono_upload_enable=NO <br />
+<br />
+重启FTP服务器，这时再使用账号gou来登录，就已经没有上传的权限了</font></p></td>
+</tr>
+
+</table>
+
+		
+</body>
+</html> 

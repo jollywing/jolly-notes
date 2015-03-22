@@ -1,0 +1,258 @@
+JavaScript FSO属性大全
+发布时间：2008-09-05 00:00:00   来源：   评论：0 点击：1439 次 【字号：大 中 小】
+QQ空间 新浪微博 腾讯微博 人人网 豆瓣网 百度空间 百度搜藏 开心网 复制 更多 0 JavaScript FSO属性大全,阅读JavaScript FSO属性大全,什么是FSO？ FSO 即 File System Object 文件系统对象，是一种列表 Windows 磁盘目录和文件，对目录和文件进行删除、新建、复制、剪切、移动等操作的技术。使用 FSO 网站的好处：直接读取目录下的文件和子    
+什么是FSO？ 
+FSO 即 File System Object 文件系统对象，是一种列表 Windows 磁盘目录和文件，对目录和文件进行删除、新建、复制、剪切、移动等操作的技术。使用 FSO 网站的好处：直接读取目录下的文件和子目录，方便维护，如需要添加任何内容，将文件放在相应的目录下即可；FSO 网站类似 Windows 操作界面，易于使用，会使用 Windows 就会使用 FSO 网站。 
+试想一下，很方便的就可以将您硬盘中的文件和文件夹制作成网站，并且日后只要把内容添加到目录下就可以更新，这样是不是很方便呢？这样，没有经验的新手也可以建设自己的网站了。 
+参考网站： 
+或者
+
+FSO属性，目录和文件同
+
+AtEndOfLine 属性 
+如果文件指针恰好定位在 TextStream 文件中行尾标记的前面，则返回 True；如果没有，则返回 False。
+AtEndOfStream 属性 
+如果文件指针位于 TextStream 文件的末尾，则返回 True；如果不是，则返回 False。 
+Attributes 属性 
+设置或返回文件或文件夹的属性。 
+AvailableSpace 属性 
+返回指定的驱动器或网络共享上，可供用户使用的空间大小。 
+Column 属性 
+返回 TextStream 文件中当前字符位置的列号。 
+CompareMode 属性 
+设置并返回比较模式，用于比较 Dictionary 对象中的字符串关键字。 
+Count 属性 
+返回集合或 Dictionary 对象中的项目数。 
+DateCreated 属性 
+返回指定的文件或文件夹的创建日期和时间。只读。 
+DateLastAccessed 属性 
+返回指定的文件或文件夹上一次被访问的日期和时间。 
+DateLastModified 属性 
+返回指定的文件或文件夹上一次被修改的日期和时间。 
+Drive 属性 
+返回指定的文件或文件夹所在驱动器的盘符。 
+DriveLetter 属性 
+返回本地物理驱动器或网络共享的盘符。 
+Drives 属性 
+返回一个 Drives 集合，该集合包含本地计算机上所有可用的 Drive 对象。 
+DriveType 属性 
+返回一个值，表明指定的驱动器的类型。 
+Files 属性 
+返回一个 Files 集合，该集合包含指定的文件夹中包含的全部 File 对象，包括那些设为隐藏和系统文件属性的对象。 
+FileSystem 属性 
+返回指定的驱动器所用的文件系统的类型。 
+FreeSpace 属性 
+返回指定的驱动器或网络共享上，可供用户使用的空间大小。 
+IsReady 属性 
+如果指定的驱动器准备就绪，则返回 True；如果没有，则返回 False。 
+IsRootFolder 属性 
+如果指定的文件夹是根文件夹，则返回 True；如果不是，则返回 False。 
+Item 属性 
+对于 Dictionary 对象中指定的关键字，设置或返回与之相对应的项目。对于集合，则根据指定的关键字返回一个项目。 
+Key 属性 
+设置 Dictionary 对象中的关键字。 
+Line 属性 
+返回 TextStream 文件中的当前行号。 
+Name 属性 
+设置或返回指定的文件或文件夹的名称。 
+ParentFolder 属性 
+返回指定文件或文件夹的上一级的文件夹对象。 
+Path 属性 
+返回指定文件、文件夹或驱动器的路径。 
+RootFolder 属性 
+返回一个 Folder 对象，代表指定驱动器的根文件夹。 
+SerialNumber 属性 
+返回十进制序列号，用于唯一地标识磁盘卷。 
+ShareName 属性 
+返回指定驱动器的网络共享名。 
+ShortName 属性 
+返回要求早期 8.3 命名规范的程序使用的短名称。 
+ShortPath 属性 
+返回要求早期 8.3 命名规范的程序使用的短路径。 
+Size 属性 
+对于文件，返回指定的文件的大小，以字节为单位。对于文件夹，返回文件夹所包含的所有文件和子文件夹的大小，以字节为单位。 
+SubFolders 属性 
+返回一个 Folders 集合，包含指定文件夹中的所有文件夹，包括那些设为隐藏和系统文件属性的文件夹。
+TotalSize 属性 
+返回驱动器或网络共享的总空间，以字节为单位。 
+Type 属性 
+返回有关文件或文件夹类型的信息。 
+VolumeName 属性 
+设置或返回指定驱动器的卷名。 
+方法或者属性 描述 
+BuildPath() 生成一个文件路径 
+CopyFile() 复制文件 
+CopyFolder() 复制目录 
+CreateFolder() 创建新目录 
+CreateTextFile() 生成一个文件 
+DeleteFile() 删除一个文件 
+DeleteFolder() 删除一个目录 
+DriveExists() 检验盘符是否存在 
+Drives 返回盘符的集合 
+FileExists() 检验文件是否存在 
+FolderExists 检验一个目录是否存在 
+GetAbsolutePathName() 取得一个文件的绝对路径 
+GetBaseName() 取得文件名 
+GetDrive() 取得盘符名 
+GetDriveName() 取得盘符名 
+GetExtensionName() 取得文件的后缀 
+GetFile() 生成文件对象 
+GetFileName() 取得文件名 
+GetFolder() 取得目录对象 
+GetParentFolderName 取得文件或目录的父目录名 
+GetSpecialFolder() 取得特殊的目录名 
+GetTempName() 生成一个临时文件对象 
+MoveFile() 移动文件 
+MoveFolder() 移动目录 
+OpenTextFile() 打开一个文件流
+
+实例说明FSO用法 
+BuildPath(路径,文件名) //这个方法会对给定的路径加上文件，并自动加上分界符 
+<SCRIPT LANGUAGE="JavaScript"> 
+<!-- 
+var fso = new ActiveXObject("Scripting.FileSystemObject"); 
+var newpath = fso.BuildPath("c:\\tmp", "51js.txt"); //生成 c:\tmp\51js.txt的路径 
+alert(newpath); 
+--> 
+</SCRIPT>
+
+CopyFile(源文件, 目标文件, 覆盖) //复制源文件到目标文件，当覆盖值为true时，如果目标文件存在会把文件覆盖 
+<SCRIPT LANGUAGE="JavaScript"> 
+<!-- 
+var fso = new ActiveXObject("Scripting.FileSystemObject"); 
+var newpath = fso.CopyFile("c:\\autoexec.bat", "d:\\autoexec.bak"); 
+--> 
+</SCRIPT> 
+
+CopyFolder(对象目录,目标目录 ,覆盖) //复制对象目录到目标目录，当覆盖为true时，如果目标目录存在会把文件覆盖 
+<SCRIPT LANGUAGE="JavaScript"> 
+<!-- 
+var fso = new ActiveXObject("Scripting.FileSystemObject"); 
+fso.CopyFolder("c:\\WINDOWS\\Desktop", "d:\\"); //把C盘的Desktop目录复制到D盘的根目录 
+--> 
+</SCRIPT>
+
+CreateFolder(目录名) //创建一个新的目录 
+<SCRIPT LANGUAGE="JavaScript"> 
+<!-- 
+var fso = new ActiveXObject("Scripting.FileSystemObject"); 
+var newFolderName = fso.CreateFolder("c:\\51JS"); //在C盘上创建一个51JS的目录 
+--> 
+</SCRIPT>
+
+CreateTextFile(文件名, 覆盖) //创建一个新的文件，如果此文件已经存在，你需要把覆盖值定为true 
+<SCRIPT LANGUAGE="JavaScript"> 
+<!-- 
+var fso = new ActiveXObject("Scripting.FileSystemObject"); 
+var newFileObject = fso.CreateTextFile("c:\\autoexec51JS.bat", true); //脚本将在C盘创建一个叫 autoexec51JS.bat的文件 
+--> 
+</SCRIPT>
+
+DeleteFile(文件名, 只读？) //删除一个文件，如果文件的属性是只读的话，你需要把只读值设为true 
+<SCRIPT LANGUAGE="JavaScript"> 
+<!-- 
+var fso = new ActiveXObject("Scripting.FileSystemObject"); //为了安全我先把要删除的autoexec.bat备份到你的D盘 
+var newpath = fso.CopyFile("c:\\autoexec.bat", "d:\\autoexec.bat"); //把C盘的autoexec.bat文件删除掉 
+fso.DeleteFile("c:\\autoexec.bat", true); 
+--> 
+</SCRIPT>
+
+DeleteFolder(文件名, 只读？)//删除一个目录，如果目录的属性是只读的话，你需要把只读值设为true 
+<SCRIPT LANGUAGE="JavaScript"> 
+<!-- 
+var fso = new ActiveXObject("Scripting.FileSystemObject"); 
+fso.CopyFolder("c:\\WINDOWS\\Desktop", "d:\\"); //为了安全我先把你C盘的Desktop目录复制到你D盘的根目录 
+fso.DeleteFolder("c:\\WINDOWS\\Desktop", true); //把你的Desktop目录删除，但因为desktop是系统的东西，所以不能全部删除，但......... 
+--> 
+</SCRIPT>
+
+DriveExists(盘符) //检查一个盘是否存在，如果存在就返会真，不存在就返回....... 
+<SCRIPT LANGUAGE="JavaScript"> 
+<!-- 
+var fso = new ActiveXObject("Scripting.FileSystemObject"); 
+hasDriveD = fso.DriveExists("d"); //检查系统是否有D盘存在 
+hasDriveZ = fso.DriveExists("z"); //检查系统是否有Z盘存在 
+if (hasDriveD) alert("你的系统内有一个D盘"); 
+if (!hasDriveZ) alert("你的系统内没有Z盘"); 
+--> 
+</SCRIPT>
+
+FileExists(文件名) //检查一个文件是否存在，如果存在就返会真，不存在就返回....... 
+<SCRIPT LANGUAGE="JavaScript"> 
+<!-- 
+var fso = new ActiveXObject("Scripting.FileSystemObject"); 
+fileName = fso.FileExists("c:\\autoexec.bat"); 
+if (fileName) alert("你在C盘中有autoexec.bat文件，按下确定后这个文件将被删除！"); //开个玩笑:) 
+--> 
+</SCRIPT>
+
+FolderExists(目录名) //检查一个目录是否存在，如果存在就返会真，不存在就返回....... 
+<SCRIPT LANGUAGE="JavaScript"> 
+<!-- 
+var fso = new ActiveXObject("Scripting.FileSystemObject"); 
+folderName = fso.FolderExists("c:\\WINDOWS\\Fonts"); 
+if (folderName) alert("按下确定后系统的字库将被删除！"); //开个玩笑:) 
+--> 
+</SCRIPT>
+
+GetAbsolutePathName(文件对象) //返回文件对象在系统的绝对路径 
+<SCRIPT LANGUAGE="JavaScript"> 
+<!-- 
+var fso = new ActiveXObject("Scripting.FileSystemObject"); 
+pathName = fso.GetAbsolutePathName("c:\\autoexec.bat"); 
+alert(pathName); 
+--> 
+</SCRIPT>
+
+GetBaseName(文件对象) //返回文件对象的文件名 
+<SCRIPT LANGUAGE="JavaScript"> 
+<!-- 
+var fso = new ActiveXObject("Scripting.FileSystemObject"); 
+baseName = fso.GetBaseName("c:\\autoexec.bat"); //取得autoexec.bat的文件名autoexec 
+alert(baseName); 
+--> 
+</SCRIPT>
+
+GetExtensionName(文件对象) //文件的后缀 
+<SCRIPT LANGUAGE="JavaScript"> 
+<!-- 
+var fso = new ActiveXObject("Scripting.FileSystemObject"); 
+exName = fso.GetExtensionName("c:\\autoexec.bat"); //取得autoexec.bat后缀bat 
+alert(exName); 
+--> 
+</SCRIPT>
+
+GetParentFolderName(文件对象) //取得父级的目录名 
+<SCRIPT LANGUAGE="JavaScript"> 
+<!-- 
+var fso = new ActiveXObject("Scripting.FileSystemObject"); 
+parentName = fso.GetParentFolderName("c:\\autoexec.bat"); //取得autoexec.bat的父级目录C盘 
+alert(parentName); 
+--> 
+</SCRIPT>
+
+GetSpecialFolder(目录代码) //取得系统中一些特别的目录的路径，目录代码有3个分别是 0:安装Window的目录 1:系统文件目录 2:临时文件目录 
+<SCRIPT LANGUAGE="JavaScript"> 
+<!-- 
+var fso = new ActiveXObject("Scripting.FileSystemObject"); 
+tmpFolder = fso.GetSpecialFolder(2); //取得系统临时文件目录的路径 如我的是 C:\windows\temp 
+alert(tmpFolder); 
+--> 
+</SCRIPT>
+
+GetTempName() //生成一个随机的临时文件对象，会以rad带头后面跟着些随机数，就好象一些软件在安装时会生成*.tmp 
+<SCRIPT LANGUAGE="JavaScript"> 
+<!-- 
+var fso = new ActiveXObject("Scripting.FileSystemObject"); 
+tmpName = fso.GetTempName(); //我在测试时就生成了radDB70E.tmp 
+alert(tmpName); 
+--> 
+</SCRIPT>
+
+MoveFile(源文件, 目标文件) //把源文件移到目标文件的位置 
+<SCRIPT LANGUAGE="JavaScript"> 
+<!-- 
+var fso = new ActiveXObject("Scripting.FileSystemObject"); 
+var newpath = fso.MoveFile("c:\\autoexec.bat", "d:\\autoexec.bat"); //把C盘的autoexec.bat文件移移动到D盘 
+--> 
+</SCRIPT>

@@ -1,0 +1,195 @@
+
+JavaScript面向对象15分钟教程
+tsl0922 发表于 5-7 09:32 5个月前, 32回/6505阅, 最后回答: 2天前
+讨论区 » 技术分享
+本指南可以很快让你学会写优美的面向对象JavaScript代码，我保证！学会写简洁的JavaScript代码对一个开发者的发展很重要，随着像Node.js这类技术的出现，你现在可以在服务器端写JavaScript代码了，你甚至可以用JavaScript来查询像MongoDB这样的持久性数据存储。
+
+现在开始写面向对象的JS（OO JS），如果你有什么问题或我遗漏了什么，在下面评论出告诉我。
+
+Literal Notation
+Literal Notation只是在JavaScript中创建对象的一种方法，是的，方法不止这一种。当你打算创建一个对象实例的时候Literal Notation是首选的方法。
+1
+var bill = {};
+上面的代码没太大用处，仅仅只是创建了一个空对象。让我们动态的添加一些属性和方法到这个对象。
+
+1
+bill.name = "Bill E Goat";
+2
+bill.sound = function() {
+3
+    console.log( 'bahhh!' );
+4
+};
+这里我们添加了“name”属性并赋值为“Bill E Goat”。我们不一定要在前面创建空对象，还可以只用一步完成上面 所有的事。
+
+1
+var bill = {
+2
+  name: "Bill E Goat",
+3
+  sound: function() {
+4
+    console.log( 'bahhh!' );
+5
+  } 
+6
+};
+很简洁漂亮是不是？访问属性和方法也一样很简单。
+
+1
+bill.name; // "Bill E Goat"
+2
+bill.sound(); // "bahhh"
+如果属性名不是一个有效的标识符我们还可以这么访问它：
+
+1
+bill['name']; // "Bill E Goat"
+请注意当调用一个方法时我们要在方法名后面添加一对括号去调用它。让我们重写当前的sound方法并传给它一个参数来调用它：
+
+1
+bill.sound = function(noise) {
+2
+    console.log( noise);
+3
+};
+4
+bill.sound("brrr!"); // "brrr!" He's cold :)
+很好，我们传入了一个参数(noise),并且在方法的内部访问了它。下面我们继续添加一个方法来访问name属性：
+
+1
+bill.sayName = function() {
+2
+    console.log( "Hello " + this.name );
+3
+};
+4
+bill.sayName(); // "Hello Bill E Goat"
+我们可以通过this.propertyName在一个方法内部访问属性
+
+1
+bill.sayName; // function
+这些代码会有什么结果。我们不使用括号调用sayName，它返回了一个方法定义。继续探索！
+
+1
+var sound = bill.sound;
+2
+sound('moo!'); // "moo!"
+我们把一个叫sound的本地方法赋值给一个对象sound，现在可以在sound后面添加括号并传入参数调用那个方法了。如果我们试着克隆Bill会有什么结果？
+
+1
+var sally = bill;
+2
+sally.name; // "Bill E Goat", But her name is Sally silly
+3
+sally.name = "Sally";
+4
+sally.name; // "Sally", Better
+5
+bill.name; // "Sally", Oh no what happened to Bill
+在上面的例子中我们创建了一个新的变量sally，并让它和bill相等。现在sally和bill在内存中引用同样的对象。对一个对象的改变会影响到另一个。
+
+下面再看另外一个例子：
+
+1
+bill.name = "Bill E Goat";
+2
+bill.sayName(); // "Hello Bill E Goat";
+3
+var sayName = bill.sayName;
+4
+sayName; // function, OK so far so good
+5
+sayName(); // "Hello ", huh why didn't it print out Bills name?
+bill的name属性是一个本地变量，sayName方法是在全局范围内创建的，所以this.name会在全局范围内查找name的值。但问题是name没有定义。让我们来定义一个全局变量name看看会发生什么：
+
+1
+var name = "Bearded Octo";
+2
+sayName(); // "Hello Bearded Octo"
+在这里我们创建了一个全局变量name，并赋值“Bearded Octo”。当我们调用sayName方法时它在全局范围内查找name并访问到了值“Bearded Octo”，很好。下面看看Constructor Notation。
+
+Constructor Notation
+Constructor Notation是另外一种写面向对象JavaScript的方法。当你需要为一个对象设置初始属性值和方法或者打算创建一个对象的不同实例但他们的属性和方法都是不同的，这时首选Constructor Notation方式。下面从创建一个空对象开始：
+1
+function Game() {};
+
+请注意习惯上第一个字母大写来表示它是一个类。我们来用这个类创建新的对象：
+
+1
+var zelda = new Game();
+2
+var smb = new Game();
+3
+zelda.title = "Legend of Zelda";
+4
+smb.title = "Super Mario Brothers";
+5
+zelda.title; // "Legend of Zelda"
+6
+smb.title; // "Super Mario Brothers"
+我们的对象现在有自己的属性了！当创建对象时，我们可以在属性中传值进去，或者在后面修改。
+
+1
+function Game(title) {
+2
+    this.title = typeof title !== 'undefined' ? title : "";
+3
+};
+4
+var zelda = new Game("Legend of Zelda");
+5
+zelda.title; // "Legend of Zelda"
+6
+zelda.title = "Ocarina of Time";
+7
+zelda.title; // "Ocarina of Time"
+8
+var blank = new Game();
+9
+blank.title; // ""
+第二行可能有点难理解。我们使用了一个三元操作符，它只是一种可以把if else语句块写到一行的方法。他等价于下面的：
+
+1
+if (typeof title !== 'undefined') {
+2
+    this.title = title;
+3
+} else {
+4
+    this.title = "";
+5
+}
+6
+// Is the same as
+7
+this.title = typeof title !== 'undefined' ? title : "";
+如果这个对象创建的时候传入了title参数，对象的title属性就会被设置。如果没有传入，会被设置成默认值””。
+
+我们可以创建一个方法来访问这个属性：
+
+1
+zelda.loveTitle = function() {
+2
+    console.log( "I love " + this.title );
+3
+};
+4
+zelda.loveTitle(); // "I love Ocarina of Time"
+那样看起来很整齐，但是还可以更好。我们可以给Game类添加一个方法让所有从Game类创建的对象都有这个方法：
+
+1
+Game.prototype.heartIt = function() {
+2
+    console.log( "I heart " + this.title );
+3
+};
+4
+zelda.heartIt(); // "I heart Ocarina of Time"
+5
+smb.heartIt(); // "I heart Super Mario Brothers"
+结语
+
+我希望这个教程对你学习JavaScript面向对象有用。JavaScript面向对象还有很多方面，以后的教程会再作介绍。如果有什么问题，请在下面留下评论。感谢您的阅读！
+
+原文链接/OsChina.NET编译
+

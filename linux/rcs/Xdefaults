@@ -1,0 +1,95 @@
+*font: -*-*-medium-r-*--9-*-*-*-*-*-iso10646-1
+
+!xpdf
+xpdf.paperColor:    #c6e6c6
+xpdf.initialZoom:   width
+xpdf*.fontList:\
+-*-lucida-medium-r-*-*-12-*-*-*-*-*-iso8859-1
+gnuplot*font: -*-times new roman-medium-r-normal-*-*-*-*-*-*-*-*-*
+
+!XFT
+!Xft.dpi:96
+!Xft.antialias: 1
+!Xft.hinting: 1
+!Xft.hintstyle: hintfull
+!Xft.hintstyle: hintmedium
+!Xft.rgba: rgb
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!! for emacs 22 and before !!!
+!Emacs.Fontset-0: -*-Bitstream Vera Sans Mono-medium-r-*-*-15-*-*-*-*-*-fontset-song,\
+!    chinese-gb2312:-*-LiHei Pro-medium-r-*--15-*-*-*-*-*-iso10646-1,\
+!    utf-8:-*-LiHei Pro-medium-r-*--15-*-*-*-*-*-iso10646-1,\
+!    chinese-big5-1:-*-LiHei Pro-medium-r-*--15-*-*-*-*-*-iso10646-1,\
+!    chinese-big5-2:-*-LiHei Pro-medium-r-*--15-*-*-*-*-*-iso10646-1,\
+!    korean-ksc5601:-*-LiHei Pro-medium-r-*--15-*-*-*-*-*-iso10646-1,\
+!    chinese-cns11643-5:-*-LiHei Pro-medium-r-*--15-*-*-*-*-*-iso10646-1,\
+!    chinese-cns11643-6:-*-LiHei Pro-medium-r-*--15-*-*-*-*-*-iso10646-1,\
+!    chinese-cns11643-7:-*-LiHei Pro-medium-r-*--15-*-*-*-*-*-iso10646-1
+! 
+!Emacs.font: fontset-song
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!! for emacs 23 xft
+Emacs.FontBackend: xft
+Emacs.Font: Monospace-10
+
+xosview*background:black
+xosview*foreground:grey90
+xosview*load: True
+xosview*loadPriority: 100
+xosview*loadIdleColor:black
+xosview*cpu: True
+xosview*cpuPriority: 50
+xosview*cpuFreeColor:black
+xosview*mem: True
+xosview*memPriority: 100
+xosview*memFreeColor:black
+xosview*swap: False
+xosview*page: False
+xosview*interrupts: False
+xosview*disk: False
+xosview*diskPriority: 30
+
+xterm*background: grey12
+xterm*cursorColor: orange
+xterm*foreground: grey88
+xterm*font: 8x16
+
+xclock*update: 60
+xclock*foreground: DarkSlateGrey
+
+Rxvt.background:#c6e6c6
+!Rxvt.foreground:#ccddcc
+Rxvt.foreground:#000000
+Rxvt.cursorColor:chocolate
+Rxvt.font:xft:courier 10 pitch:pixelsize=14,\
+xft:ar pl uming cn:pixelsize=15
+Rxvt.boldFont:xft:courier 10 pitch:pixelsize=14:\
+style=bold,xft:simhei:pixelsize=15
+Rxvt.italicFont:xft:courier 10 pitch:pixelsize=14:\
+style=italic,xft:youyuan:pixelsize=15
+!Rxvt.font:xft:Serif:pixelsize=16
+Rxvt.scrollBar:False
+Rxvt.borderless:True
+Rxvt.color0:black
+Rxvt.color1:DebianRed
+Rxvt.color2:green4
+Rxvt.color3:DarkOrange4
+Rxvt.color4:blue4
+Rxvt.color5:magenta4
+Rxvt.color6:cyan4
+Rxvt.color7:orchid1
+Rxvt.color8:gray20
+Rxvt.color9:red
+Rxvt.color10:green3
+Rxvt.color11:DarkOrange1
+Rxvt.color12:blue
+Rxvt.color13:magenta2
+Rxvt.color14:SlateBlue
+Rxvt.color15:white
+Rxvt.geometry:76x50
+Rxvt.inheritPixmap:False
+Rxvt.tintColor:black
+Rxvt.shading:70
+

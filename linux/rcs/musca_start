@@ -1,0 +1,60 @@
+# musca startup file.
+# musca is a light weight tiling window manager.
+# This file list the commands that you want musca to execute.
+
+#set border_focus gray30
+#set border_unfocus gray0
+exec xsetroot -solid gray15
+set border_focus gray45
+set border_unfocus gray30
+set border_catchall_focus darkgreen
+set border_catchall_unfocus darkslategray
+set border_dedicate_focus hotpink3
+set border_dedicate_unfocus hotpink4
+set border_width 2
+
+# make Trayer and Conky not managed by musca.
+#manage off trayer
+manage off Conky
+#exec feh --bg-scale ~/images/wallpapers/1440x900-injunctions.jpg
+exec conky
+exec tint2
+#exec xfce4-panel
+#exec trayer --edge top --align right --widthtype request --height 20 --SetDockType true --transparent true --alpha 255 --tint 0x00ff00
+
+set window_open_frame empty
+set focus_follow_mouse 0
+set dmenu /usr/local/bin/dmenu -i -b -fa Sans-12 -p $
+
+#alias PAD pad 0 0 20 0
+bind off Mod4+t
+bind on Mod4+t exec x-terminal-emulator
+bind on Mod4+q quit
+#bind on Mod4+p PAD
+bind on Mod4+Mod1+Left slide left
+bind on Mod4+Mod1+Right slide right
+bind on Mod4+Mod1+Up slide up
+bind on Mod4+Mod1+Down slide down
+bind on Mod4+F1 move 0
+bind on Mod4+F2 move 1
+bind on Mod4+F3 move 2
+bind on Mod4+F4 move 3
+bind on Mod4+F5 move 4
+bind on Mod4+1 use 0
+bind on Mod4+2 use 1
+bind on Mod4+3 use 2
+bind on Mod4+4 use 3
+bind on Mod4+5 use 4
+bind on Mod4+comma cycle next
+bind on Mod4+period cycle prev
+bind on Mod4+l exec ch-musca-layout
+
+pad 0 0 20 0
+hook on ^add pad 0 0 20 0
+name blog
+load .blog/bin/musca-layout/blog
+add win
+load .blog/bin/musca-layout/win
+use 0
+exec x-terminal-emulator
+

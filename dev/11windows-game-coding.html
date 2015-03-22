@@ -1,0 +1,779 @@
+<HTML>
+<HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<TITLE>windows游戏编程笔记</TITLE>
+</HEAD>
+
+<BODY>
+<H1>windows游戏编程笔记</H1>
+
+<UL>
+<LI><A HREF="#dos">dos下的图形编程</A></LI>
+<LI><A HREF="#game-frame">适合游戏的windows程序框架</A></LI>
+<LI><A HREF="#color-console">在console下输入彩色文本</A></LI>
+<LI><A HREF="#win32-api">和游戏相关的windows api</A></LI>
+<LI><A HREF="#message-loop">windows消息循环</A></LI>
+<LI><A HREF="#structure">我写的简单rpg游戏的结构</A></LI>
+<LI><A HREF="#win-data-type">windows数据类型</A></LI>
+</UL>
+<HR>
+
+<A NAME="#dos"><H2>dos下的图形编程</H2></A>
+<P>DOS系统下图形库是BGI(Borland Graphics Interface，TurboC也是borland公司开发的)，BGI包含图形库文件graphics.lib，图形头文件graphics.h（记得《计算机图形学》中的例子程序都引用了这个头文件），许多图形显示器的驱动（CGA.BGI，EGAVGA.BGI等）和一些字体驱动。在TurboC的include目录中就有这个文件，使用这个图形库就可以在黑色的dos窗口中绘图了。</P>
+
+<P>16位的系统和32位的系统图形处理的方式不同，所以Tc的图形库不能用在vc中。但据说已经有了winBGIm的库，可以在VC中使用，练习dos下的图形编程。在vc下也可以使用grx库可以得到相同的效果，而且接口和graphics兼容。</P>
+
+<P>很多dos下的游戏就是用这个库编写的。也有的为了获得更大的灵活性，直接写屏幕内存。</P>
+<P>直接写屏技术在DOS下面很容易实现，调用BIOS的10h中断的00h功能即可进入视频模式，对于VGA、VESA的显示模式，显存的起始地址都是A000:0000H（是一个16位地址的段址+偏移形式）。在支持DOS程序的C编译器下面很容易实现进入视频模式，并且用一个far指针指向视频显存的首地址，然后你就可以在显存里面为所欲为了，比如画点什么的。下面引用别人写的一个例子： </P>
+<BLOCKQUOTE>
+<PRE>
+#define MODE_VGA13H  0x13
+#define MODE_TEXT       0x03
+
+void setmode(char mode)      //设置视频模式的函数
+{
+    asm mov ah,0x00    //调用00h功能设置视频模式
+    asm mov al,mode    //AL寄存器放欲设置的视频模式号，这里以13h视频模式为例
+    asm int    0x10        //调用10h中断
+}
+
+char far * vediobuf=(char far*)0xa0000000L;    //指向显存地址的指针
+
+void putpixel(int x,int y,int c)    //画点的函数
+{
+    *(vediobuf+x+320*y)=c;
+}
+
+int getpixel(int x,int y)              //取点的函数
+{
+    return *(vediobuf+x+320*y);
+}
+
+void main(void)
+{
+    int i;
+    int j;
+
+    //设置VGA13H视频模式
+    setmode(MODE_VGA13H);
+
+    //用一个二重循环画满屏幕
+    for(i=0;i&lt;20;i++)
+        for(j=0;j&lt;320;j++)
+            putpixel(j,i,j);
+
+    getch();
+    //返回DOS文本模式
+    setmode(MODE_TEXT);
+}
+</PRE>
+</BLOCKQUOTE>
+ 
+<P>上面实现了一个画点的函数和一个取点的函数，在此基础上结合一些算法很容易写出画直线、画矩形、画圆等图形函数，对于BMP位图的显示，只要了解BMP的文件结构，再根据位图中的数据画点就可以把位图显示出来了。</P>
+<P>直接写屏的性能非常高，但在Windows中绝不会允许你这样做，如果想在windows下直接写屏，就使用directdraw吧。</P>
+<HR>
+
+<A NAME="game-frame"><H2>适合游戏的windows程序框架</H2></A>
+<P>
+<PRE>
+#define Win32_LEAN_AND_MEAN   //指示编译器不包含无关的MFC操作
+
+#include &lt;windows.h&gt;    //包含所有的windows头文件
+#include &lt;windowsx.h&gt;   //包含许多重要的宏和常量
+
+HWND hWnd;
+LRESULT CALLBACK WinProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+void Game_Init();
+void Game_Main();
+void Game_Shutdown();
+
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+{
+	MSG msg;
+
+	//创建窗口类 
+	WNDCLASSEX wc;
+	wc.cbSize = sizeof(WNDCLASSEX);
+	wc.style = CS_VREDRAW| CS_HREDRAW;
+	wc.lpfnWndProc = WinProc;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = 0;
+	wc.hInstance = hInstance;
+	wc.hIcon = LoadIcon(NULL, IDI_WINLOGO);
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+	wc.lpszMenuName = NULL;
+	wc.lpszClassName = "myWndClass";
+	wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
+
+	//注册窗口类
+	RegisterClassEx(&amp;wc);
+
+	//创建窗口
+	hWnd = CreateWindowEx(NULL, "myWndClass", "我的简单游戏", WS_OVERLAPPEDWINDOW, 
+		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+		NULL, NULL, hInstance, NULL);
+	if(!hWnd) 
+	{
+		MessageBox( NULL, "创建窗口失败！", "错误", MB_OK);
+		return 1;
+	}
+
+	//显示窗口
+	ShowWindow( hWnd, nShowCmd);
+	//更新窗口
+	UpdateWindow(hWnd);
+
+	Game_Init();//游戏初始化
+
+	while(TRUE)//接收到WM_QUIT消息时，GetMessage才会返回零值
+	{
+		if(PeekMessage(&amp;msg, NULL, 0, 0, PM_REMOVE))
+		{
+			if (msg.message == WM_QUIT)
+				break;
+
+			TranslateMessage(&amp;msg);//对加速键消息进行转换
+			DispatchMessage(&amp;msg);//将消息发送到WindProc
+		}
+		//如果没有其它消息，则进入游戏循环
+		Game_Main();
+	}
+
+	Game_Shutdown();//关闭游戏
+
+	return msg.wParam ;
+
+}
+
+
+//消息处理函数
+LRESULT CALLBACK WinProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch( message )
+	{
+	case WM_DESTROY:
+		PostQuitMessage(0); //发出WM_QUIT消息，让Windows回收资源。WM_DESTROY只是毁掉窗口，而程序还在后台运行
+		return 0;
+
+	}
+	return DefWindowProc(hwnd, message, wParam, lParam);
+
+}
+
+//游戏循环
+void Game_Main()
+{
+}
+</PRE>
+</P>
+<HR>
+
+<A NAME="color-console">在console下输出彩色文本</A>
+<BLOCKQUOTE>
+<PRE>
+#include&lt;windows.h&gt;
+//GetStdHandle和SetConsoleTextAttribute在头文件windows.h中
+#include&lt;iostream&gt;
+using namespace std;
+void SetColor(unsigned short ForeColor=4,unsigned short BackGroundColor=0) 
+//给参数默认值，使它可以接受0/1/2个参数 
+{ 
+	HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);    //本例以输出为例
+	SetConsoleTextAttribute(hCon,ForeColor|BackGroundColor); 
+}; 
+
+int main()
+{
+	SetColor(10);
+	std::cout&lt;&lt;"我终将成为杰出的青年！"&lt;&lt;endl;
+	SetColor(9,0);
+	std::cout&lt;&lt;"实现我所有的梦想！"&lt;&lt;endl;
+	return 0;
+}
+
+</PRE>
+</BLOCKQUOTE>
+<HR>
+
+<A NAME="win32-api"><H2>和游戏编程相关的win32 api</H2></A>
+<P><PRE>
+<B>窗口风格定义</B>
+WS_OVERLAPPEDWINDOW 创建一个层叠式窗口，有边框、标题栏、系统菜单、最大最小化按钮，是以下几种风格的集合：WS_OVERLAPPED, WS_CAPTION, WS_SYSMENU, WS_THICKFRAME, WS_MINIMIZEBOX, WS_MAXIMIZEBOX 
+WS_POPUPWINDOW 创建一个弹出式窗口，是以下几种风格的集合： WS_BORDER,WS_POPUP,WS_SYSMENU。WS_CAPTION与WS_POPUPWINDOW风格必须一起使用才能使窗口菜单可见 
+WS_OVERLAPPED 创建一个层叠式窗口，它有标题栏和边框，与WS_TILED风格一样 
+WS_POPUP 该窗口为弹出式窗口，不能与WS_CHILD同时使用 
+WS_BORDER 窗口有单线边框 
+WS_CAPTION 窗口有标题栏 
+WS_CHILD 该窗口为子窗口，不能与WS_POPUP同时使用 
+WS_DISABLED 该窗口为无效，即对用户操作不产生任何反应 
+WS_HSCROLL 窗口有水平滚动条 
+WS_ICONIC 窗口初始化为最小化 
+WS_MAXIMIZE 窗口初始化为最大化 
+WS_MAXIMIZEBOX 窗口有最大化按钮 
+WS_MINIMIZE 与WS_MAXIMIZE一样 
+WS_MINIMIZEBOX 窗口有最小化按钮 
+WS_SIZEBOX 边框可进行大小控制的窗口 
+WS_SYSMENU 创建一个有系统菜单的窗口，必须与WS_CAPTION风格同时使用 
+WS_THICKFRAME 创建一个大小可控制的窗口，与WS_SIZEBOX 风格一样. 
+WS_TILED 创建一个层叠式窗口，有标题栏 
+WS_VISIBLE 窗口为可见 
+WS_VSCROLL 窗口有垂直滚动条 
+</PRE></P>
+<P><PRE>
+<B>使用定时器 </B>
+//**WM_TIMER
+//创建定时器
+UINT SetTimer( HWND hwnd, UINT nID, UINT nElapse, TIMERPROC lpTimerFunc);
+lpTimerFunc可以指定一个类似于Winproc的回调函数。
+当我们使用WM_TIMER消息时，将lpTimerFunc设为NULL。
+示例程序：
+case WM_TIMER:
+{
+  switch(wParam)
+  {
+  case TIMER_ID_1SEC:
+    {
+      //do something
+    }break;
+  case TIMER_ID_3SEC:
+    {
+      //do something
+    }break;
+  }
+}break;
+//不使用定时器后，杀死定时器：
+BOOL KillTimer(HWND hwnd, UINT uIDEvent)；
+
+//***GetTickCount()
+//延迟33毫秒
+DWORD start_time = GetTickCount()；
+while((GetTickCount() - start_time)&lt; 33);
+
+//**Sleep(int)
+
+//**获取系统的硬件信息
+void GetSystemInfo( LPSYSTEM_INFO lpSystemInfo);
+lpSystemInfo是指向SYSTEM_INFO的指针
+</PRE></P>
+<P><PRE>
+<B>播放声音</B>：
+0.注意在工程设置中添加winmm.lib。
+1．准备好.wav文件；
+2. PlaySound( 文件名或者资源名称， 程序实例， 播放参数）；
+播放参数有：SND_FILENAME：指定第一个参数是文件名；
+SND_RESOURCE :指定第一个参数是资源名；
+SND_SYNC:同步播放，声音文件播放完毕后，才返回。
+SND_ASYNC: 异步播放，开始播放后，立即返回。
+SND_LOOP: 重复播放，并要和SND_ASYNC一起使用。
+SND_NODEFAULT:如果发现没有声音文件，返回静音，不播放声音文件。
+SND_NOWAIT: 如果驱动器太忙，不播放声音就返回。
+SND_PURGE: 停止所有声音。
+3．停止播放声音：调用PlaySound，并且第一个参数为NULL.
+PlaySound(NULL, hInstance, SND_PURGE);
+</PRE></P>
+
+<P><PRE>
+<B>基本的gdi</B>
+///**获取设备环境
+//BeginPaint()-EndPaint()只用于处理WM_PAINT消息
+//BeginPaint()要填充一个PaintStruct结构，从该PaintStruct得到无效的矩形区域，//这个矩形区域可能只是窗口的一部分。从而我们的图形绘制也只能在这一部分上进行//。为了得到整个用户区域，我们可以在BeginPaint前先将整个窗口无效。代码如下
+InvalidateRect(hwnd, NULL, FALSE);//p2:无效的矩形区域，NULL指整个窗口
+//p3: 是否用窗口类定义的画刷填充整个窗口
+hdc = BeginPaint(hwnd, &amp;ps);
+//用户自己的图形绘制操作
+EndPaint(hwnd, &amp;ps);
+
+//随处可以用GetDC()-ReleaseDC()得到设备环境。
+//但这对函数用在WM_PAINT存在问题，因为它不像BeginPaint()-EndPaint()那样会
+//发送给Windows无效区域已经恢复的消息，所以，Windows会一直发送
+//WM_PAINT消息。为此我们可以在ReleaseDC后手动有效窗口。
+hdc = GetDC(hwnd);
+//用户自己的图形绘制操作
+ReleaseDC(hwnd, hdc);
+GetClientRect(hwnd, &amp;rect);
+ValidateRect(hwnd, &amp;rect);
+
+//**输出文字
+BOOL TextOut( HDC hdc, int nXStart, int nYstart, LPCTSTR lpString, int cbString);
+int DrawText( HDC hdc, LPCTSTR lpString, int nCount, LPRECT lpRect, UINT uFormat);
+//设置文本颜色
+COLORREF SetTextColor( HDC hdc, COLORREF color);
+COLORREF SetBkColor( HDC hdc, COLORREF color);
+//设置透明度
+int SetBkMode( HDC hdc, int iBkMode); 
+//iBkMode可以是TRANSPARENT或者OPAQUE。
+
+//**使用画笔
+HPEN white_pen = NULL;
+white_pen = GetStockObject(WHITE_PEN);
+可选的画笔对象有：WHITE_PEN、BLACK_PEN、NULL_PEN(中空的画笔)
+HPEN red_pen = CreatePen(PS_SOLID, 1, RGB(255,0,0));
+画笔类型有PS_SOLID, PS_DASH, PS_DOT, PS_DASHDOT, PS_DASHDOTDOT（双点划线）,PS_NULL（不可见的画笔）
+示例程序：
+HDC hdc;
+HPEN red_pen = CreatePen(PS_SOLID, 1, RGB(255,0,0)); 
+HPEN old_pen = NULL;
+old_pen = SelectObject(hdc, red_pen);
+//drawing
+SelectObject(hdc, old_pen);
+//当对象不再使用了就删除它。
+DeleteObject(red_pen);
+
+//**使用画刷
+//创建纯色画刷：
+HBRUSH green_brush = CreateSolidBrush(RGB(0,255,0));
+//创建阴影线画刷：
+HBRUSH CreateHatchBrush(int fnStyle, COLORREF clrref);
+fnStyle = {HS_CROSS,HS_DIAGCROSS, HS_HORIZONTAL, HS_VERTICAL, HS_FDIAGONAL（向上45度）,HS_BDIAGONAL(向下45度)}
+
+//**画点
+COLORREF SetPixel(hdc, x, y, color);
+
+//**画线
+//创建画笔
+HPEN red_pen = CreatePen(PS_SOLID, 1, RGB(255,0,0)); 
+HPEN old_pen = SelectObject(hdc, red_pen);
+//画线
+MoveToEx(hdc, 10, 10, NULL);
+LineTo(hdc, 50, 60);
+//恢复画笔
+SelectObject(hdc, old_pen);
+//当对象不再使用了就删除它。
+DeleteObject(red_pen);
+//函数MoveToEx的原型
+BOOL MoveToEx( HDC hdc, int x, int y, LPPOINT lpPoint);
+//lpPoint用来保存上一个点的位置，设为NULL表示不保存
+
+//**画矩形
+绘制矩形要使用当前的画笔和画刷
+BOOL Rectangle(HDC hdc, int nleft, int ntop, int right, int bottom);
+int FillRect (HDC hdc, CONST RECT *lprc, HBRUSH hbr);
+int FrameRect (HDC hdc, CONST RECT *lprc, HBRUSH hbr);
+
+//**画椭圆
+BOOL Ellipse(HDC hdc, int nRectleft, int nRecttop, int nRectright, int nRectbottom);
+
+//**画多边形
+BOOL Polygon(HDC hdc, CONST POINT * lpPoints, int nCount);
+示例：
+POINT poly[3] = {p0x, p0y, p1x, p1y, p2x, p2y};
+Polygon(hdc, poly, 3);
+</PRE></P>
+<HR>
+
+<A NAME="message-loop"><H2>windows消息循环</H2></A>
+<P><PRE>
+#define Win32_LEAN_AND_MEAN//指示编译器不包含无关的MFC操作
+
+#include &lt;windows.h&gt;  //包含所有的windows头文件
+#include &lt;windowsx.h&gt;  //包含许多重要的宏和常量
+
+HWND hWnd;
+LRESULT CALLBACK WinProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+{
+	MSG msg;
+
+	//创建窗口类 
+	WNDCLASSEX wc;
+	wc.cbSize = sizeof(WNDCLASSEX);
+	wc.style = CS_VREDRAW| CS_HREDRAW;
+	wc.lpfnWndProc = WinProc;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = 0;
+	wc.hInstance = hInstance;
+	wc.hIcon = LoadIcon(NULL, IDI_WINLOGO);
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+	wc.lpszMenuName = NULL;
+	wc.lpszClassName = "myWndClass";
+	wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
+
+	//注册窗口类
+	RegisterClassEx(&amp;wc);
+
+	//创建窗口
+	hWnd = CreateWindowEx(NULL, "myWndClass", "我的简单游戏", WS_OVERLAPPEDWINDOW, 
+		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+		NULL, NULL, hInstance, NULL);
+	if(!hWnd) 
+	{
+		MessageBox( NULL, "创建窗口失败！", "错误", MB_OK);
+		return 1;
+	}
+
+	//显示窗口
+	ShowWindow( hWnd, nShowCmd);
+	//更新窗口
+	UpdateWindow(hWnd);
+    //接收到WM_QUIT消息时，GetMessage才会返回零值
+	while(GetMessage(&amp;msg, NULL, 0, 0))
+	{
+		TranslateMessage(&amp;msg);//对加速键消息进行转换
+		DispatchMessage(&amp;msg);//将消息发送到WindProc
+	}
+	return msg.wParam ;
+
+}
+
+
+//消息处理函数
+LRESULT CALLBACK WinProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch( message )
+	{
+	case WM_DESTROY:
+        //发出WM_QUIT消息，让Windows回收资源。WM_DESTROY只是毁掉窗口，而程序还在后台运行
+		PostQuitMessage(0); 
+		return 0;
+
+	}
+	return DefWindowProc(hwnd, message, wParam, lParam);
+
+}
+
+//使用自定义的图标
+1．在程序目录下准备好一个图标；
+2．新建.RC文件，供资源编译器编译；.RC文件有两种写法，一种是按字符串引用图标，如用记事本编辑一个example.rc :
+my_icon ICON sword.ico
+别忘了把example.rc添加到工程中。
+在程序中：wc.hIcon = LoadIcon(hInstance, "my_icon");
+另一种方法是用整型标识符引用图标，同样编辑example.rc:
+ID_ICON1 ICON sword.ico
+除了在工程中添加example.rc外，还要添加一个resource.h文件：
+#define ID_ICON1 100 //这个值可以任意给
+在程序中，要#include "resource.h"
+wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(ID_ICON1));
+其实也可以不需要resource.h，直接在example.rc中：120 ICON sword.ico
+在程序中：wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(120));
+//使用自定义的光标
+和使用自定义的图标类似。
+
+//Windows事件处理
+//事件1：WM_ACTIVATE
+fActive = LOWORD(wParam);
+fMinimized = (BOOL)HIWORD(wParam);
+hwndPrevious = (HWND)lParam;
+//fActive有3个值：WA_CLICKACTIVE(窗口被鼠标激活), WA_ACTIVE（以其它方式//激活）, WA_INACTIVE。
+//当窗口不活跃时，hwndPrevious指接下来被激活的窗口，而当窗口被激活时，它指//原来活跃的窗口。
+case WM_ACTIVATE:
+if(LOWORD(wParam) != WA_INACTIVE)
+{
+//窗口被激活的操作	
+}
+else
+{
+//
+}
+break;
+
+//事件2：WM_SIZE
+fwSizeType = wParam;
+nWidth = LOWORD(lParam);
+nHeight = HIWORD(lParam);
+//事件3：WM_MOVE
+xPos = LOWORD(lParam);
+yPos = HIWORD(lParam);
+//事件4：键盘WM_CHAR
+wParam:按键的ASCII码
+lParam: 键的状态信息。LOWORD(lParam)是用户按键的重复计数。
+//事件5：键盘WM_KEYDOWN和WM_KEYUP
+wParam:虚拟键代码。
+lParam:其它控制键状态。
+常用的虚拟键代码：VK_F1-VK_F12。数字和字符用VK_code表示。
+其它：VK_UP,VK_DOWN,VK_LEFT,VK_RIGHT,VK_HOME,VK_END,VK_INSET,VK_DELETE
+VK_BACK, VK_TAB,VK_RETURN, VK_SHIFT, VK_CONTROL,VK_ESCAPE,VK_SPACE,VK_PAUSE
+case WM_KEYDOWN:
+{
+int code = (int)wParam;
+//int key_state = (int)lParam;
+switch(code)
+{
+case VK_ESCAPE:
+PostQuitMessage(0);
+return 0;
+}
+}
+break;
+//事件6：GetKeyboardState(), GetKeyState(), GetAsyncKeyState()
+GetAsyncKeyState(code)测试某个键，返回一个短整数，如果该键被按下，返回值最高位为1，否则表示该键被放开。
+#define KEYDOWN(vk_code) ((GetAsyncKeyState(vk_code)&amp;0x8000)? 1: 0)
+#define KEYUP(vk_code) ((GetAsyncKeyState(vk_code)&amp;0x8000)? 0:1)
+//事件7：鼠标WM_MOUSEMOVE
+int mouse_x = (int)LOWORD(lParam);
+int mouse_y = (int)HIWORD(lParam);
+int buttons = (int) wParam;
+buttons = {MK_LBUTTON, MK_MBUTTON, MK_RBUTTON, MK_CBUTTON(按下ctrl),MK_SHIFT}
+示例代码：
+case WM_MOUSEMOVE:
+{
+  int mouse_x = (int)LOWORD(lParam);
+  int mouse_x = (int)LOWORD(lParam);
+  int buttons = (int) wParam;
+  if(buttons &amp; MK_LBUTTON)
+  {
+  }
+  if(buttons &amp; MK_RBUTTON)
+  {
+  }
+}break;
+
+//事件8：鼠标点击
+WM_LBUTTONDBLCLK, WM_LBUTTONDOWN,WM_LBUTTONUP
+WM_MBUTTONDBLCLK, WM_MBUTTONDOWN,WM_MBUTTONUP
+WM_RBUTTONDBLCLK, WM_RBUTTONDOWN,WM_RBUTTONUP
+示例：
+case WM_LBUTTONDBLCLK:
+{
+  int mouse_x, mouse_y;
+  mouse_x = (int)LOWORD(lParam);
+  mouse_y = (int)HIWORD(lParam);
+
+		
+ //do something;
+}break;
+
+//**给自己发送消息
+SendMessage(hwnd, msg, wparam, lparam)
+在winproc处理该消息后返回。返回值是winproc返回的值。
+PostMessage(hwnd, msg, wparam, lparam)
+直接返回，用于优先级不高的消息。成功返回一个非零值。
+PostMessage(hwnd, WM_CLOSE, 0, 0);
+PostMessage(hwnd, WM_DESTROY, 0, 0);
+
+//**自定义消息
+SendMessage(hwnd, WM_USER, VAR1, 0);
+case WM_USER:
+{
+  switch(wParam)
+  {
+    case VAR1:{ } break;
+    case VAR2:{ } break;
+    .......
+  }
+}break;
+</PRE></P>
+<HR>
+
+<A NAME="structure"><H2>我写的简单游戏的结构</H2></A>
+<P><PRE>
+为了便于管理，创建一个游戏类CGame。
+class CGame
+{
+public:
+	CGame();
+	~CGame();
+	bool InitGame();
+	bool FreeGame();
+	void RunGame();
+};
+到后期扩充的时候，可以把游戏的状态信息等都放在这个类下。
+-----------------------------------------------------------------
+
+看一下整个程序框架：
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, 
+				   LPSTR lpCmdLine, int nShowCmd)
+{
+	//注册窗口类并显示窗口。
+	if( !InitWindow(hInstance, nShowCmd))
+	{
+		MessageBox( NULL, "创建窗口失败！", "错误！", MB_OK);
+		return 1;
+	}
+	
+	//对游戏进行初始化
+	pThisGame = new CGame();
+	pThisGame-&gt;InitGame();	
+
+	SetTimer(hWnd, 1, 150, NULL); //启动定时器	
+	
+	//进入消息循环
+	MSG msg;
+	while(GetMessage(&amp;msg, NULL, 0, 0))//接收到WM_QUIT消息时，GetMessage才会返回零值
+	{
+		TranslateMessage(&amp;msg);//对加速键消息进行转换
+		DispatchMessage(&amp;msg);//将消息发送到WindProc
+	}
+
+	pThisGame-&gt;FreeGame();	//退出程序前释放游戏数据
+	delete pThisGame;
+
+	return msg.wParam ;
+}
+
+/*
+ * 窗口消息处理函数
+ */
+LRESULT CALLBACK WinProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch( message )
+	{
+	case WM_DESTROY:
+		PostQuitMessage(0); //发出WM_QUIT消息，让Windows回收资源。WM_DESTROY只是毁掉窗口，而程序还在后台运行
+		return 0;
+
+	case WM_TIMER:
+		pThisGame-&gt;RunGame();	//当到达一帧的时间间隔时，运行游戏更新游戏画面
+		return 0;
+		
+	}
+	return DefWindowProc(hwnd, message, wParam, lParam);
+}
+
+bool InitWindow(HINSTANCE hInstance, int nShowCmd)
+{
+	//声明并填充一个窗口类
+	WNDCLASSEX wc;
+	wc.cbSize = sizeof(WNDCLASSEX);
+	wc.style = CS_VREDRAW| CS_HREDRAW;
+	wc.lpfnWndProc = WinProc;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = 0;
+	wc.hInstance = hInstance;
+	wc.hIcon = LoadIcon(NULL, IDI_WINLOGO);		//使用系统给的图标，如果想自定义，可参考其它windows编程书籍。
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);	//使用系统给的光标。
+	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);		//客户区为黑色
+	wc.lpszMenuName = NULL;
+	wc.lpszClassName = "myWndClass";
+	wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
+	
+	//注册窗口类
+	RegisterClassEx(&amp;wc);
+	
+	//创建窗口
+	hWnd = CreateWindowEx(NULL, "myWndClass", "连城诀", WS_OVERLAPPEDWINDOW, 
+		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+		NULL, NULL, hInstance, NULL);
+	if(!hWnd)
+		return false;
+
+	//显示窗口
+	ShowWindow( hWnd, nShowCmd);
+	//更新窗口
+	UpdateWindow(hWnd);
+		
+	return true;
+}
+
+运行效果如图10所示。
+
+实际上，依靠Timer消息驱动游戏画面并不能达到实时响应的目的。为此，大型游戏中一般使用另一种消息循环：
+while(TRUE)
+{
+	if(PeekMessage(&amp;msg, NULL, 0, 0, PM_REMOVE))
+	{
+		if (msg.message == WM_QUIT)
+			break;
+		TranslateMessage(&amp;msg);//对加速键消息进行转换
+		DispatchMessage(&amp;msg);//将消息发送到WindProc
+	}
+	else	//如果没有其它消息，则进入游戏循环
+	{
+		RunGame();
+	}
+}
+大家注意到了，这个消息循环里从消息队列里取消息用的是peekmessage而不是getmessage。
+这两个函数的区别在于：
+peekmessage不管取没取到消息，总是立即返回；
+而getmessage只有取到消息时才返回，没有消息时则阻塞在那里，把空闲的cpu让给别的程序。
+因此，使用peekmessage的消息循环，不管每个循环进行的计算多少，总会占用100%的cpu；
+而使用getmessage的循环，占用cpu极低。
+所以，我情愿牺牲些性能，也使用了getmessage和timer合作完成消息循环。
+不知道别的朋友是怎么解决这个问题的，欢迎来信交流：qingfang0515@sina.com。
+
+======================================================================
+当然，上面只是个最简单的游戏框架。实际上每个游戏函数下面还要实现的功能如下：
+1. InitGame()
+ 1.1 LoadImage()	//装载图像
+ 1.2 LoadMapData()	//装载地图数据
+ 1.3 LoadNpcData()	//装载npc数据
+ 1.4 LoadGoodsData()	//装载物品数据
+ 1.5 LoadScripts()	//装载脚本
+ ... ...
+2. RunGame()
+ 2.1 UpdateFrame()	//更新画面
+ 2.2 RunScripts()	//运行脚本
+ 2.3 PlayerControl()	//玩家控制主角冒险
+ 2.4 InitFight()	//初始化战斗
+ 2.5 ShowMenu()		//显示菜单
+ ... ...
+3. ShutdownGame()
+ 3.1 FreeImage()
+ 3.2 FreeMapData()
+ 3.3 FreeNpcData()
+ 3.4 FreeGoodsData()
+ 3.5 FreeScripts()
+ ... ...
+</PRE></P>
+
+<A NAME="win-data-type"><H2>windows数据类型</H2></A>
+<P><PRE>
+整型：
+SHORT                   短整型数
+UINT                    无符号整数
+ULONG                   无符号长整型数(32位)
+USHORT                  无符号短整型数(16位)
+
+浮点型：
+FLOAT                   浮点型变量
+
+布尔型：
+BOOL                    布尔型(逻辑型)变量(应为TRUE或FALSE)
+BOOLEAN                 布尔型(逻辑型)变量(应为TRUE或FALSE)
+
+字符型：
+BYTE                    字节(8位)
+CCHAR                   Windows字符
+CHAR                    Windows字符
+UCHAR                   无符号Windows字符
+
+指针型：
+LPARAM                  32位消息参数
+LPCSTR                  指向Windows常字符串(以空字符结束)的指针
+LPSTR                   指向Windows字符串(以空字符结束)的指针
+LPVOID                  指向任意类型的指针
+PROC                    指向回调函数的指针
+DLGPROC                 指向应用程序定义的对话框过程回调过程的指针
+FARPROC                 指向应用程序定义的指针
+WNDPROC                 指向在应用程序中定义的窗口过程的指针
+
+句柄类型：
+GLOBALHANDLE            全局内存块句柄
+HACCEL                  加速键表句柄
+HANDLE                  对象句柄
+HBITMAP                 位图句柄
+HBRUSH                  画刷句柄
+HDC                     设备描述表句柄
+HFILE                   文件句柄
+HFONT                   字体句柄
+HGDIOBJ                 GDI(图形设备接口)对象句柄
+HGLOBAL                 全局内存块句柄
+HHOOK                   钩子句柄
+HICON                   图标句柄
+HINSTANCE               实例句柄
+HLOCAL                  本地内存句柄
+HMENU                   菜单句柄
+HOOKPROC                指向应用程序定义的钩子的指针
+HPALETTE                调色板句柄
+HPEN                    画笔句柄
+HWND                    窗口句柄
+LOCALHAND               本地内存句柄
+
+其它：
+ATOM                    原子(字符串在原子表中的参考值)
+COLORREF                RGB(红绿蓝)颜色值(32位)
+CONST                   在执行时其值保持不变的变量
+WORD                    无符号字(16位)
+DWORD                   双字(32位)
+DWORDLONG               双双字(64位)
+LONG                    32位无符号值
+LONGLONG                64位无符号值
+VOID                    任意类型
+WPARAM                  32位消息参数
+</PRE></P>
+<HR>
+</BODY>
+</HTML>

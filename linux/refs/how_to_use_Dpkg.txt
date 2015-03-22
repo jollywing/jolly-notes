@@ -1,0 +1,248 @@
+dpkg 通过数据库来维护系统中软件, 这包括文件清单, 依赖关系, 软件状态, 等等详细的内容, 通常在/var/lib/dpkg目录下. 
+deb软件包命名规则:
+Debian软件包命名遵循下列约定: <软件包名称>_<版本>-<修订号>_<平台>.deb 
+    all: 平台无关. 即适用于所有平台.比如文本, 网页, 图片, 媒体, pdf 等. 
+例如
+  nano_1.3.10-2_i386.deb 
+    软件包名称: nano 
+    版本: 1.3.10 
+    修订号: 2 
+    平台: i386 
+4. 软件包处理
+(注:本文的中的操作以nano为例)
+dpkg-deb : 用于处理本地Debian软件包. 可以提取从.deb文件中提取软件包信息和数据. 详细信息,请参阅 dpkg-deb 的联机手册.
+  列出软件包的内容: 
+tony@tony:~/doc/dpkg$ dpkg-deb -c nano_1.3.10-2_i386.deb  |more
+drwxr-xr-x root/root         0 2006-02-05 00:29:18 ./
+drwxr-xr-x root/root         0 2006-02-05 00:29:07 ./etc/
+-rw-r--r-- root/root     11887 2006-02-05 00:29:07 ./etc/nanorc
+drwxr-xr-x root/root         0 2006-02-05 00:29:14 ./usr/
+drwxr-xr-x root/root         0 2006-02-05 00:29:12 ./usr/share/
+drwxr-xr-x root/root         0 2006-02-05 00:29:01 ./usr/share/doc/
+drwxr-xr-x root/root         0 2006-02-05 00:29:15 ./usr/share/doc/nano/
+-rw-r--r-- root/root      1847 2005-08-30 02:29:02 ./usr/share/doc/nano/AUTHORS
+-rw-r--r-- root/root      2338 2005-03-20 05:33:13 ./usr/share/doc/nano/README
+-rw-r--r-- root/root      3175 2005-11-21 17:36:11 ./usr/share/doc/nano/THANKS
+-rw-r--r-- root/root      2206 2005-06-08 10:28:06 ./usr/share/doc/nano/TODO
+-rw-r--r-- root/root      1066 2003-03-24 21:09:26 ./usr/share/doc/nano/UPGRADE
+-rw-r--r-- root/root     35996 2005-11-22 05:45:07 ./usr/share/doc/nano/faq.html
+... ...
+查看软件包的信息 
+tony@tony:~/doc/dpkg$ dpkg-deb -I nano_1.3.10-2_i386.deb  
+ new debian package, version 2.0.
+ size 477372 bytes: control archive= 2656 bytes.
+      12 bytes,     1 lines      conffiles            
+     714 bytes,    18 lines      control              
+    3529 bytes,    51 lines      md5sums              
+     613 bytes,    21 lines   *  postinst             #!/bin/sh
+     160 bytes,     5 lines   *  postrm               #!/bin/sh
+     379 bytes,    20 lines   *  preinst              #!/bin/sh
+     288 bytes,    14 lines   *  prerm                #!/bin/sh
+ Package: nano
+ Version: 1.3.10-2
+ Section: editors
+ Priority: important
+ Architecture: i386
+ Depends: libc6 (>= 2.3.5-1), libncursesw5 (>= 5.4-5)
+ Suggests: spell
+ Conflicts: nano-tiny (<= 1.0.0-1), pico
+ Replaces: pico
+ Provides: editor
+ Installed-Size: 1108
+ Maintainer: Jordi Mallach <jordi@debian.org>
+ Description: free Pico clone with some new features
+  GNU nano is a free replacement for Pico, the default Pine editor. Pine is
+  copyrighted under a restrictive licence, that makes it unsuitable for
+  Debian's main section. GNU nano is an effort to provide a Pico-like
+  editor, but also includes some features that were missing in the original,
+  such as 'search and replace', 'goto line' or internationalization support.
+重新构建软件包 
+  比如nano(1.3.10)需要满足以下依赖关系:
+$ dpkg-deb -f nano_1.3.10-2_i386.deb depends            //depends 为对应查询段
+
+libc6 (>= 2.3.5-1), libncursesw5 (>= 5.4-5)
+当系统不能满足依赖关系, 比如不能满足里来版本, 可以通过下边的方法处理, 当然这种情况下安装的nano并不一定运行正常, 
+  这种方法可以应用于某些软件的变通安装. 
+$ mkdir nano //创建nano目录
+
+$ dpkg-deb -e ./nano_1.3.10-2_i386.deb ./nano/DEBIAN    //解压控制文件
+
+$ dpkg-deb -x ./nano_1.3.10-2_i386.deb ./nano           //解压程序文件
+
+$ vi ./nano/DEBIAN/control                                //修改控制信息
+
+$ dpkg-deb -b nano nano_1.3.10-2_ill.deb                //重新打包
+5. 数据库查询
+当前版本的 dpkg 使用文本文件来作为数据库.通称在 /var/lib/dpkg 目录下. 通称在 status 文件中存储软件状态,和控制信息. 在 
+info/ 目录下备份控制文件, 并在其下的 .list 文件中记录安装文件清单, 其下的 .mdasums 保存文件的 MD5 编码.
+体验使用数据库的时刻到了:
+$ dpkg -l
+Desired=Unknown/Install/Remove/Purge/Hold
+| Status=Not/Installed/Config-files/Unpacked/Failed-config/Half-installed
+|/ Err?=(none)/Hold/Reinst-required/X=both-problems (Status,Err: uppercase=bad)
+||/ Name       Version           Description
++++-===========-================-========================================
+ii  aalib1     1.4p5-28          ascii art library - transitional package
+ii  adduser    3.85              Add and remove users and groups
+ii  alien      .63               install non-native packages with dpkg
+... ...
+每条记录对应一个软件包, 注意每条记录的第一, 二, 三个字符. 这就是软件包的状态标识, 后边依此是软件包名称, 版本号, 和简单描述.
+  第一字符为期望值,它包括: 
+    u 状态未知,这意味着软件包未安装,并且用户也未发出安装请求. 
+    i 用户请求安装软件包. 
+    r 用户请求卸载软件包. 
+    p 用户请求清除软件包. 
+    h 用户请求保持软件包版本锁定. 
+  第二列,是软件包的当前状态.此列包括软件包的六种状态. 
+    n 软件包未安装. 
+    i 软件包安装并完成配置. 
+    c 软件包以前安装过,现在删除了,但是它的配置文件还留在系统中. 
+    u 软件包被解包,但还未配置. 
+    f 试图配置软件包,但是失败了. 
+    h 软件包安装,但是但是没有成功. 
+  第三列标识错误状态,可以总结为四种状态. 第一种状态标识没有问题,为空. 其它三种符号则标识相应问题. 
+    h 软件包被强制保持,因为有其它软件包依赖需求,无法升级. 
+    r 软件包被破坏,可能需要重新安装才能正常使用(包括删除). 
+    x 软包件被破坏,并且被强制保持. 
+也可以以统配符模式进行模糊查询, 比如我要查找以nano字符开始的所有软件包:
+$ dpkg -l nano*
+Desired=Unknown/Install/Remove/Purge/Hold
+| Status=Not/Installed/Config-files/Unpacked/Failed-config/Half-installed
+|/ Err?=(none)/Hold/Reinst-required/X=both-problems (Status,Err: uppercase=bad)
+||/ Name           Version        Description
++++-==============-==============-============================================
+ii  nano           1.3.10-2       free Pico clone with some new features
+pn  nano-tiny      <none>         (no description available)
+un  nanoblogger    <none>         (no description available)
+以上状态说明: 系统中安装了 nano 版本为 1.3.10-2;安装过 nano-tiny, 后来又清除了; 从未安装过nanoblogger.
+如果觉得 dpkg 的参数过多, 不利于记忆的话, 完全可以使用 dpkg-query 进行 dpkg 数据库查询.
+应用范例:
+  查询系统中属于nano的文件: 
+    $ dpkg --listfiles nano 
+  or 
+    $ dpkg-query -L nano 
+  查看软件nano的详细信息: 
+    $ dpkg -s nano 
+  or 
+    $ dpkg-query -s nano 
+  查看系统中软件包状态, 支持模糊查询: 
+    $ dpkg -l 
+  or 
+    $dpkg-query -l 
+  查看某个文件的归属包: 
+    $ dpkg-query -S nano 
+  or 
+    $ dpkg -S nano 
+6. 安装软件包
+运行下面的命令:
+$dpkg -l nano
+un  nano       <none>       (no description available)
+当前 nano 的状态说明在系统中从未安装过 nano 软件包, 可以通过以下命令安装本地的 nano 包:
+$dpkg-deb -e ./nano_1.3.10-2_i386.deb 
+当使用 dpkg 安装软件包时, 主要分为两个阶段: 首先解包; 然后运行postinst控制脚本(如果有的话),这就是所谓的配置阶段. 当完成软件包当解包后, 
+dpkg 的--intall选项自动调用配置阶段. 注意, 操作时应当指定 .deb 文件的实际路径, 仅仅给出文件名无法找到对应文件.
+这样, 软件的安装就可被拆分为两个对立的过程:
+  dpkg --unpack 
+  dpkg --configure 
+解包
+运行
+#dpkg --unpack nano_1.3.10-2_i386.deb
+ 
+然后
+ $ dpkg -l nano
+ iU  nano           1.3.10-2       free Pico clone with some new features
+说明此时系统中安装了nano 包, 但是未经配置.
+解包可能包括一下步骤:
+  将控制文件解压到临时目录. 
+  运行 preinst(如果有的话). 通常为停止相关服务. 
+  解压配置文件到 /etc 目录, 并添加.dpkg-new 后缀, 以防止冲突. 
+  解压 data.tar.gz 到系统根目录,(--root=dir). 
+  将控制文件解压到 /var/lib/dpkg/info 目录并添加软件名前缀. 对数据库进行更新. 
+  数据库中将软件包的状态设置为"unpacked". 
+仅仅解包, 并不能确保软件可以正常运行.
+配置
+#dpkg --configure nano
+ 
+ $ dpkg -l nano
+ ii  nano           1.3.10-2       free Pico clone with some new features
+如输出所示, nano 已经正常安装.
+软件解包后, 还需要对其进行调整, 比如根据实际情况对配置文件进行修改. 这一步通常是在安装过程中自动进行的, 当然可以手动调用, 这次用到的是软件名, 
+而不是deb文件名.
+通过命令 dpkg -L nano 可以得以验证
+这一过程可能包括一下步骤:
+  询问对配置文件的处理方法, 覆盖当前版本, 还是不做处理.(当软件升级时会碰到这种情况) 
+  运行 postinst 脚本 
+  将软件包标记为 "installed" 
+如果想再次修改配置选项, 可以运行:
+  #dpkg-reconfigure nano 
+7. 软件卸载
+在Debian中卸载和清除软件包是两个不同的概念. 不同之处在于软件包被删除(卸载)后,它的配置文件仍会留在系统中,只有清除时才会删除它们. 默认情况下, 
+Debian 仅会做删除操作, 除非你明确指出, 才会将配置文件删除. 如果要清除软件包, 则在清除前将会隐含地执行删除操作.
+要删除一个软件包,dpkg需要使用--remove选项将软件包卸载.与安装不同,删除只需要软件包名,而不是实际的deb文件名.
+删除
+  #dpkg -r nano 
+  首先运行 prerm 脚本(如果有的话). 
+  然后, 保留配置文件, 其他文件全部删除. 
+  删除 /var/lib/dpkg/info 目录下软件包的所有配置文件, 保留postrm和list文件. 
+  最后, dpkg 在数据库中将软件状态修改为删除. 
+运行
+$dpkg -l nano
+
+rc  nano    1.3.10-2     free Pico clone with some new features
+清除
+  #dpkg -P nano 
+  删除所有的文件. 所有的文件都被解除了（从系统中删除了）. 
+  运行postrm脚本.如果还存在,运行postrm脚本. 
+  删除 postrm 和 list 文件.保留的两个文件,从系统中解除postfix.postrm和postfix.files. 
+  在dpkg的数据库中将软件包标记为未安装 
+$dpkg -l nano
+pn  nano                      <none>                    (no description available)
+注意输出的状态: pn 这意味着软件包实际上是被清除了,但是在数据库中还有这个软件包的记录.因此,pn 明确指出以前安装过 nano, 
+在软件包数据库中出现过,并且现在已被完全清除. 
+8. 异常处理
+有时,因为不能满足依赖关系, 或存在冲突, 文件会被覆盖, 或控制脚本中存在错误而安装失败. 在 stable 发行版中从不会存在这类问题(这被视为重大错误). 
+但是, 在运行 unstable 发行版的系统中,有时却是难免的.
+处理文件冲突
+dpkg 不会允许一个软件包覆盖属于其它软件包的文件.可以强制dpkg覆盖属于其它软件包的软件(使用 --force-overwrite), 
+但是这样做十分危险. 如果这只是暂时的冲突(在 unstable 中, 这种情况常有), 覆盖没有太大问题. 请注意, 
+遇到这种情况应该向软件包的维护者提交相关错误报告.
+如果你使用的是非官方包, 或是通过 alien 或 checkinstall自己构建的软件包, 那么应该对包内文件改名, 或者放弃使用这类软件包.
+处理在安装过程中控制脚本脚本出现了问题. 问题脚本是出现问题的另一原因. 如果, 软件包的 postinst 控制文件中有错误,那么就无法用 dpkg 
+完成对这个软件包的配置.
+这种错误一定要作为严重问题向错误跟踪系统提交报告.象这种脚本的问题,自己对其进行调试, 以判断问题所在, 比如您可以简单的在脚本的第一行以后插入 set -x, 
+对其运行情况进行跟踪.除非必要, 您也应该拒绝使用这类软件包.
+处理卸载过程中损坏的控制文件
+当软件包的卸载脚本出现问题时.即使您可以强制删除控制脚本没有清除干净的文件,这也会妨碍dpkg正确的维护您的系统,从而有可能在系统中留下垃圾文件.对于这类问题, 
+还没有太好的处理方法(强烈建议您提交错误报告), 唯有等待软件更新(或自行对软件包包修复). 然后借助更新包将相关文件卸载.
+9. dpkg vs rpm
+  列出系统中安装的软件包 
+    rpm -qa 
+    dpkg --list 
+  列出软件包信息 
+    rpm -qi pkgname 
+    dpkg --status pkgname 
+  列出一个包所安装的文件 
+    rpm -ql pkgname 
+    dpkg --listfiles pkgname 
+  列出本地包文件的信息 
+    rpm -qpi file.rpm 
+    dpkg --info file.deb 
+  列出本地包文件所含文件 
+    rpm -qpl file.rpm 
+    dpkg --contents file.deb 
+  安装本地包 
+    rpm -i file.rpm 
+    dpkg --install file.deb 
+  从系统中清除包 
+    rpm -E pkgname 
+    dpkg --purge pkgname 
+  查询文件归属 
+    rpm -qf file 
+    dpkg --search file 
+10. 参考文献
+  Debian参考手册 
+  Debian常见文件解答 
+  APT and Dpkg 快速参考表; 也可从 apt-dpkg-ref_5_all.deb 包中获取. 
+  dpkg vs rpm 
+  Debian GNU/Linux Anwenderhandbuch 
+  pkg 软件维护工具工具 

@@ -1,0 +1,196 @@
+Linux静态/动态链接库的创建和使用 - fanqiang.com 
+
+      首页 > 系统管理 > Linux > 正文
+
+
+
+
+ Linux静态/动态链接库的创建和使用
+ 来源:hcj2002 的 Blog (2006-05-08 14:11:07)
+
+
+ 和Windows系统一样Linux也有静态/动态链接库，下面介绍创建和使用方法：
+ 假设有下面几个文件：
+ 头文件String.h，声明相关函数原形，内容如下：
+ Strlen.c：函数Strlen的实现，获取给定字符串的长度，内容如下：
+ Strlnen.c：函数StrNlen的实现，获取给定字符串的长度，如果输入字符串的长度大于指定的最大长度，则返回最大长度，否者返回字符串的实际长度，内容如下：
+ 生成静态库：
+  利用GCC生成对应目标文件：
+ gcc –c Strlen.c Strnlen.c
+ 如果对应的文件没有错误，gcc会对文件进行编译生成Strlen.o和Strnlen.o两个目标文件(相当于windows下的obj文件)。然后用ar创建一个名字为libstr.a的库文件，并把Strlen.o 
+ 和Strnlen.o的内容插入到对应的库文件中。，相关命令如下：
+ ar –rc libstr.a Strlen.o Strnlen.o
+ 命令执行成功以后，对应的静态库libstr.a已经成功生成。
+ /***********************************
+ Filename : String.h
+ Description :
+ Author   : HCJ
+ Date     : 2006-5-7
+ ************************************/
+
+ int Strlen(char *pStr);
+ int StrNlen(char *pStr, unsigned long ulMaxLen);
+  
+ /**************************************
+ Filename    : get string length
+ Description  : 
+ Author      : HCJ
+ Date        : 2006/5/7
+ **************************************/
+ #include<stdio.h>
+ #include<assert.h>
+ int Strlen(char *pStr)
+ {
+     unsigned long ulLength;
+     assert(NULL != pStr);
+     ulLength = 0;
+     while(*pStr++)
+     {
+         ulLength++;
+     }
+     return ulLength;
+ }
+  
+ **********************************************
+ Fileneme: mystrnlen.c
+ Description: get input string length,if string large
+              max length input return max length,
+              else real length
+ Author: HCJ
+ Date  : 2006-5-7
+ **********************************************/
+ #include<stdio.h>
+ #include<assert.h>
+ int StrNlen(char *pStr, unsigned long ulMaxLen)
+ {
+     unsigned long ulLength;
+     assert(NULL != pStr);
+     if(ulMaxLen <= 0)
+     {
+         printf("Wrong Max Length!\n");
+         return -1;
+     }
+     ulLength = 0;
+     while(*pStr++ &&  ulLength < ulMaxLen)
+     {
+         ulLength++;
+     }
+     return ulLength;
+ }
+
+  
+ 生成动态链接库：
+  gcc  -fpic -shared -o libstr.so  Strlen.c Strnlen.c
+ -fpic 使输出的对象模块是按照可重定位地址方式生成的。
+ -shared指定把对应的源文件生成对应的动态链接库文件libstr.so文件。
+ 对应的链接库已经生成，下面看一下如何使用对应的链接库。
+ 静态库的使用：
+ 假设有下面的文件要使用对应的的静态库:
+ 编译生成对应的目标文件：
+ gcc -c -I/home/hcj/xxxxxxxx main.c 
+ 生成可执行文件：
+ gcc -o main1 -L/home/hcj/xxxxxxxx main.o libstr.a 
+ 其中-I/home/hcj/xxxxxxxx和-L/home/hcj/xxxxxxxx是通过-I和-L指定对应的头文件和库文件的路径。libstr.a是对应的静态库的名称。这样对应的静态库已经编译到对应的可执行程序中。执行对应的可执行文件便可以对应得函数调用的结果。
+ /*****************************************
+ FileName: main.c
+ Description: test static/dynamic library
+ Author: HCJ
+ Date  : 2005-5-7
+ ******************************************/
+ #include<stdio.h>
+ #include <String.h>   //静态库对应函数的头文件
+ int main(int argc, char* argv[])
+ {
+     char str[] = {"hello world"};
+     unsigned long ulLength = 0;
+     printf("The string is : %s\n", str);
+     ulLength = Strlen(str);
+     printf("The string length is : %d(use Strlen)\n", ulLength);
+     ulLength = StrNlen(str, 10);
+     printf("The string length is : %d(use StrNlen)\n", ulLength);
+     return 0;
+ }
+
+  
+ 动态库的分为隐式调用和显式调用两种调用方法：
+ 隐式调用的使用使用方法和静态库的调用差不多，具体方法如下：
+ gcc -c -I/home/hcj/xxxxxxxx main.c 
+ gcc -o main1 -L/home/hcj/xxxxxxxx main.o libstr.so  //这里是*.so
+ 在这种调用方式中，需要维护动态链接库的配置文件/etc/ld.so.conf来让动态链接库为系统所使用，通常将动态链接库所在目录名追加到动态链接库配置文件中。否则在执行相关的可执行文件的时候就会出现载入动态链接库失败的现象。在编译所引用的动态库时，可以在gcc采用 
+ –l或-L选项或直接引用所需的动态链接库方式进行编译。在Linux里面，可以采用ldd命令来检查程序依赖共享库。
+ 显式调用：
+ /*****************************************
+ FileName: main2.c
+ Description: test static/dynamic library
+ Author: HCJ
+ Date  : 2005-5-7
+ ******************************************/
+ #include<stdio.h>
+ #include<dlfcn.h>
+ int main(int argc, char* argv[])
+ {
+     //define function pointor
+     int (*pStrlenFun)(char* pStr);     //声明对应的函数的函数指针
+     int (*pStrnlenFun)(char* pStr, int ulMaxLen);
+     char str[] = {"hello world"};
+     unsigned long ulLength = 0;
+     void *pdlHandle;
+     char *pszErr;
+     pdlHandle = dlopen("./libstr.so", RTLD_LAZY);  //加载链接库/libstr.so
+     if(!pdlHandle)
+     {
+         printf("Failed load library\n");
+     }
+     pszErr = dlerror();
+     if(pszErr != NULL)
+     {
+         printf("%s\n", pszErr);
+         return 0;
+     }
+     //get function from lib
+     pStrlenFun = dlsym(pdlHandle, "Strlen"); //获取函数的地址
+     pszErr = dlerror();
+     if(pszErr != NULL)
+     {
+         printf("%s\n", pszErr);
+         return 0;
+     }
+     pStrnlenFun = dlsym(pdlHandle, "StrNlen");
+     pszErr = dlerror();
+     if(pszErr != NULL)
+     {
+         printf("%s\n", pszErr);
+         return 0;
+     }
+     printf("The string is : %s\n", str);
+     ulLength = pStrlenFun(str);   //调用相关的函数
+     printf("The string length is : %d(use Strlen)\n", ulLength);
+     ulLength = pStrnlenFun(str, 10);
+     printf("The string length is : %d(use StrNlen)\n", ulLength);
+  dlclose(pdlHandle);
+     return 0;
+ }
+
+  
+  
+ gcc -o mian2 -ldl main2.c
+ 用gcc编译对应的源文件生成可执行文件，-ldl选项，表示生成的对象模块需要使用共享库。执行对应得文件同样可以得到正确的结果。
+ 相关函数的说明如下：
+ (1)dlopen()
+ 第一个参数：指定共享库的名称，将会在下面位置查找指定的共享库。
+ －环境变量LD_LIBRARY_PATH列出的用分号间隔的所有目录。
+ －文件/etc/ld.so.cache中找到的库的列表，用ldconfig维护。
+ －目录usr/lib。
+ －目录/lib。
+ －当前目录。
+ 第二个参数：指定如何打开共享库。
+ －RTLD_NOW：将共享库中的所有函数加载到内存
+ －RTLD_LAZY：会推后共享库中的函数的加载操作，直到调用dlsym()时方加载某函数
+ (2)dlsym()
+ 调用dlsym时，利用dlopen()返回的共享库的phandle以及函数名称作为参数，返回要加载函数的入口地址。
+ (3)dlerror()
+ 该函数用于检查调用共享库的相关函数出现的错误。
+  这样我们就用简单的例子说明了在Linux下静态/动态库的创建和使用。  
+
+ (http://www.fanqiang.com)
+

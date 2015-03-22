@@ -1,0 +1,5 @@
+Effective c++ 读书笔记
+
+1. extern int x; 是一个声明，它告诉编译器x会在之后的某个地方或别的文件中被定义。int x;是对x的定义，编译器看到这一语句后会为x在内存中分配空间。
+2. 尽量以const取代define。const char* p = "hello"; //p所指的数据为常量，指针不是常量。char * const p = "hello";//指针是常量，数据不是常量。const char * const p = "hello";//指针和数据都是常量。另外，const char * p 和char const * p是一样的。
+3. 类成员在类定义时初始化只能应用于整型成员，即int, bool, char类型。而且这些整型成员要是常量。通常，我们希望类的常量成员是类的所有实例共享的，即在内存中只有一个副本，用static修饰可以实现这一点，如：static const int ABC = 2; 当然，较旧的编译器可能不支持类内的初始化，如果是这样，可以把初始化写在类的实现文件中，如 const int XYZ::ABC = 2;

@@ -1,0 +1,76 @@
+# This is an example for IceWM's menu definition file.
+#
+# Place your variants in /etc/X11/icewm or in $HOME/.icewm
+# since modifications to this file will be discarded when you
+# (re)install icewm.
+#
+prog Terminal xterm x-terminal-emulator -ls
+prog xipmsg app xipmsg
+prog "Mozilla Firefox" /usr/share/pixmaps/firefox.png epiphany
+prog Gimp /usr/share/gimp/2.0/images/wilber-icon.png gimp
+separator
+menu Applications folder {
+    menu Editors folder {
+	    prog vim vim gvim 
+        prog emacs emacs emacs
+        prog xedit app xedit
+        prog mousepad /usr/share/pixmaps/mousepad.xpm mousepad
+        prog nano xedit x-terminal-emulator -e nano
+    }
+    menu "Mail Agents" folder {
+        prog Mutt mutt x-terminal-emulator -e mutt
+    }
+    menu "WWW Browsers" folder {
+        prog "Mozilla Firefox" /usr/share/pixmaps/firefox.png epiphany
+        prog w3m lynx x-terminal-emulator -e w3m
+        prog Links lynx x-terminal-emulator -e links
+    }
+    menu Graphics folder {
+        prog Gimp gimp gimp
+        prog XPaint app xpaint
+        prog gtksee app gtksee
+        prog gtkam app gtkam
+    }
+    prog "PDF Reader" app xpdf
+    prog "DVI Previewer" xdvi xdvi
+    prog "rox" file rox
+}
+#menu Games folder {
+#}
+menu System folder {
+    prog xload xload xload
+    prog xosview xosview xosview
+    menu "Window Managers" folder {
+        restart icewm - icewm
+        restart wmaker - wmaker
+        restart enlightenment - enlightenment
+        restart blackbox - blackbox
+        restart sawfish - sawfish
+        restart sawfish2 - sawfish2
+        restart metacity - metacity
+        restart fvwm2 - fvwm2
+        restart fvwm - fvwm
+        restart Ion2 - ion2
+        restart twm - twm
+    }
+}
+menu Utilities folder {
+    menu Multimedia folder {
+        prog XPlayCD xplaycd xplaycd
+        prog XMixer xmixer xmixer
+    }
+    prog "Font Selector" xfontsel xfontsel
+    prog Clock xclock xclock
+    prog Magnify xmag xmag
+    prog Calculator xcalc xcalc
+    prog Colormap xcolormap xcmap
+    prog Clipboard xclip xclipboard
+    prog xkill bomb xkill
+    separator
+    prog "Screen Saver" xlock xlock -nolock
+    prog "Screen Lock" xlock xlock
+}
+#menufile Toolbar folder toolbar
+separator
+menuprog "Gnome" folder icewm-menu-gnome2 --list /usr/share/gnome/vfolders
+menuprog KDE folder icewm-menu-gnome2 --list /usr/share/applnk

@@ -1,0 +1,19 @@
+--------关于gcc------------------------
+1. gcc一个.c文件，会直接生成一个执行文件，默认名字为a.out。如果要指定执行文件名，使用－o参数，比如gcc -o test test.c。
+2. gcc -S test.c是只编译不链接，会生成test.s的中间文件，gcc test.s又会生成执行文件。
+3. 如果test.c文件里include了自己写的头文件--test.h，只需要gcc test.c，gcc会自动寻找test.c中include的头文件。
+4. 如果有两个以上的c文件，例如有test.c和test_again.c，test.c中引用了test_again.c中的函数，如果单独编译test.c会报错。但同时编译两个c文件，不管是gcc test.c test_again.c还是gcc test_again.c test.c都能正确编译。
+5. 不能单独编译一个 没有入口函数的c文件。
+
+-------------关于makefile----------------
+1. cc, CC, gcc, g++的区别：以前的unix系统下用cc编译c程序，用CC编译c++文件。现在cc = gcc，而CC已经不用了。
+
+------------svn使用-----------------------
+1. checkout: svn co svn://服务器ip/目录路径。co也可以写作checkout。
+2. commit: svn ci -m "message content"。
+3. update: svn up。
+4. resovle: svn resovled file.
+
+-----------关于g++------------------------
+1. 同一个类中属性成员名如果和成员函数重名，会报冲突的error。
+2. gcc可能也能编译一些面向对象的程序，但还是用g++更确定一些。
