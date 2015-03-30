@@ -1,4 +1,4 @@
-#Linux静态库生成指南#
+# Linux静态库生成指南#
 
 Linux上的静态库，其实是目标文件的归档文件。
 在Linux上创建静态库的步骤如下：
@@ -254,6 +254,96 @@ Linux下生成和使用动态库的步骤如下：
 `make build`就会生成`libmax.so`， `make test`就会生成`a.out`并执行，`make clean`会清理编译和测试结果。
 
 2015-03-11 Wed
+
+# Linux下实现getch() #
+
+在windows下可以通过 `#include <conio.h>` 使用 `getch()`， 但是 `conio.h` 并不是一个标准的头文件，`conio` 也不是标准的c库。 所以如果在Linux下的c程序中 `#include <conio.h>` ，编程就会报错： `No Such file or directory!`
+
+那么如果想在Linux下使用与`getch()` 功能相同的函数，怎么办呢？ 我们可以通过以下的程序模拟实现`getch()`。
+
+    #include <termios.h>  /* for tcxxxattr, ECHO, etc */
+    #include <unistd.h>   /* for STDIN_FILENO */
+
+    /*simulate windows' getch(), it works!!*/
+    int getch (void){
+        int ch;
+        struct termios oldt, newt;
+
+        // get terminal input's attribute
+        tcgetattr(STDIN_FILENO, &oldt);
+        newt = oldt;
+
+        //set termios' local mode
+        newt.c_lflag &= ~(ECHO|ICANON);
+        tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+
+    	//read character from terminal input
+        ch = getchar();
+
+        //recover terminal's attribute
+        tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+
+        return ch;
+    }
+
+
+# Linux终端彩色字符的输出方法[收藏] #
+
+在 ANSI 兼容终端（例如 xterm、rxvt、konsole 等）里， 可以用彩色显示文本而不仅仅是黑白。但是我们自己编写的程序能否输出彩色的字符呢？当然答案是肯定的。下面的语句就输出高亮的黑色背景的绿色字。
+
+    printf("\033[1;40;32m%s\033[0m", "Hello,NSFocus\n");
+
+`\033` 声明了转义序列的开始，然后是 `[` 开始定义颜色。后面的 `1` 定义了高亮显示字符。然后是背景颜色，这里面是40，表示黑色背景。接着是前景颜色，这里面是32，表示绿色。我们用 `\033[0m` 关闭转义序列， `\033[0m` 是终端默认颜色。
+
+通过上面的介绍，就知道了如何输出彩色字符了。因此，我就不再多说了。下面是对于彩色字符颜色的一些定义：
+
+
+    前景            背景              颜色
+    ---------------------------------------
+    30                40              黑色
+    31                41              紅色
+    32                42              綠色
+    33                43              黃色
+    34                44              藍色
+    35                45              紫紅色
+    36                46              青藍色
+    37                47              白色
+
+    代码              意义
+    -------------------------
+    0                终端默认设置
+    1                高亮显示
+    4                使用下划线
+    5                闪烁
+    7                反白显示
+    8                不可见
+
+下面给出了一个C语言的示例：
+
+    #include <stdio.h>
+
+    int main(int argc,char **argv)
+    {
+        unsigned char attr[]={0,1,4,5,7,8};
+        unsigned char fore[]={30,31,32,33,34,35,36,37};
+        unsigned char back[]={40,41,42,43,44,45,46,47};
+        int adx,fdx,bdx;
+
+        for(bdx=0;bdx <sizeof(back);bdx++)
+        {
+            for(fdx=0;fdx <sizeof(fore);fdx++)
+            {
+                for(adx=0;adx <sizeof(attr);adx++)
+                {
+                    printf("\033[%d;%d;%dmhello,NSFocus!!!\033[0m",
+                        attr[adx],fore[fdx],back[bdx]);
+                    printf("<==attr=%d,fore=%d,back=%d\n",
+                        attr[adx],fore[fdx],back[bdx]);
+                }
+            }
+            printf("\n");
+        }
+    }
 
 # 动态库的版本 #
 

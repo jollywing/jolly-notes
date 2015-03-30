@@ -3,3 +3,35 @@ Effective c++ 读书笔记
 1. extern int x; 是一个声明，它告诉编译器x会在之后的某个地方或别的文件中被定义。int x;是对x的定义，编译器看到这一语句后会为x在内存中分配空间。
 2. 尽量以const取代define。const char* p = "hello"; //p所指的数据为常量，指针不是常量。char * const p = "hello";//指针是常量，数据不是常量。const char * const p = "hello";//指针和数据都是常量。另外，const char * p 和char const * p是一样的。
 3. 类成员在类定义时初始化只能应用于整型成员，即int, bool, char类型。而且这些整型成员要是常量。通常，我们希望类的常量成员是类的所有实例共享的，即在内存中只有一个副本，用static修饰可以实现这一点，如：static const int ABC = 2; 当然，较旧的编译器可能不支持类内的初始化，如果是这样，可以把初始化写在类的实现文件中，如 const int XYZ::ABC = 2;
+
+不要将C++视为一个单一的语言，将其视为一个语言的联合体。
+简而言之，它包含以下4个子语言：
+
+- C。
+- 面向对象的C++。
+- 模板C++，泛型编程。
+- STL。
+
+## 定义字符串常量时，为什么用string好于`char *`？
+
+如果要用 `char *` 定义一个字符串常量，需要： `const char * const GREETING = "Hello, the world!";`
+需要两个const才能保证GREETING的值不会改变。
+如果用 `std::string`，需要一个const就可以了，如：`const std::string GREETING("Hello, the world!");`
+
+## 如下static常量的语句是声明还是定义？
+
+    class GamePlayer {
+      private:
+        static const int MOVE_DIR = 4;
+        ... ...
+    };
+
+只是声明，需要在类的实现文件里定义。`const int GamePlayer::MOVE_DIR;`
+注意，因为声明中已经给MOVE_DIR指定了初始值，所以定义中不再需要指定。
+
+
+1. 用常量来代替`#define`。便于编译器追踪符号。而且，使用宏定义常量，宏替换后，可能会产生多于一个的拷贝。
+2. #define不可以指定作用范围，不利于封装。比如，你不可以只用#define定义一个只在类内可见的常量。
+
+用宏定义函数的好处是什么？可以省去函数调用的开销。而且用宏定义的函数，在一定程度上可以支持多种参数类型。
+但你可以用 _inline_ 和 模板函数 取得同样的好处。
