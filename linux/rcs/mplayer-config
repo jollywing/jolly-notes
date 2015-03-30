@@ -1,0 +1,26 @@
+# path: ~/.mplayer/config
+# Write your default config options here!
+
+#数字越小，字体越小，这里的osd表示播放／暂停状态，音量大小等
+subfont-osd-scale=2
+#显示时间和字幕的字体大小
+subfont-text-scale=3
+#字幕字体文件
+font=/home/jiqing/.fonts/Liheipro.ttf
+#字幕编码（使用ttf字体时）
+subcp=cp936
+#字幕缩放：0不自动缩放；1按电影高度缩放；2按宽度缩放；3按对角线
+subfont-autoscale=2
+#视频输出以XV模式，启用视频加速
+vo=xv
+ao=alsa
+#OSD的默认状态：0 disabled；1 enabled；2 逝去时间；3 逝去时间／总时间
+osdlevel=3
+#字幕模糊匹配
+sub-fuzziness=1
+#优先选择中文简体字幕
+slang=chs
+#对于宽屏显示器，设为16:9，对于标准显示器，设为4:3
+monitoraspect=16:9
+#播放窗口始终在上面
+#ontop=yes

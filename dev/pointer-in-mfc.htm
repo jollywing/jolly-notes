@@ -1,0 +1,258 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>VC知识库文章 - MFC应用程序中指针的使用</title>
+<meta NAME="keywords" CONTENT="CDocument,CMainFrame,CView,GetDocument,GetView">
+<meta NAME="description" CONTENT="CDocument,CMainFrame,CView,GetDocument,GetView">
+<link rel="stylesheet" href="style.css">
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr bgcolor="#A0D39B"> 
+    <td width="14%" height="78">&nbsp;<img src="../image/vckcom.gif" width="109" height="13"></td>
+    <td width="68%" align="right"><a href="http://www.sygui.com" target="_blank"><img src="../../link/AD/sygui.gif" width="600" height="70" border="0" align="middle" longdesc="http://www.sygui.com"></a></td>
+    <td height="78" valign="bottom" align="right"><img src="../image/earch.gif" width="89" height="27"></td>
+  </tr>
+  <tr bgcolor="#EEEEEE">     <td colspan="2"><font color="#333333" class="small">::</font><a href="/"><font color='black'><span class=small>首页</span></font></a> 
+      &gt;&gt; <a href="/document"><font color='black'><span class=small>文档中心</span></font></a>
+&gt;&gt;  <a href='/document/journal'><span class=small><font color='black'>在线杂志</font></span></a> &gt;&gt;  <a href='/document/listdoc.asp?sclsid=505'><span class=small><font color='black'>多文档界面(MDI)</font></span></a></td>
+    <td width="18%" align="right" class="small">
+[ <a href='/document/journal/redir.asp?journal=21'><span class=small><font color='black'>在线杂志 第21期</font></span></a> ] </td>
+  </tr>
+</table>
+<div align="center"><br>
+  <a href="http://www.uipower.com/" target="_blank"><img src="/link/AD/905x132.GIF" width="905" height="132" border="0"></a> 
+</div>
+<br>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td HEIGHT="1" background="/image/dotline2.gif"></td>
+  </tr>
+</table> 
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="40" height="74"></td>
+    <td width="*" height="74" valign="top"><form name="form2" method="post" action="/SYS/script/find.asp"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td><span id="docinfo">[ <font color=#009900>原创文档</font> 本文适合初级读者 已阅读21697次 ]</span></td>
+            <td align="right">
+<input type="text" name="keyword"  size="10" maxlength="20" class="rect">
+              <select name="gclsid" class="rect">
+                <option value="100" selected>文档</option>
+                <option value="200">代码</option>
+                <option value="400">工具</option>
+    </select>
+    <input type="image" border="0" name="imageField" src="../image/go.gif" width="21" height="15" align="absmiddle">
+            </td>
+        </tr>
+      </table></form>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><p align="center"><strong>MFC应用程序中指针的使用</strong><br>
+        作者：<a href="mailto:wang_wang_dogzi@163.com">gouguijia</a></p>
+      <a href="#A1">1) 在View中获得Doc指针</a><br>
+      <a href="#A2">2) 在App中获得MainFrame指针</a><br>
+      <a href="#A3">3) 在View中获得MainFrame指针</a><br>
+      <a href="#A4">4) 获得View（已建立）指针</a><br>
+      <a href="#A5">5) 获得当前文档指针</a><br>
+      <a href="#A6">6) 获得状态栏与工具栏指针</a><br>
+      <a href="#A7">7) 获得状态栏与工具栏变量</a><br>
+      <a href="#A8">8) 在Mainframe获得菜单指针</a><br>
+      <a href="#A9">9) 在任何类中获得应用程序类</a><br>
+      <a href="#A0">10) 从文档类取得视图类的指针(1)</a><br>
+      <a href="#A10">11) 在App中获得文档模板指针</a><br>
+      <a href="#A11">12) 从文档模板获得文档类指针</a><br>
+      <a href="#A12">13) 在文档类中获得文档模板指针</a><br>
+      <a href="#A13">14) 从文档类取得视图类的指针(2)</a><br>
+      <a href="#A14">15) 从一个视图类取得另一视图类的指针</a><br>
+      <br>
+      VC中编程对于刚刚开始学习的同学，最大的障碍和问题就是消息机制和指针获取与操作。其实这些内容基本上是每本VC学习工具书上必讲的内容，而且通过MSDN很多问题都能解决。<br>
+        下面文字主要是个人在编程中指针使用的一些体会，说的不当的地方请指正。<br>
+        一般我们使用的框架是VC提供的Wizard生成的MFC App Wizard(exe)框架，无论是多文档还是单文档，都存在指针获取和操作问题。<br>
+        下面这节内容主要是一般的框架，然后再讲多线程中的指针使用。使用到的类需要包含响应的头文件。首先一般获得本类(视，文档，对话框都支持)实例指针this，用this的目的，主要可以通过类中的函数向其他类或者函数中发指针，以便于在非本类中操作和使用本类中的功能。<br>
+      <br>
+      <img src="../image/paragraph.gif" width="14" height="16"><a name="A1"></a> 
+      1） 在View中获得Doc指针 
+      <pre>CYouSDIDoc *pDoc=GetDocument();一个视只能有一个文档。</pre>
+      <img src="../image/paragraph.gif" width="14" height="16"><a name="A2" id="A2"></a> 
+      2) 在App中获得MainFrame指针<br>
+      CWinApp 中的 m_pMainWnd变量就是MainFrame的指针<br>也可以：
+		<pre>CMainFrame *pMain =(CMainFrame *)AfxGetMainWnd();</pre>
+      <img src="../image/paragraph.gif" width="14" height="16"><a name="A3" id="A3"></a> 
+      3) 在View中获得MainFrame指针 
+      <pre>CMainFrame *pMain=(CmaimFrame *)AfxGetApp()->m_pMainWnd;</pre>
+      <img src="../image/paragraph.gif" width="14" height="16"><a name="A4" id="A4"></a> 
+      4) 获得View（已建立）指针 
+      <pre>CMainFrame *pMain=(CmaimFrame *)AfxGetApp()->m_pMainWnd;
+CyouView *pView=(CyouView *)pMain->GetActiveView();</pre>
+      <img src="../image/paragraph.gif" width="14" height="16"><a name="A5" id="A5"></a> 
+      5) 获得当前文档指针 
+      <pre>CDocument * pCurrentDoc =(CFrameWnd *)m_pMainWnd->GetActiveDocument();</pre>
+      <img src="../image/paragraph.gif" width="14" height="16"><a name="A6" id="A6"></a> 
+      6) 获得状态栏与工具栏指针 
+      <pre>CStatusBar * pStatusBar＝(CStatusBar *)AfxGetMainWnd()->GetDescendantWindow(AFX_IDW_STATUS_BAR);
+CToolBar * pToolBar=(CtoolBar *)AfxGetMainWnd()->GetDescendantWindow(AFX_IDW_TOOLBAR);
+</pre>
+      <img src="../image/paragraph.gif" width="14" height="16"><a name="A7" id="A7"></a> 
+      7) 如果框架中加入工具栏和状态栏变量还可以这样 
+      <pre>(CMainFrame *)GetParent()->m_wndToolBar;
+(CMainFrame *)GetParent()->m_wndStatusBar;
+</pre>
+      <img src="../image/paragraph.gif" width="14" height="16"><a name="A8" id="A8"></a> 
+      8) 在Mainframe获得菜单指针 
+      <pre>CMenu *pMenu=m_pMainWnd->GetMenu();</pre>
+      <img src="../image/paragraph.gif" width="14" height="16"><a name="A9" id="A9"></a> 
+      9) 在任何类中获得应用程序类<br>
+      用MFC全局函数AfxGetApp()获得。<br>
+      <br>
+      <img src="../image/paragraph.gif" width="14" height="16"><a name="A10" id="A10"></a> 
+      10) 从文档类取得视图类的指针<br>
+      我是从<a href="http://download.cqcnc.com/soft/program/article/vc/vc405.html" target="_blank">http://download.cqcnc.com/soft/program/article/vc/vc405.html</a>学到的，从文档获得视图类指针目的一般为了控制同一文档的多个视图的定位问题，我的体会特别是文字处理CEditView当产生多个视图类时，这个功能是非常需要的。 
+      <br>
+      CDocument类提供了两个函数用于视图类的定位：<br>
+      GetFirstViewPosition()和GetNextView()
+      <pre>virtual POSITION GetFirstViewPosition() const;
+virtual CView* GetNextView(POSITION& rPosition) const;<br>
+</pre>
+      注意：GetNextView()括号中的参数用的是引用方式，因此执行后值可能改变。<br>
+      GetFirstViewPosition()用于返回第一个视图位置（返回的并非视图类指针，而是一个POSITION类型值），GetNextView()有两个功能：返回下一个视图类的指针以及用引用调用的方式来改变传入的POSITION类型参数的值。很明显，在Test程序中，只有一个视图类，因此只需将这两个函数调用一次即可得到CTestView的指针如下（需定义一个POSITION结构变量来辅助操作）： 
+      <pre>CTestView* pTestView;
+POSITION pos=GetFirstViewPosition();
+pTestView=GetNextView(pos);
+</pre>
+      这样，便可到了CTestView类的指针pTestView.执行完几句后，变量pos=NULL,因为没有下一个视图类，自然也没有下一个视图类的POSITION.但是这几条语句太简单，不具有太强的通用性和安全特征；当象前面说的那样，当要在多个视图为中返回某个指定类的指针时，我们需要遍历所有视图类，直到找到指定类为止。判断一个类指针指向的是否某个类的实例时，可用IsKindOf()成员函数时行检查，如： 
+      <pre>pView->IsKindOf(RUNTIME_CLASS(CTestView));</pre>
+      即可检查pView所指是否是CTestView类。<br>
+      <br>
+      有了以上基础，我们已经可以从文档类取得任何类的指针。为了方便，我们将其作为一个文档类的成员函数，它有一个参数，表示要获得哪个类的指针。实现如下：
+	  <pre>CView* CTestDoc::GetView(CRuntimeClass* pClass)
+{
+	CView* pView;
+	POSITION pos=GetFirstViewPosition();
+
+	while(pos!=NULL){
+		pView=GetNextView(pos);
+		if(!pView->IsKindOf(pClass))
+		break;
+	}
+
+	if(!pView->IsKindOf(pClass)){
+		AfxMessageBox("Connt Locate the View.\r\n http://www.VCKBASE.com");
+		return NULL;
+	}
+
+	return pView;
+}</pre>
+      <br>
+      其中用了两次视图类的成员函数IsKindOf()来判断，是因为退出while循环有三种可能：<br>
+      <br>
+      1.pos为NULL，即已经不存在下一个视图类供操作；<br>
+      2.pView已符合要求。<br>
+      <br>
+      1和2同是满足。这是因为GetNextView()的功能是将当前视图指针改变成一个视图的位置同时返回当前视图指针，因此pos是pView的下一个视图类的POSITION,完全有可能既是pos==NULL又是pView符合需要。当所需的视图是最后一个视图是最后一个视图类时就如引。因此需采用两次判断。<br>
+      使用该函数应遵循如下格式（以取得CTestView指针为例）：<pre>CTestView* pTestView=(CTestView*)GetView(RUNTIME_CLASS(CTestView));</pre>
+      RUNTIME_CLASS是一个宏，可以简单地理解它的作用：将类的名字转化为CRuntimeClass为指针。<br>
+      至于强制类型转换也是为了安全特性考虑的，因为从同一个基类之间的指针类型是互相兼容的。这种强制类型转换也许并不必要，但能避免一些可能出现的麻烦。<br>
+      <br>
+      3.从一个视图类取得另一视图类的指针 综合1和2，很容易得出视图类之间互相获得指针的方法：就是用文档类作中转，先用1的方法得到文档类的指针，再用2的方法，以文档类的视图定位函数取得另一个视图类。同样，可以实现成一个函数：<br>
+      （假设要从CTestAView中取得指向其它视图类的指针）<pre>CView* CTestAView::GetView(CRuntimeClass* pClass)
+{
+	CTestDoc* pDoc=(CTestDoc*)GetDocument();
+	CView* pView;
+	POSITION pos=pDoc->GetFirstViewPosition();
+	while(pos!=NULL){
+		pView=pDoc->GetNextView(pos);
+		if(!pView->IsKindOf(pClass))
+		break;
+	}
+	if(!pView->IsKindOf(pClass)){
+		AfxMessageBox("Connt Locate the View.");
+		return NULL;
+	}
+
+	return pView;
+}</pre>
+      这个函数和2中的GetView()相比，一是多了第一句以取得文档类指针，二是在GetFirstViewPosition()和GetNextView()前加上了文档类指针，以表示它们是文档类成员函数。<br>
+      有了此函数；当要从CTestAView中取得CTestBView的指针时，只需如下：<pre>CTestBView* pTestbView=(CTestView*)GetView(RUNTIME_CLASS(CTestBView));</pre>
+      <img src="../image/paragraph.gif" width="14" height="16"><a name="A11" id="A11"></a> 
+      11）对于单文档中也可以加入多个文档模板，但是一般的开发就使用MDI方式开发多文档模板，其方法与上述视图的获取方法很接近，这里稍做解释，如果不清楚，请查阅MSDN，（以下四个内容（11、12、13、14）来源：<a href="http://sanjianxia.myrice.com/vc/vc45.htm" target="_blank">http://sanjianxia.myrice.com/vc/vc45.htm</a>）<br>
+      <br>
+      可以用CWinApp::GetFirstDocTemplatePostion获得应用程序注册的第一个文档模板的位置；<br>
+      利用该值来调用CWinApp::GetNextDocTemplate函数，获得第一个CDocTemplate对象指针。
+<pre>POSITION GetFirstDocTemplate( ) const; 
+CDocTemplate *GetNextDocTemplate( POSITION & pos ) const;
+</pre>
+      第二个函数返回由pos 标识的文档模板。POSITION是MFC定义的一个用于迭代或对象指针检索的值。通过这两个函数，应用程序可以遍历整个文档模板列表。如果被检索的文档模板是模板列表中的最后一个，则pos参数被置为NULL。<br>
+      <br>
+      <img src="../image/paragraph.gif" width="14" height="16"><a name="A12" id="A12"></a> 
+      12）一个文档模板可以有多个文档，每个文档模板都保留并维护了一个所有对应文档的指针列表。 <br>
+      用CDocTemplate::GetFirstDocPosition函数获得与文档模板相关的文档集合中第一个文档的位置，并用POSITION值作为CDocTemplate::GetNextDoc的参数来重复遍历与模板相关的文档列表。函数原形为：
+<pre>viaual POSITION GetFirstDocPosition( ) const = 0; 
+visual CDocument *GetNextDoc(POSITION & rPos) const = 0;  
+</pre>
+      如果列表为空，则rPos被置为NULL. <br>
+      <br>
+      <img src="../image/paragraph.gif" width="14" height="16"><a name="A13" id="A13"></a> 
+      13）在文档中可以调用CDocument::GetDocTemplate获得指向该文档模板的指针。函数原形如下： 
+      <pre>CDocTemplate * GetDocTemplate ( ) const; </pre>
+      如果该文档不属于文档模板管理，则返回值为NULL。 <br>
+      <br>
+      <img src="../image/paragraph.gif" width="14" height="16"><a name="A14" id="A14"></a> 
+      14)一个文档可以有多个视。每一个文档都保留并维护一个所有相关视的列表。CDocument::AddView将一个视连接到文档上，将该视加入到文档相联系的视的列表中，并将视的文档指针指向该文档。当有File/New、File/Open、Windows/New或Window/Split的命令而将一个新创建的视的对象连接到文档上时， 
+      MFC会自动调用该函数，框架通过文档/视的结构将文档和视联系起来。当然，程序员也可以根据自己的需要调用该函数。 
+      <pre>Virtual POSITION GetFirstViewPosition( ) const; 
+Virtual CView * GetNextView( POSITION &rPosition) cosnt; 
+</pre>
+      应用程序可以调用CDocument::GetFirstViewPosition返回与调用文档相联系的视的列表中的第一个视的位置，并调用CDocument::GetNextView返回指定位置的视，并将rPositon的值置为列表中下一个视的POSITION值。如果找到的视为列表中的最后一个视，则将rPosition置为NULL. 
+      <br>
+      <br>
+      <img src="../image/paragraph.gif" width="14" height="16"><a name="A15" id="A15"></a> 
+      15)从一个视图类取得另一视图类的指针<br>
+      这个应用在多视的应用程序中很多见，一般如果自己在主程序或者主框架中做好变量记号，也可以获得，还有比较通用的就是用文档类作中转，以文档类的视图遍历定位，取得另一个视图类。这个功能从本文第10项中可以得到。<br>
+      <br>
+      这些资料大部分都是从网上和MSDN中获得的，写这个文档就是为了让大家不用再寻找，列出标题，可操作性更强。<br></td>
+  </tr>
+</table>
+    </td>
+  </tr>
+</table>
+<br>
+<div align="center">
+<script type="text/javascript"><!--
+google_ad_client = "pub-4159669282587342";
+google_alternate_color = "FFFFFF";
+google_ad_width = 468;
+google_ad_height = 60;
+google_ad_format = "468x60_as";
+google_ad_type = "text_image";
+google_ad_channel ="";
+google_color_border = "B4D0DC";
+google_color_bg = "ECF8FF";
+google_color_link = "0000CC";
+google_color_url = "008000";
+google_color_text = "6F6F6F";
+//--></script>
+<script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+<br>
+  <br>
+  <table width="98%" border="0" cellspacing="0" cellpadding="0" class="small" height="18">
+    <tr valign="middle"> 
+      <td bgcolor="#A0D39B" width="47%"><img src="/SYS/script/image/toplogo.gif" width="10" height="10">最新评论 
+        <a href="/SYS/script/viewcomment.asp?gclsid=100&itemid=658" target='_blank'><span class=small>[发表评论]</span></a> <a href="http://www.vckbase.com/support/contribute.html" target='_blank'><span class=small>[文章投稿]</span></a></td>
+      <td bgcolor="#A0D39B" width="53%" align="right"><img src="image/rec1.gif" width="9" height="9"> 
+        <a href="/SYS/script/viewcomment.asp?gclsid=100&itemid=658" target='_blank'><span class=small>查看所有评论</span></a>
+        <img src="image/rec1.gif" width="9" height="9"> <a href="/SYS/script/writemail.asp?gclsid=100&itemid=658&title=MFC%d3%a6%d3%c3%b3%cc%d0%f2%d6%d0%d6%b8%d5%eb%b5%c4%ca%b9%d3%c3" target='_blank'><span class=small>推荐给好友</span></a>
+        <img src="image/rec1.gif" width="9" height="9"> <a href="javascript:window.print();"><span class=small>打印</span></a></td>
+    </tr>
+  </table>
+<table width='98%' border=0 cellspacing=1 cellpadding=0 bgcolor='#ffffff' class='small'><tr><td bgcolor='#FFFFFF'><br><img src='../image/doc2.gif' width=11 height=11 align='absmiddle'> To:&nbsp;怎么觉得这里有点问题&nbsp;if(!pView-&gt;IsKindOf(pClass))<br>break;<br><br>应该是if(pView-&gt;IsKindOf(pClass));<br> ( ququss 发表于 2004-9-28 14:53:00)<br>&nbsp;<br><img src='../image/doc2.gif' width=11 height=11 align='absmiddle'> good&nbsp;work!<br>thanks! ( musicfan 发表于 2003-5-12 8:56:00)<br>&nbsp;<br><img src='../image/doc2.gif' width=11 height=11 align='absmiddle'> 在对话框中创建带文档指针参数的构造函数。 ( uyeye 发表于 2003-5-8 9:42:00)<br>&nbsp;<br><img src='../image/doc2.gif' width=11 height=11 align='absmiddle'> CView*&nbsp;CTestDoc::GetView(CRuntimeClass*&nbsp;pClass)<br>{<br>	CView*&nbsp;pView;<br>	POSITION&nbsp;pos=GetFirstViewPosition();<br><br>	while(pos!=NULL){<br>		pView=GetNextView(pos);<br>		if(!pView-&gt;IsKindOf(pClass))<br>		break;<br>	}<br><br>	if(!pView-&gt;IsKindOf(pClass)){<br>		AfxMessageBox(&quot;Connt&nbsp;Locate&nbsp;the&nbsp;View.\r\n&nbsp;http://www.VCKBASE.com&quot;);<br>		return&nbsp;NULL;<br>	}<br><br>	return&nbsp;pView;<br>}<br>怎么觉得这里有点问题	if(!pView-&gt;IsKindOf(pClass))<br>		break;<br>？？？<br><br> ( stainlessdw 发表于 2003-5-5 22:42:00)<br>&nbsp;<br><img src='../image/doc2.gif' width=11 height=11 align='absmiddle'> 这个还不简单，你能够创建，就能够把这个view/doc指针传递给对话框嘛。就算不做为参数也可以得到的。<br><br>因为MainFrm指针是全局的：AfxGetMainWnd(),<br>通过MainFrm指针就可以得到view/doc指针 ( whaoye 发表于 2003-5-3 21:18:00)<br>&nbsp;<br><img src='../image/doc2.gif' width=11 height=11 align='absmiddle'> 请问gouguijia：<br>&nbsp;&nbsp;&nbsp;&nbsp;如何在view中创建的无模式对话框中获得Doc的指针？还望赐教，谢谢！ ( sky2002 发表于 2003-5-3 11:22:00)<br>&nbsp;<br>.......................................................<BR><a href='/SYS/script/viewcomment.asp?gclsid=100&itemid=658' target='_blank'><span class=small>More...</span></a> </td></tr></table></div>
+<br>
+
+<div align="right"><br>
+  <span class="small">版权所有 &copy; 2006 VC知识库&nbsp; <br>
+  <br>
+</body>
+</html>

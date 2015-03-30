@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# author: jiqing
+# a little complex xinitrc
+# version: 1.0
+# update: 2009-03-31
+
+#xsetroot -solid grey10
+export LC_CTYPE="zh_CN.UTF-8"
+export GTK_IM_MODULE=xim
+export QT_IM_MODULE=xim
+export XMODIFIERS=@im=fcitx
+export XIM=fcitx
+export XIM_PROGRAM=fcitx
+#export XMODIFIERS=@im=scim
+
+# sun java breaks ICCCM-compliance in
+# recent JDK 1.5 and early JDK 1.6 versions,
+# so some java gui applications who use XToolkit/XAWT
+# may behave abnormally.
+# To fix this:
+export AWT_TOOLKIT=MToolkit
+
+xrdb -merge ~/.Xdefaults
+#/usr/bin/scim -d
+#fcitx -d
+
+#exec x-terminal-emulator &
+#xscreensaver &
+
+exec /usr/local/bin/musca
+#exec /usr/bin/subtle
+#exec /usr/bin/openbox-session
+
+#killall scim
+

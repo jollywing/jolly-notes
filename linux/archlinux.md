@@ -150,6 +150,9 @@ https://wiki.archlinux.org/index.php/GTK%2B
 驱动触摸板
 pacman -S xf86-input-synaptics
 
+ntfs-3g
+支持ntfs写入，否则只能读不能写
+
 ## 如果装好Linux，没有声音，怎么办？ ##
 
 现代的Linux发行版对声卡的支持都应该没有问题。系统装好，声卡就应该正常工作。
@@ -172,3 +175,6 @@ pacman -S xf86-input-synaptics
 再用mplayer播放歌曲，就正常发声了。
 
 2015-03-12 Thu
+
+
+[ArchWiki上关于默认应用的文章](https://wiki.archlinux.org/index.php/Default_applications)

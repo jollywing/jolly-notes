@@ -1,0 +1,27 @@
+
+1. 在iceweasel中安装adobe flash播放器插件。
+- 在官网下载tar.gz包
+  http://get.adobe.com/flashplayer/
+- 解压。
+- 将libflashplayer.so放入~/.mozilla/plugins
+- sudo cp -r -v usr/* /usr
+- 在iceweasel地址栏输入 about:plugins，会看到flash player插件。
+- 测试，去优酷上看看小视频吧。
+
+2. 禁掉讨厌的bee, bee声。直接禁掉扬声器算了：
+编辑 /etc/modeprobe.d/blacklist.conf，添加一行：
+blacklist pcspkr
+
+3. 重新编译了3.3的内核，开启了agp，貌似集成显卡用它的专用驱动工作
+   了。而且可以用功能键调节屏幕亮度了。
+
+4. xdpyinfo | grep 'depth of root window' | awk '{ print $5 }'
+   会显示屏幕颜色深度。
+
+5. 安装evince后记得安装poppler-data，否则有些中文pdf不能显示中文。
+
+6. multilib，某些32位程序因为依赖32位动态库，可能不能在x64机器上
+   运行。你可以安装ia32-libs。它的库会装入/usr/lib32。而64位库会
+   放入/usr/lib，/usr/lib64是指向/usr/lib的符号链接。使用
+   gcc-multilib和g++-multilib，你可以在x64机器上编译i686的程序，
+   也可以使用chroot做到这一点。

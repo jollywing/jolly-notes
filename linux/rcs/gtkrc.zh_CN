@@ -1,0 +1,8 @@
+include "/usr/share/themes/Default/gtk/gtkrc"
+style "gtk-zh-cn" {
+    fontset="-*-bitstream vera sans mono-medium-r-normal-*-12-*-*-*-*-*-iso10646-1,\
+    -*-simsun-medium-r-normal-*-12-*-*-*-*-*-iso10646-1"
+}
+class "GtkWidget" style "gtk-zh-cn"
+
+

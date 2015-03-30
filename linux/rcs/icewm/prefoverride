@@ -1,0 +1,52 @@
+# Left/Right border width
+BorderSizeX=4
+
+# Top/bottom border height
+BorderSizeY=5
+
+# Fonts
+#meXft="Bitstream Vera Sans Mono:size=10,AR PL New Sung:size=11" MenuF StatusF TitleF NormalTaskBarF ActiveTaskBarF ListBoxF ToolTipF
+
+# Name of the title bar font
+TitleFontNameXft="Bitstream Vera Sans Mono:siz=10,AR PL New Sung:size=12"
+
+# Name of the menu font
+MenuFontNameXft="Bitstream Vera Sans Mono:siz=9,AR PL New Sung:size=11"
+
+# Name of the status display font
+StatusFontNameXft="Bitstream Vera Sans Mono:siz=9,AR PL New Sung:size=11"
+
+# Name of the font for alt+tab swith
+QuickSwitchFontNameXft="Bitstream Vera Sans Mono:siz=10,AR PL New Sung:size=12"
+
+# Name of the normal task bar item font
+NormalTaskBarFontNameXft="Bitstream Vera Sans Mono:siz=9,AR PL New Sung:size=11"
+
+# Name of the active task bar item font
+ActiveTaskBarFontNameXft="Bitstream Vera Sans Mono:siz=9:bold,AR PL New Sung:size=11"
+
+# Name of the windows list font
+ListBoxFontNameXft="Bitstream Vera Sans Mono:siz=9,AR PL New Sung:size=11"
+
+# Name of the tool tip font
+ToolTipFontNameXft="Bitstream Vera Sans Mono:siz=9,AR PL New Sung:size=11"
+
+NormalButtonFontNameXft="Bitstream Vera Sans Mono:siz=9,AR PL New Sung:size=11"
+ActiveButtonFontNameXft="Bitstream Vera Sans Mono:siz=9:bold,AR PL New Sung:size=11"
+ToolButtonFontNameXft="Bitstream Vera Sans Mono:siz=9,AR PL New Sung:size=11"
+NormalWorkspaceFontNameXft="Bitstream Vera Sans Mono:siz=9,AR PL New Sung:size=11"
+ActiveWorkspaceFontNameXft="Bitstream Vera Sans Mono:siz=9:bold,AR PL New Sung:size=11"
+InputFontNameXft="Bitstream Vera Sans Mono:siz=9,AR PL New Sung:size=11"
+LabelFontNameXft="Bitstream Vera Sans Mono:siz=9,AR PL New Sung:size=11"
+
+# Name of the taskbar clock font
+# ClockFontNameXft="StringEncoding=utf-8:WenQuanYi Bitmap Song:size=10:style=Bold:encoding=iso10646-1"
+
+# desktop background image, format:xpm
+#DesktopBackgroundImage="/home/jiqing/.icewm/linux-family.xpm"
+
+# display desktop background centered and not tiled.
+#DesktopBackgroundCenter=0
+
+# display clock using LCD style
+TaskBarClockLeds=1

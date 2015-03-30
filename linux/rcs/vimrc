@@ -1,0 +1,358 @@
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" this is jiqing's vim configure file.
+" last update: 2011-01-08
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" enable the features of vim
+set nocompatible
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" SHOW
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Vim5 and later versions support syntax highlighting. 
+syntax on
+set background=light
+
+"to have Vim jump to the last position when reopening a file
+"if has("autocmd") au BufReadPost * if line("'\"") > 0 && line("'\"")
+"<= line("$") \| exe "normal g'\"" | endif endif
+
+"to have Vim load indentation rules according to
+"the detected filetype.
+if has("autocmd")
+    filetype plugin indent on
+endif
+
+set showcmd		" Show (partial) command in status line.
+set showmatch		" Show matching brackets.
+
+" disable this because it leads to double ESC
+"set notimeout   " no timeout when you input key sequence
+
+" show current position
+" I have statusline, I don't need this any more.
+"set ruler
+
+" show status bar
+" 0 never
+" 1 (default) on arise when window is splited
+" 2 always
+set laststatus=2
+
+" set format of status bar
+"set statusline=%<\ %f%m\ %r%h%w\ %{'['.(&fenc!=''?&fenc:&enc).':'.&ff.']'}\ %y\ %=[%l,%v]\ [%p%%] 
+set statusline=%n\ %f%m\ %<\ %r%h%w\ %{'['.(&fenc!=''?&fenc:&enc).':'.&ff.']'}\ %y\ %=[%l,%v]\ [%p%%] 
+
+" show line number?
+"set number
+set nonu
+
+" wrap
+set wrap
+set linebreak
+
+" display more contents instead of '@'
+set display=lastline
+" enable support of linebreak for asian language
+set formatoptions=mBtcroqn
+
+
+""""""""""""""""""""""""""""""""""""
+" LANGUAGE
+""""""""""""""""""""""""""""""""""""
+" show chinese message
+" language zh_CN.UTF-8
+language en_US.UTF-8
+" set help show in chinese
+set helplang=cn
+" set menu show in chinese (for gvim)
+set langmenu=zh_CN.UTF-8
+
+
+""""""""""""""""""""""""""""""""""""
+" SEARCH
+""""""""""""""""""""""""""""""""""""
+set ignorecase		" Do case insensitive matching
+set smartcase      " Do smart case matching
+set incsearch		" Incremental search
+set hlsearch      " Highlight search things
+
+
+""""""""""""""""""""""""""""""""""""
+" EDIT
+""""""""""""""""""""""""""""""""""""
+
+set hidden          " Hide buffers when they are abandoned
+set mouse=a		" Enable mouse usage (all modes) in terminals
+
+"Turn backup off
+set nobackup
+set nowb    " wb = writebackup
+set noswapfile
+
+" backspace and cursor keys wrap to
+" default, whichwrap=b,s. b=backspace, s=space
+" < = left key under normal mode
+" > = right key under normal mode
+" [ = left key under insert mode
+" ] = right key under insert mode
+set whichwrap+=<,>,h,l,[,]
+
+set backspace=eol,start,indent
+
+" a word can include '-', for example, 'a-bcd' will be as a word.
+set iskeyword+=-
+
+" when someone indent a line with '>>', the amount of indent equals
+" shiftwidth
+set shiftwidth=4
+" set tab stop
+set softtabstop=4
+set tabstop=4
+" covert tab to spaces
+set expandtab
+set smarttab
+
+"set autoindent
+set smartindent
+
+" set number of characters in each line
+set textwidth=65
+
+""""""""""""""""""""""""""""""""""""
+" MULTIPLE WINDOWS
+""""""""""""""""""""""""""""""""""""
+set splitbelow      " new window arise under the original window
+set splitright      " new window arise on the right of the original window
+
+"smart way to move between windows
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-h> <C-W>h
+map <C-l> <C-W>l
+
+""""""""""""""""""""""""""""""""""""
+" FILE ENCODING AND FORMATS
+""""""""""""""""""""""""""""""""""""
+" set encoding of vim
+set encoding=utf-8
+
+" set encoding of interacting with keyboard and screen
+set termencoding=utf-8
+
+" set auto convert encoding do not place cp936 in front of utf-8 and
+" latin1 should be the last
+" gb18030 is compatible with gbk and gb2312
+set fileencodings=ucs-bom,utf-8,gbk
+
+" only valid when you use utf-8 encoding
+set ambiwidth=double
+
+" set auto convert formats(unix, dos, mac)
+set fileformats=unix,dos,mac
+
+"set t_Co=88
+
+""""""""""""""""""
+" IM
+""""""""""""""""""
+" this doesn't work on terminal
+" and awesome on gvim
+"set imactivatekey=C-backslash
+"set noimcmdline
+"set iminsert=2
+"set imsearch=-1
+
+""""""""""""""""""
+" gvim
+""""""""""""""""""
+if has("gui_running")
+    set guifont=monaco\ 11
+    set guifontwide=simhei\ 12
+    set lazyredraw
+    set guioptions=ic
+endif
+
+colorscheme lightgreen " the colorschme made by me
+
+" no cursor blink under normal mode
+set guicursor=n:blinkon0
+
+" control behaviors of mouse
+behave xterm      " X window like
+"behave mswin      " Microsoft windows like
+
+"""""""""""""""""""""""""
+" General Abbrevs
+"""""""""""""""""""""""""
+
+"""""""""""""""""""
+" map and abbrevs
+"""""""""""""""""""
+" enable emacs-like key-storke to move cursor in insert mode,
+" for convenient chinese input.
+imap <C-a> <Esc>I
+imap <C-e> <Esc>A
+imap <C-k> <Esc>lDa
+
+let mapleader = ","
+" date and time
+iab xdate <c-r>=strftime("%Y-%m-%d")<cr>
+iab cndate <c-r>=strftime("%Y年%m月%d日")<cr>
+iab xtime <c-r>=strftime("%Y-%m-%d %H:%M:%S")<cr>
+iab xname Jiqing Wu
+iab xmail jiqingwu@gmail.com
+
+nmap <Leader>cl :close<cr>
+nmap <Leader>ed :e 
+nmap <Leader>sp :sp 
+nmap <Leader>vs :vsp 
+nmap <Leader>bu :b 
+nmap <Leader>sb :sb 
+nmap <Leader>bw :bw<cr>
+nmap <Leader>sh :! 
+nmap <Leader>hp :help 
+nmap <Leader>st :set 
+nmap <Leader>pw :pwd<cr>
+nmap <Leader>cd :cd 
+nmap <Leader>da a<C-R>=strftime("%Y-%m-%d")<CR><Esc>
+nmap <Leader>to :e ~/.blog/40gtd/todo<cr>
+nmap <Leader>ri :e ~/.blog/00diary/2011diary.html<cr>
+nmap <Leader>vi :e ~/.vimrc<cr>
+
+nmap <F2> :!sdcv -n <C-R>=expand("<cword>")<cr><cr>
+map <F3> <Esc>:wa<cr>
+map <F4> <Esc>:qa!<cr>
+
+map <F10> <Esc>:wa<cr>:lmake<cr>:lopen<cr>
+map <F9> <Esc>:lclose<cr>
+map <F8> <Esc>:lnext<cr>
+map <F7> <Esc>:lprevious<cr>
+
+
+
+"""""""""""""""""""
+" other
+"""""""""""""""""""
+set autochdir
+" the file is reloaded automatically when it is changed outside.
+set autoread
+" Automatically save before commands like :next and :make
+" set autowrite
+
+"""""""""""""""""""
+" folding
+"""""""""""""""""""
+set foldmethod=syntax
+set foldlevel=0
+
+"""""""""""""""""""
+" omni completion
+"""""""""""""""""""
+set completeopt=longest,menu
+set dictionary=/usr/share/dict/words
+
+"=================== plugins ===============================
+
+"""""""""""""""""""
+" ConqueTerm
+"""""""""""""""""""
+let g:ConqueTerm_CloseOnEnd = 1
+
+""""""""""""
+" html.vim
+""""""""""""
+let g:no_html_toolbar=1
+let g:no_html_menu=1
+let g:html_authorname='jiqing Wu'
+let g:html_authoremail='jiqingwu@gmail.com'
+let g:html_template="/home/jiqing/flying/usenix/vim/template/html"
+
+"""""""""""""""""""
+" tag_list
+"""""""""""""""""""
+let Tlist_Use_Right_Window=1
+" Specify the ctags binary to avoid conflict with the ctags of Emacs
+let Tlist_Ctags_Cmd='/usr/bin/ctags-exuberant'
+" If your want taglist window opened on vim startup, set to 1
+let Tlist_Auto_Open=0
+let Tlist_Show_One_File=0
+let Tlist_File_Fold_Auto_Close=1
+" When the Tlist is the only window of vim, let vim exit.
+let Tlist_Exit_OnlyWindow=1
+" When Tlist opened with ':TlistToggle', Tlist gain focus
+let Tlist_GainFocus_On_ToggleOpen=1
+" Disable the automatic update of tags
+let Tlist_Auto_Update=1
+"let Tlist_Use_Right_Window = 1
+let Tlist_Compact_Format=1
+nmap <Leader>g :TlistToggle<cr>
+
+""""""""""""""""""""""""""""""
+" Cscope
+""""""""""""""""""""""""""""""
+" whether the cscope results displays in quickfix window
+set cscopequickfix=s-,c-,d-,i-,t-,e-
+" find c symbol, comments can be skiped
+nmap <C-x>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+" find the funcs who call this func
+nmap <C-x>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+" find the funcs called by this func 
+nmap <C-x>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+" find the files who includes this file
+nmap <C-x>i :cs find i <C-R>=expand("<cfile>")<CR><CR>
+" find this string
+nmap <C-x>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+" find this egrep pattern
+nmap <C-x>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+" find the definition, like ctags
+nmap <C-x>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+" find this file
+nmap <C-x>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+
+""""""""""""""""""""""""""""""
+" NERD tree
+""""""""""""""""""""""""""""""
+let loaded_nerd_tree=1
+let NERDTreeShowHidden=0
+let NERDTreeShowLineNumbers=0
+let NERDTreeIgnore=['\~$']
+nmap <Leader>f :NERDTreeToggle<cr>
+
+""""""""""""""""""""""""""""""
+" project
+""""""""""""""""""""""""""""""
+" forbiding project
+" let loaded_project = 1
+
+""""""""""""""""""""""""""""""
+" BufExplorer
+""""""""""""""""""""""""""""""
+" let g:bufExplorerDefaultHelp=0       " Do not show default help.
+" let g:bufExplorerShowDirectories=0   " Do not show directories
+" let g:bufExplorerShowRelativePath=1  " Show relative paths.
+" let g:bufExplorerSortBy='mru'        " Sort by most recently used.
+" let g:bufExplorerSplitRight=0        " Split left.
+" let g:bufExplorerSplitVertical=1     " Split vertically.
+" let g:bufExplorerSplitVertSize = 30  " Split width
+" let g:bufExplorerUseCurrentWindow=1  " Open in new window.
+
+"""""""""""""""""""
+" winmanager
+"""""""""""""""""""
+" let g:winManagerWindowLayout='BufExplorer|FileExplorer,TagList'
+" let g:winManagerWidth = 30
+" let g:defaultExplorer = 0
+" nmap <F8> :WMToggle<cr>
+
+"""""""""""""""""""""""""""
+" MiniBufferExplorer
+"""""""""""""""""""""""""""
+"let g:miniBufExplSplitBelow=0  
+" C-tab open the next buffer; C-S-tab open the previous buffer.
+"let g:miniBufExplMapCTabSwitchBufs = 1
+" C-arrowkeys switch the active window.
+"let g:miniBufExplMapWindowNavArrows = 1
+
+

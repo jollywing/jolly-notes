@@ -1,0 +1,511 @@
+﻿
+这样一来，Tahoma，Verdana，等Windowz下几个主要的ttf字体效果就和Windows下没什么区别了。不过对于Bitstream Vera Sans来说似乎有点"少肉",但总体来说效果是不错的，请选择使用
+
+我们要理解X的字体引擎. X中支持Truetype字体(一种可放缩字体) 的主要有四种引擎. freetype, xtt, xfs和Xft. 
+
+
+首先, 我们要理解X的字体引擎. X中支持Truetype字体(一种可放缩字体) 的主要有四种引擎. freetype, xtt, xfs和Xft. 
+
+其中freetype 和 xtt 是 X 的内部模块. 使用的都是freetype1渲染引擎. 
+
+Xfs 和xft 是外部服务程序. xfs 是系统级的字体服务程序, 也可以作为X的内部模块， 使用的是X 内部的freetype2. Xft 和其他类库一样, 只有被调用的时候才被加载. 其中只有xft才有antialias 支持. 
+
+这里有必要讲讲freetype. Freetype 是开源字体渲染引擎, 并不只为X设计. 它的功能就是读取Truetype字体信息, 如大小, 分辨率, 编码等, 然后渲染成所需的位图数据输出. Freetype 现在的版本是 2.x, 与1.0 相比, 最大的差别就是加入了抗锯齿功能. 
+
+有这么多引擎,到底要用哪个好? 其实我们目前为止, 支持中文最好的还是xtt. 因为小字体的时候, 用函数描述法算出来的中文字体效果不能让人满意, 所以很多中文字体公司就在Truetype字体里嵌入了位图字体. 这些位图字体需要用特殊的方式读出来, 所有的引擎中就只有xtt能做到这一点. 
+
+我们下一步就是将字体添加到X中, 使xtt可以正确读取, 这样就可以了. 
+
+首先, 由于要配置Linux系统文件, 我们需要用root帐号进入, 相当于Windows下的administrator. 
+
+X的配置文件是/etc/XF86Config-4 (比较新的显卡) 或者是 XF86Config (比较老的显卡). 用你喜欢的文本编辑器打开, 如 kedit或gedit. 
+
+打开后我们发现配置文件分成很多个Section, 我们首先要配置的就是 Section "Files" , 这个部分描述了X所要调用的文件信息. 
+
+要加入一个字体目录, 只需在里面插入一行 FontPath "目录名" 就可以了, 如: 
+
+Section "Files" 
+# Multiple FontPath entrIEs are allowed (they are concatenated together) 
+# By default, Mandrake 6.0 and later now use a font server independent of 
+# the X server to render fonts. 
+FontPath "Unix/:-1" 
+FontPath "/truetype" # 插入一个字体目录 
+EndSection 
+
+然后, 我们让X加载xtt字体引擎: 
+
+找到Section "Module", 像这样修改: 
+
+Section "Module" 
+# Load "dbe" # Double-Buffering Extension 
+# Load "v4l" # Video for Linux 
+Load "extmod" 
+Load "glx 
+# Load "type1" # type1 模组是渲染type1字体的, 和xtt冲突, 必需屏蔽 
+# Load "freetype" # freetype 模组是渲染Truetype字体的, 和xtt冲突, 必需屏蔽 
+Load "xtt" # 加入xtt模组引擎 
+EndSection 
+
+好了, 现在xtt会自动去 /truetype 里找字体. 
+
+现在开始拷贝字体到 /truetype里去, 先要在根目录建一个truetype目录, 打 
+
+mkdir /truetype 
+
+就可以了. 
+
+从windows分区拷贝要先mount, 就是作一个联接, 将Linux目录连到windows分区. 在根目录下建一个"c"目录. 
+
+mkdir /c 
+
+然后 
+
+mount /dev/hda1 /c 
+
+这样就将windows下的C盘 联接到我们Linux下的/c目录了, 进入/c, 应该可以看到你C盘的文件. 
+
+然后, 进入/c 中的字体文件目录, 一般在window下面的Fonts里, 注意目录名大小写在Linux下面是有区别的. 
+
+拷贝字体文件到 /truetype里, 打 
+
+cp simsun.ttc /truetype/simsun.ttf 
+cp tahoma* /truetype/ 
+
+这样就将我们所需要的字体文件拷贝到truetype 里了. 
+
+下一步我们要设置字体文件, Linux中X的字体设置很烦锁, 不像windows一拷贝就完事, 初级阶段嘛, 大家还是忍忍吧, 呵呵. 
+
+1. 建立字体信息文件fonts.dir 
+
+如下 
+
+24 
+simsun.ttf -misc-SimSun-medium-r-normal--0-0-0-0-c-0-gb2312.1980-0 
+ai=0.3:simsun.ttf -misc-SimSun-medium-i-normal--0-0-0-0-c-0-gb2312.1980-0 
+ds=y:simsun.ttf -misc-SimSun-bold-r-normal--0-0-0-0-c-0-gb2312.1980-0 
+ds=y:ai=0.3:simsun.ttf -misc-SimSun-bold-i-normal--0-0-0-0-c-0-gb2312.1980-0 
+tahoma.ttf -misc-SimSun-medium-r-normal--0-0-0-0-p-0-iso8859-1 
+ai=0.3:tahoma.ttf -misc-SimSun-medium-i-normal--0-0-0-0-p-0-iso8859-1 
+tahomabd.ttf -misc-SimSun-bold-r-normal--0-0-0-0-p-0-iso8859-1 
+ai=0.3:tahomabd.ttf -misc-SimSun-bold-i-normal--0-0-0-0-p-0-iso8859-1 
+simsun.ttf -misc-SimSun-medium-r-normal--0-0-0-0-p-0-gbk-0 
+ai=0.3:simsun.ttf -misc-SimSun-medium-i-normal--0-0-0-0-p-0-gbk-0 
+ds=y:simsun.ttf -misc-SimSun-bold-r-normal--0-0-0-0-p-0-gbk-0 
+ds=y:ai=0.3:simsun.ttf -misc-SimSun-bold-i-normal--0-0-0-0-p-0-gbk-0 
+simsun.ttf -misc-SimSun-medium-r-normal--0-0-0-0-p-0-fcd8859-15 
+ai=0.3:simsun.ttf -misc-SimSun-medium-i-normal--0-0-0-0-p-0-fcd8859-15 
+ds=y:simsun.ttf -misc-SimSun-bold-r-normal--0-0-0-0-p-0-fcd8859-15 
+ds=y:ai=0.3:simsun.ttf -misc-SimSun-bold-i-normal--0-0-0-0-p-0-fcd8859-15 
+simsun.ttf -misc-SimSun-medium-r-normal--0-0-0-0-p-0-iso8859-15 
+ai=0.3:simsun.ttf -misc-SimSun-medium-i-normal--0-0-0-0-p-0-iso8859-15 
+ds=y:simsun.ttf -misc-SimSun-bold-r-normal--0-0-0-0-p-0-iso8859-15 
+ds=y:ai=0.3:simsun.ttf -misc-SimSun-bold-i-normal--0-0-0-0-p-0-iso8859-15 
+simsun.ttf -misc-SimSun-medium-r-normal--0-0-0-0-c-0-iso10646-1 
+ai=0.3:simsun.ttf -misc-SimSun-medium-i-normal--0-0-0-0-c-0-iso10646-1 
+ds=y:simsun.ttf -misc-SimSun-bold-r-normal--0-0-0-0-c-0-iso10646-1 
+ds=y:ai=0.3:simsun.ttf -misc-SimSun-bold-i-normal--0-0-0-0-c-0-iso10646-1 
+
+
+第一行的24表示下面一共有24行设置 (好像有点傻) , 其他的格式都差不多: 
+
+ds=y:ai=0.3:simsun.ttf -misc-SimSun-bold-i-normal--0-0-0-0-p-0-gbk-0 
+
+说明: 
+
+simsun.ttf: 字体文件名 
+
+ds=[yn]: ds是xtt的功能, 设成"y" 表示粗体, "n" 表示正常. 
+
+ai=Real_number: 表示倾斜度. 不设表示自动. 
+
+misc : 表示字体的类别 
+
+SimSun : 是字体的名称 
+
+bold : bold 表示粗体, 其他如medium表示正常, 
+
+i : 表示斜体, r 是正常 
+
+p: 可变长度, c 是正方形, m是固定宽度 
+
+gbk: 字体编码 
+
+这里大家发现我们还使用了tahoma英文字体, 这样替换, 系统读取Simsun英文字体的时候, 就会用pp的tahoma替代. 
+
+好了, 现在存盘. 然后拷贝一个到fonts.scale 
+
+cp fonts.dir fonts.scale 
+
+然后拷贝编码文件 encodings.dir 到目录里来. 
+
+cp /usr/X11R6/lib/X11/fonts/encodings/encodings.dir /truetype 
+
+好, 重起, 把KDE, mozilla, galeon 等等所有默认字体都改成simsun, 哈哈, 是不是比从前漂亮了很多? 
+
+大家还是把这几个配置文件备份起来, 以后安装的时候就不用再设置了. 
+
+这里顺带说一下其他几个字体引擎的配置: 
+
+xfs : 配置文件是 /etc/X11/fs/config 
+xft : 配置文件是 /etc/X11/Xftconfig 
+
+xft 的配置相对来说比较容易, 只要将字体拷到配置文件中dir 指定的任何一个目录就可以了. 如果要小字体不显示AA, 可以在末尾加入: 
+
+match 
+any size > 8 
+any size < 17 
+edit 
+antialias = false; 
+match 
+any pixelsize > 8 
+any pixelsize < 17 
+edit 
+antialias = false; 
+
+这样 8~17号的字体就不会用抗锯齿功能了. 
+
+
+这篇文章来自于 LinuxSir 
+http://www.linuxsir.org/postnuke/ 
+这篇文章的URL是： 
+http://www.linuxsir.org/postnuke/modules.php?op=modload&name=News&file=article&sid=1574 
+
+来自：www.linuxsir.org 
+作者：Xoo 
+
+本文简要介绍了基于gtk1、gtk2和qt的程序汉化的基本概念，并详细介绍了用freetype/fontconfig/xft对Slackware 9.1进行汉化和美化的具体步骤。 
+多谢Xoo兄的详细解决办法！ 
+
+写在前面: 
+每一个刚刚把Linux装上的朋友面对的第一个问题就是汉化，美化。linux默认的字体实在是不怎么漂亮，特别是对中文更是如此。我开始用了两三个月美化一直不是很好，正在心灰意懒，准备滚回Windowz的时候，偶然看到一篇美化的文章，照着做了而且竟然成功了(至少是我想要的效果),从那以后就慢慢的爱上了linux直到把Windowz彻底仍进厕所。 
+网上关于美化的文章其实已经很多了，但大多是告诉你第一步如何如何，第二步如何如何，至于其中的简单道理很少有涉及。结果造成知其然不知其所以然，一旦照着文章做下来没有成功，那就等于白做了。以后遇到问题，还是束手无策。 
+我写这个的目的就是希望结合我自己实际中遇到的种种情况，结合我自己的经验，写一篇文章帮助那些既想美化成功，而又想大概知道"为什么要这么做"的朋友。当然我只是能讲一些我自己所理解的很浅显的道理，更高深的道理我是不懂的，呵呵。有说错的地方还请大家多多指教。本文所介绍的是基于 freetype/Fontconfig/Xft的，xtt我没用，使用的字体都是TrueType。 
+
+下面我们开始。 
+
+强烈建议你把下面这段仔细看一下，这样对接下来的具体操作有很大帮助！！ 
+
+linux下常见的GUI程序有三种，GTK1、GTK2和QT，基于这三种图形库的程序在美化上是有不同要求的。XFree86下常用的字体绘制方案有xtt,freetype/Fontconfig/Xft。下面分别来看看 
+
+1.GTK1的程序是不支持Fontconfig的。所以有点麻烦。拿到一个字体，你首先要让X找到它对吧？这一步就是在 /etc/X11/XF86config的Section "files"段里面的Fontpath属性里说明的详细后面会讲。好了，X现在知道字体在哪里了。那gtk1的程序还不能直接使用它们，因为我们还没有给它们"注册",这就需要在前面设定的Fontpath里生成两个文件fonts.dir fonts.scale这两个文件里有Fontpath下所有字体的列表信息，就是一个"索引"。有了这个"索引"，gtk1的程序就可以找到相应的字体了。生成这两个文件的工具有mkfontdir,mkfontscale,ttmkfdir等等。好了，上面两步如果正确完成了，你的gtk1程序现在就可以正常显示汉字了。 
+常见的gtk1程序有xmms，gimp..... 
+
+2.GTK2和QT程序可以使用Fontconfig。Fontconfig是一个把字体选择出来，并且决定怎么显示这些字体的东东。类似于前面提到的 XF86config里的Fontpath属性以及fonts.dir和fonts.scale的功能，就是让程序找到这些字体。所以，对于GTK2和 QT程序XF86config和fonts.dir就没有用了。所以对于这类程序来说，主要的配置文件是/etc/fonts/fonts.conf。 
+Fontconfig的高级功能有很多，详细的说明可以参考这里: http://www.linuxfans.org/nuke/modules.php?name=Forums&file=vIEwtopic&t=48331 
+GTK2和QT的程序就很多了，KDE，GNOME，Firebird............ 
+
+上面的两段提到的只是让程序找到字体，并不负责具体的显示工作。它们只能保证你的程序能找到字体不会出现乱码现象，也就是所谓的"汉化" 
+至于freetype/Xft或者xtt是什么？我的理解它们是负责具体把字体显示到屏幕上的东西，决定了你看到的字体是个什么效果。著名的"firefly美化包"就做了很多改善中文显示效果的工作。也就是所谓的"美化" 
+
+到此你应该对汉化，美化有了一个大概的概念。接下来就是具体的操作 
+
+具体在Slackware 9.1上实现freetype/fontconfig/xft汉化美化工作 
+
+我用的是Slackware 9.1，但是对其它发行版，美化汉化的原理都是大同小异的。看了文章再通过实践加以理解，应该能够灵活应用其它发行版上的。 
+以下命令以#开头表示是以root身份操作，$开头则是以普通用户身份操作。 
+
+Step1. 
+准备TrueType字体，常用的如simsun.ttf tahoma.ttf verdana.ttf等等。然后决定你要把字体放在哪个目录里。这个目录随你喜欢，我把它们放在/usr/X11R6/lib/X11/fonts/TTF/里。 
+比如你下载来的的ttf字体都在/home/username/myfonts/下面，就做如下操作 
+
+#cp /home/username/myfonts/*.ttf /usr/X11R6/lib/X11/fonts/TTF/ 
+
+Step2. 
+让GTK1程序找到你刚才放进去的字体。上面说的方法你还没有忘吧？让我们先修改XF86config 
+
+#vi /etc/X11/XF86config 
+
+找到 
+Section "Files" 
+................. 
+这一段，在里面加上一个Fontpath属性 
+
+FontPath "/usr/X11R6/lib/X11/fonts/TTF/" 
+
+当然，如果里面已经有了你放字体的路径就不用加了，如果你的路径和我不一样，那就写你的路径，你也可以随时添加自己的字体路径，道理都一样。 
+如果你在XF86config里发现了 Load "xtt"这行，把它注释掉。我是不用xtt的 
+
+接下来当然是准备fonts.dir 和fonts.scale了。生成这两个的文件工具前面说了。Slackware自带的是mkfontdir和mkfontscale，我个人强烈不推荐这两个工具，它们生成的fonts.dir很不爽，simsun.ttf里找不出gbk的encoding。你可以去下载一个叫ttmkfdir的工具: ftp://216.254.0.38/linux/rawhide/1.0/i386/Fedora/RPMS/ttmkfdir-3.0.9-7.i386.rpm 
+假设你已经装上了这个工具,就做如下操作 
+
+#ttmkfdir /usr/X11R6/lib/X11/fonts/TTF/ -o /usr/X11R6/lib/X11/fonts/TTF/fonts.scale 
+
+现在检查一下这个文件 
+
+#vi /usr/X11R6/lib/X11/fonts/TTF/fonts.scale 
+
+如果里面有 :1:simsun.ttfxxxxxxxxxxxxxxxxxxxx 这样以 :1:开头的行，把它们都删掉,freetype不需要这个东西，而且可能会导致一些问题。特别再注意一下是不是生成了 simsun.ttf -misc-SimSun-medium-r-normal--0-0-0-0-c-0-gb2312.1980-0 simsun.ttf -misc-SimSun-medium-r-normal--0-0-0-0-c-0-gbk-0 这两行，因为encoding是很重要的，mkfontdir生成的fonts.dir很可能没有-gbk-0的编码，这样也会导致一些问题。所以我用 ttmkfdir 
+确保无误后 
+
+#cp /usr/X11R6/lib/X11/fonts/TTF/fonts.scale /usr/X11R6/lib/X11/fonts/TTF/fonts.dir （这两个文件其实是一样的) 
+
+你的gtk1程序已经可以使用字体了，但是在gtk1程序里当然还要指定你究竟要使用什么字体。对gtk1程序使用什么字体有一个全局配置文件/etc/gtk/gtkrc.zh_CN 
+把我的配置文件贴一下 
+
+
+
+# This file defines the fontsets for Chinese language (zh) using 
+# the simplified chinese standard GuoBiao as in mainland China (CN) 
+# 
+# 1999, Pablo Saratxaga <pablo@mandrakesoft.com> 
+# 
+
+style "gtk-default-zh-cn" { 
+fontset = "-*-bitstream vera sans-medium-r-normal-*-*-120-*-*-p-*-microsoft-cp1252, 
+-*-simsun-medium-r-normal-*-12-*-*-*-*-*-gbk-0" 
+} 
+class "GtkWidget" style "gtk-default-zh-cn" 
+
+
+这个文件告诉程序，对于英文字体优先使用bitstream vera sans字体，对于中文由于bitstream vera sans没有中文字体，就使用后面的simsun字体。 
+
+至此，gtk1程序的汉化全部完成。 
+现在可以startx 
+运行一个xmms看看，界面如何？至于xmms列表显示中文可以搜索其它文章。也很简单 
+
+补充几点技巧和说明: 
+1. -*-bitstream vera sans-medium-r-normal-*-*-120-*-*-p-*-microsoft-cp1252 这种字体表示方法是不是很复杂？有个小技巧帮你选择自己想要的字体,/usr/X11R6/bin/下有一个程序xfontsel ,运行它。自己摆弄一下你就明白了。在这里你可以看到gtk1程序所能找到的ttf字体，有一些就是从你刚才生成的fonts.dir里读出来的。通过它你还可以得到你需要的字体的正确表达格式。 
+2.Slackware 9.1有了bitstream vera sans 等一系列优秀的ttf字体。它们默认也的都在/usr/X11R6/lib/X11/fonts/TTF/目录下，那些Veraxx.ttf的字体都是。可是那个目录下的fonts.dir没有把它们列进去。如果你前面都是按照我的方法做了，刚才那步ttmkfdir已经把它们收录进去了。如果你刚才操作的是别的目录，那就在这个/usr/X11R6/lib/X11/fonts/TTF下ttmkfdir 一次了，方法和前面的一样。 
+3.ttmkfdir生成的fonts.dir 和fonts.scale可能会有一些多余的编码，比如那些以ascii-0和adobe standard-0结束的行，在我这里引起了一些问题，如果你觉得有什么异常，先把这样的行都删掉。 
+
+
+Step3 
+搞定gtk2和QT程序。 
+基于fontconfig选择字体的程序就容易配置多，fontconfig也提供了一些更高级的功能。 
+类似gtk1，现让这些程序找到这些字体。前面已经说过XF86config里的Fontpath和fonts.dir文件已经没有必要了。fontconfig的核心配置文件是/etc/fonts/fonts.conf用vi打开这个文件 
+开始就有这么一段 
+
+
+<!-- Font Directory list configured on Wed Apr 23 11:40:17 CST 2003 --> 
+
+<dir>/usr/X11R6/lib/X11/fonts</dir> 
+<dir>~/.fonts</dir> 
+<dir>/usr/share/fonts</dir> 
+
+
+这段是告诉fontconfig去这些目录包括它们的子目录里面去找字体。是不是比Fontpath和fonts.dir省事多了？ 
+你要做的就是把你放字体的路径加上，我刚才放自己的路径已经被包括在里面了。所以不用修改它。 
+
+运行 
+#fc-cache 
+更新字体信息。 
+好了，现在gtk2和qt的程序就可以使用你添加的字体了，太简单了吧？而且对fonts.conf的修改马上就可以生效。不像gtk1程序修改gtkrc后还要重新运行，修改XF86config甚至还要restart X等等。 
+
+类似gtk1程序，gtk2和qt程序都有一个全局字体配置。 
+gtk2程序的全局配置文件是/etc/gtk-2.0/gtkrc 
+也把我的内容贴上来 
+
+
+style "user-font" { 
+font_name="Bitstream Vera Sans 9" } 
+class "*" style "user-font" 
+
+
+是告诉程序使用Bitstream Vera Sans ,字体大小是 9 
+
+qt程序的默认字体配置 
+
+$/usr/lib/qt-3.2.1/bin/qtconfig 
+
+出来一个图形界面，在里面就可以方便选择你要的字体了 
+
+补充几点技巧和说明: 
+1.刚才提到的xfontsel可以帮你查看gtk1可用的字体，那么fontconfig究竟找到了哪些字体呢?也有一个程序叫fc-list,默认在 /usr/X11R6/bin/下面，运行它，会显示一个列表。里面的字体名称就是可以使用的字体。比如我刚才的gtk2配置文件的字体名字就在里面。 
+2./etc/fonts/fonts.conf的强大的功能有很多，其实也很复杂。详细的设置可参考本文开头给出的文章连接。 
+3.你应该会发现。比如在kde控制中心里选择字体的时候，你可以选择所有字体都是Tahoma,Vera sans什么的，我的gtkrc里写的也是一个英文字体，这样英文字体看起来很pp，而中文字体又是如何决定的呢？为什么我选择了英文字体而中文字体还能正常显示呢？这就是fontconfig的功劳，在我的fonts.config里有这么两段: 
+
+
+<!-- 
+Sans-serif faces 
+--> 
+<alias> 
+<family>Bitstream Vera Sans</family> 
+<family>Tahoma</family> 
+<family>Verdana</family> 
+<family>Arial</family> 
+<family>Helvetica</family> 
+<family>Nimbus Sans L</family> 
+<family>Luxi Sans</family> 
+<family>Kochi Gothic</family> 
+<family>AR PL KaitiM GB</family> 
+<family>AR PL KaitiM Big5</family> 
+<family>Baekmuk Dotum</family> 
+<family>SimSun</family> 
+<default><family>sans-serif</family></default> 
+</alias> 
+
+和 
+<alias> 
+<family>sans-serif</family> 
+<prefer> 
+<family>Bitstream Vera Sans</family> 
+<family>Tahoma</family> 
+<family>Verdana</family> 
+<family>Arial</family> 
+<family>Helvetica</family> 
+<family>Nimbus Sans L</family> 
+<family>Luxi Sans</family> 
+<family>Kochi Gothic</family> 
+<family>AR PL KaitiM GB</family> 
+<family>AR PL KaitiM Big5</family> 
+<family>Baekmuk Dotum</family> 
+<family>SimSun</family> 
+</prefer> 
+</alias> 
+
+
+这段告诉程序，遇到要显示sans-serif的字体，优先使用列表里在前面的字体，这里就是Bitstream Vera Sans,如果该字体不能显示需要的字符就继续在下面找，对于中文，就找到最后的SimSun(宋体)了。你如果想用其它默认的中文，就可以把你需要的中文字体摞在<family>SimSun</family>上面。就优先使用你要的字体了。 
+
+到此为止，其实汉化已经结束了，如果你觉得这个效果还不错，那就此打住吧。如果你觉得还有些不完美，如中文细节显示的还不是很好，那就可以求助于firefly的美化包 
+
+安装这些包就很简单了，我简要说一下这些包的功能。 
+fontconfig-2.2.1-i486-1.Firefly.tgz 会替换你现在的/etc/fonts/fonts.conf,加上了一些firefly修改的属性。 
+
+freetype-2.1.5-i486-1.Firefly.tgz xft-2.1.2-i486-1.Firefly.tgz 这两个是字体绘制的核心部分，装上他们可以使中文显示的更完美，具体的原理我就不懂了，呵呵，也没功夫去研究。 
+
+xfree86-4.3.0-i486-5.Firefly.tgz也能改善字体显示效果，我这里不装它，任务栏和标题栏的中文粗体显示不出来。如果你网络不是很好，这个包也挺大，你可以不装它，没什么大碍。 
+
+qt-3.2.1-i486-1.Firefly.tgz 这个包装不装无所谓，还挺大的.我觉得除了让你的qt程序选择字体的时候可以显示一个中文字体名(SimSun显示为"宋体")以外没什么更有价值的功能，可以不装。 
+
+
+以上几步都做完了，如果不出意外的话，你gtk2和qt程序显示的英文是又粗又黑的，看起来就像用了粗体一样。如果你觉得这样挺好那就罢了。如果你和我一样，觉得脏兮兮的很难看，可以在你的/etc/fonts/fons.conf上加上这么一段 
+
+
+<!-- 
+This expression is added by Akito Hirai<akito@kde.gr.jp> for convenience. 
+It can be used to make artificial bold versions in client libraries/applications. 
+--> 
+<match target="font"> 
+<test name="weight"> 
+<const>medium</const> 
+</test> 
+<test target="pattern" name="weight" compare="more"> 
+<const>medium</const> 
+</test> 
+<edit name="weight" mode="assign"> 
+<if> 
+<more> 
+<name>spacing</name> 
+<const>proportional</const> 
+</more> 
+<const>demibold</const> 
+<const>bold</const> 
+</if> 
+</edit> 
+</match> 
+<match target="font"> 
+<test name="pixelsize" compare="less_eq"> 
+<double>16</double> 
+</test> 
+<test name="pixelsize" compare="more_eq"> 
+<double>8</double> 
+</test> 
+<edit name="antialias" mode="assign"> 
+<bool>f</bool> 
+</edit> 
+</match> 
+
+
+这样一来，Tahoma，Verdana，等Windowz下几个主要的ttf字体效果就和Windows下没什么区别了。不过对于Bitstream Vera Sans来说似乎有点"少肉",但总体来说效果是不错的，请选择使用。 
+
+
+补充一点，对于GTK2的程序，一般也没有必要改/etc/fonts/fonts.conf 
+如英文用Tahoma,中文用SimSun 
+可以直接在/etc/gtk-2.0/gtkrc里改成 
+
+style "default" 
+{ 
+font_name="Tahoma,SimSun 9" 
+} 
+
+widget_class "*" style "default" 
+
+Stern des Südens
+
+　　 MySQL是一个广受Linux社区人们喜爱的半商业的数据库。 MySQL是可运行在大多数的Linux平台(i386，Sparc，etc)，以及少许非Linux甚至非Unix平台。 
+
+1、许可费用　 
+
+　　 MySQL的普及很大程度上源于它的宽松，除了略显不寻常的许可费用。MySQL的价格随平台和安装方式变化。MySQL的Windows版本（NT和 9X）在任何情况下都不免费，而任何Unix变种（包括Linux）的MySQL如果由用户自己或系统管理员而不是第三方安装则是免费的，第三方案庄则必须付许可费。 
+
+2、价格 
+
+平台 安装方式 价格 
+Windows NT,9X 任何 200美元 
+Unix或Linux 自行安装 免费 
+Unix或Linux 第三方安装 200美元 
+　 需要一个应用组件 200美元 
+
+　　 可以得到多种支持合同，内容太多不再罗列，最新报价可咨询MySQL站点。 
+
+3、安装 
+
+　　可以在MySQL站点上获得大多数主要的软件包格式（RPM、DBE、TGZ），客户端库和各种语言“包装”（Wrapper）可以分开的RPM格式获得。RPM格式的安装没有多大麻烦，并且无需初始配置。在rc3.d（以RedHat RPM为例）生成一个初始脚本，故MySQL守护进程在多用户模式下重启时被启动运行。MySQL的守护进程（mysqld）消耗很少的内存（在运行 RedHat 5.1的奔腾133上，每个守护进程使用500K内存和另外4M共享内存的开销）并在只有在执行真正的查询时才装载到处理器上，这意味着对小型数据库来说，MySQL可以相当轻松地使用而不会对其他系统功能有太大的影响。 
+
+4、数据类型 
+
+　　 字段支持大量数据类型是件好事。通常的整数、浮点数、字符串和数字均以多种长度表示，并支持变长的BLOB（Binary Large OBject）类型。对整数字段由自动增量选项，日期时间字段也能很好的表示。 
+
+　　 MySQL与大多数其他数据库系统不同的是提供两个相对不常用的字段类型：ENUM和SET。ENUM是一个枚举类型，非常类适于Pascal语言的枚举类型，它允许程序员看到类似于'red、'green'、'blue'的字段值，而MySQL只将这些值存储为一个字节。SET也是从Pascal借用的，它也是一个枚举类型，但一个单独字段一次可存储多个值，这种存储多个枚举值的能力也许不会给你一些印象（并可能威胁第三范式定义），但正确使用SET 和CONTAINS关键字可以省去很多表连接，能获得很好的性能提高。 
+
+5、SQL兼容性 
+
+　　 MySQL包含一些与SQL标准不同的转变，他们的大多数被设计成是对SQL语言脚本语言的不足的一种补偿。然而,另一些扩展确实使 MySQL与众不同，例如,LINK子句搜索是自动地忽略大小写的。MySQL 也允许用户自定义的SQL函数，换句话说，一个程序员可以编写一个函数然后集成到MySQL中，并且其表现的与任何基本函数如SUM()或AVG ()没有什么不同。函数必须被编译道一个共享库文件中(.so文件)，然后用一个LOAD FUNCTION命令装载。 
+
+　　它也缺乏一些常用的SQL功能，没有子选择(在查询中的查询)。视图(VIEw)也没了。当然大多数子查询可以用简单的连接(join)子句重写，但有时用两个嵌套的查询思考问题比一个大连接容易。同样，视图仅仅为程序员隐蔽where子句，但这正是程序员们期望的另一种便利。 
+
+6、存储过程和触发器 
+
+　　 MySQL没有一种存储过程(Stored Procedure)语言，这是对习惯于企业级数据库的程序员的最大限制。多语句SQL命令必须通过客户方代码来协调，这种情形是借助于相当健全的查询语言和赋予客户端锁定和解锁表的能力，这样才允许的多语句运行。 
+
+7、参考完整性（Referential Integrity-RI） 
+
+　　 MySQL的主要的缺陷之一是缺乏标准的RI机制；然而，MySQL的创造者也不是对其用户的愿望置若罔闻，并且提供了一些解决办法。其中之一是支持唯一索引。Rule限制的缺乏(在给钉字段域上的一种固定的范围限制)通过大量的数据类型来补偿。不简单地提供检查约束(一个字段相对于同一行的另一个字段的之值的限制)、外部关键字和经常与RI相关的“级联删除”功能。有趣的是，当不支持这些功能时，SQL分析器容忍这些语句的句法。这样做目的是易于移植数据库到MySQL中。这是一个很好的尝试，并且它确实未来支持该功能留下方便之门；然而,那些没有仔细阅读文档的的人可能误以为这些功能实际上是存在的。 
+
+7、安全性 
+
+　　自始至终我对MySQL最大的抱怨是其安全系统，它唯一的缺点是复杂而非标准，另外只有到调用mysqladmin来重读用户权限时才发生改变。通常的 SQL GRANT/REVOKE 语句到最近的版本才被支持，但是至少他们现在有了。 MySQL的编写者广泛地记载了其特定的安全性系统，但是它确实需要一条可能是别无它法的学习过程。 
+
+8、备份和恢复、数据导入/导出 
+
+　　 强制参考一致性的缺乏显著地简化备份和恢复，单靠数据导入/导出就可完美复制这一功能。LOAD DATA INFILE命令给了数据导入很大的灵活性。SELECT INTO命令实现了数据导出的相等功能。另外，既然MySQL不使用原始的分区，所有的数据库数据能用一个文件系统备份保存。数据库活动能被记载。与通常的数据库日志不同(存储记录变化或在记录映像之前/之后), MySQL记载实际的SQL语句。这允许数据库被恢复到失败前的那一点，但是不允许提交(commit)和回卷(rollback)操作. 
+
+
+9、连接性 
+　　 MySQL客户库是客户/服务器结构的C语言库，它意味着一个客户能查询驻留在另一台机器的一个数据库。然而MySQL真正的强项处于该库中的语言“包装器(wrapper)”， Perl、Pathon和PHP只是一部分。Apache的Web服务器也有许多模块例如目录存取文件等允许各种各样的Apache配置信息(例如目录存取文件)使用MySQL，应用程序接口简单、一致并且相但完整。另外、多平台ODBC驱动程序可自由获得。 
+
+10、未来 
+
+　　 MySQL的开发继续以快速进行着。事实上，开发步伐对大多数开放源代码是一种挑战。本文提到的几个抱怨中有很多新功能正在解决，然而，我将不对还没确实存在的特征做评价。开发者们向我表明了在未来的开发中把增加查询功能和提高查询速度作为最高优先级。 
+
+11、总结 
+　　 Mysql是数据库领域的中间派。它缺乏一个全功能数据库的大多数主要特征，但是又有比类似Xbase记录存储引擎更多的特征。它象企业级RDBMS那样需要一个积极的服务者守护程序，但是不能象他们那样消费资源。查询语言允许复杂的连接(join)查询，但是所有的参考完整必须由程序员强制保证。 
+
+　　 MySQL在Linux世界里找到一个位置－提供简洁和速度，同时仍然提供足够的功能使程序员高兴。数据库程序员将喜欢其查询功能和广泛的客户库，数据库管理员会觉得系统缺乏主要数据库功能，他们会发觉它对简单数据库(在不能保证购买大牌数据库时)是有价值的。
+
+
+许多老式的 X 程序，如 xterm，使用 X 资源数据库配置它们的外观。~/.Xresources 文件用于保存用户资源定义。登录后该文件自动合并到默认的 X 资源中。系统范围的缺省配置存储在 /etc/X11/Xresources/* 中，应用程序缺省的配置存储在 /etc/X11/app-defaults/*。使用这些设置作为学习的起点。 
+
+这儿是一些有用的设置，可加到~/.Xresources文件中： 
+
+! Set the font to a more readable 9x15
+XTerm*font: 9x15
+
+! Display a scrollbar
+XTerm*scrollBar: true
+
+! Set the size of the buffer to 1000 lines
+XTerm*saveLines: 1000
+
+! Large kterm screen
+KTerm*VT100*fontList: -*-fixed-medium-r-normal--24-*,\
+-*-gothic-medium-r-normal--24-*,\
+-*-mincho-medium-r-normal--24-*
+要使上述设置立即生效，可用下面的命令将它们合并到数据库： 
+
+xrdb -merge ~/.Xresources
+
+xrdb -load ~/.Xresources
+
+用户自己添加的 X 资源保存在 ~/.Xresources，而系统级的 X 资源保存于/etc/X11/Xresources/*。
+

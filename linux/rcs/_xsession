@@ -1,0 +1,11 @@
+#!/bin/sh
+export LC_CTYPE="zh_CN.GBK"
+export XMODIFIERS=@im=SCIM
+export GTK_IM_MODULE=scim
+export QT_IM_MODULE=scim
+scim -d
+xsetroot -solid '#333333'
+xrdb -merge "$HOME/.Xdefaults"
+exec ion2 -i18n
+#exec twm
+

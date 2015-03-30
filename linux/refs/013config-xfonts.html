@@ -1,0 +1,133 @@
+<HTML>
+<HEAD>
+<TITLE>X字体配置的小心得</TITLE>
+</HEAD>
+<BODY>
+
+<H1>X字体配置的小心得</H1>
+<P>
+想当初Redhat 7-8-9的时代，汉化美化文章满天飞，但最终结果实在是不满意，基本是费了很大功夫，最后还是不一定能用。但在那个时代之后，字体技术也是突飞猛进，到现在已经很简单了，所以脑子里记下的东西反而更少。 </P>
+<P>
+先是X的核心字体，老辈子的技术，目前多数X程序都已经不再使用，但还有个xmms，还有一些终端仿真程序，像rxvt一类还在使用。对这种字体的要求是只要有，也就可以了。 </P>
+<P>
+核心字体可以用xlsfonts来查看，西文的不说，加上 |grep gb2312来查看gb码的字体，形式是：
+<PRE>
+-misc-simsun-medium-r-normal--0-0-0-0-c-0-gb2312.1980-0
+</PRE>
+至于它是什么意思已经完全不重要了，以前这些是相当地重要，还要改一些参数以便有斜体，粗体等。现在只要看到simsun的名字，以及后面gb2312-1980-0这个编码就行了，表示有这个字体，支持这种编码，一切OK。如果要看unicode编码，它这里用的是iso10646。
+</P>
+<P>
+这种字体的配置是首先把字体放到字体目录下，如/usr/share/fonts下面建个zhfonts目录就行。放后字体文件，然后在这个目录下执行ttmkfdir，或者mkfontdir，它们有什么区别不清楚，总这会在字体目录下生成fonts.dir/fonts.scale这两个文件之一，然后拷贝成另外一个即可。这两个文件里面第一行是行数，下面前面是字体文件，后面是核心字体名，一个文件可能对应多个字体名。这里的工作就结束了。如果没有那两个程序，就装一下xfonts-utils这个或其他什么包吧，Debian直接搜就出来了。
+</P>
+<P>
+然后是新的字体技术，一般说是xft，支持这个就是使用这种技术的了。有xft/freetype/pango/fontconfig等几种不同的技术，依稀记得说是pango管布局，freetype管画线，xft是编程的，fontconfig是配置管理的（不对请指出啊）。这都完全不重要了，知道名字就行。 </P>
+<P>
+这个新技术是更加简单的。在字体目录下放好字体文件，执行：
+<PRE>
+fc-cache -v -f
+</PRE>
+就可以看到系统一个个目录地过滤这些字体，找出其中能用的，无须重启，然后在应用程序的配置中就可以看到并使用这些字体了。 </P>
+
+<P>
+X需要知道字体目录在哪里，这个在/etc/fonts下面设置，文件有两个，fonts.conf和local.conf，前一个是系统的，推荐不修改，有时候升级系统时还要替换成新的，某次就是这个文件在升级时没有替换，造成了一些问题。自己改的东西可以放在locla.conf里面，这个方法应该没有问题。当然也可以在用户目录下建一个.fonts.conf。 </P>
+
+<P>
+这两个文件开头就是dir的设置，一行一个，用&lt; dir &gt;标签包上即可，把自己的目录加进去即可。我观察似乎这些目录是可以自动包含子目录的。 </P>
+
+<P>
+在fonts.conf文件（或者local.conf或者~/.fonts.conf）中，一个比较重要的工作就是指定字体的查找顺序，也就是程序在需要字体时按一个什么的顺序来过滤这些字体文件。一般前面放几个西文字体，紧接自己最想用的中文字体。比如：
+<PRE>
+ 1 
+ 2         &lt;alias&gt;
+ 3                 &lt;family&gt;sans&lt;/family&gt;
+ 4                 &lt;prefer&gt;
+ 5                         &lt;family&gt;Bitstream Vera Sans&lt;/family&gt;
+ 6                         &lt;family&gt;Arial&lt;/family&gt;
+ 7                         &lt;family&gt;SimSun&lt;/family&gt;
+ 8                         &lt;family&gt;WenQuanYi Bitmap Song&lt;/family&gt;
+ 9                 &lt;/prefer&gt;
+10         &lt;/alias&gt;
+11 
+</PRE> </P>
+
+<P>这里的Prefer就指定了当遇到sans字体时按Bitstream/arial/simsun/wqy这个顺序来找，如果是英文就用bitstream，如果是中文的，优先就是simsun了。用同样的方法指定Serif和Mono字体。这些文件都是xml，看意思其实也算是很明白的。</P>
+<P>
+这个Sans，据说是法文，意思是without，它全称是sans-serif；而这个serif一般称为有衬线的，有修饰的，其实就是西文字体在笔划终端处的突出的尖。这个的来历是在石头上刻字时进刀或出刀的地方，久之形成了风格。而Sans自然就是没这个装饰的字体，这算是字体的两大流派。一般咱们的宋体，对岸及日本称为明体的，也带这个装饰。但刻石时完成可以用其他刀法来避免这个尖的出现。</P>
+
+<P>
+一般认为屏幕上Sans，也就是圆头圆脑的字体比较好，而印刷时有衬线比较好。而Mono类，就是等宽字体，一般编程时用，这种字体每个字母都占同样的宽度，w和l完全一样宽，而一个中文正好是两个字母宽。当然编程还有其他要求，比如LlIi1/Oo0这些都要能清楚地分辨。 </P>
+
+<P>
+Linux这里有两套自由字体，Bitstream和DeJavu，样子基本一致，据说de系字符要多一些，推荐使用这两个。下面的fonts.conf语法可以把这个字体指定到sans上：
+<PRE>
+ 1 
+ 2     &lt;match target="pattern" &gt;
+ 3         &lt;test name="family" qual="any" &gt;
+ 4             &lt;string&gt;sans&lt;/string&gt;
+ 5         &lt;/test&gt;
+ 6         &lt;edit mode="append" binding="strong" name="family" &gt;
+ 7             &lt;string&gt;DejaVu Sans&lt;/string&gt;
+ 8         &lt;/edit&gt;
+ 9     &lt;/match&gt;
+10 
+</PRE>
+这里的字体是XFT字体，用名字就可以了。可以用fc-list命令来查看系统上有哪些xft字体。
+</P>
+
+<P>
+另外一个语法是粗体：
+<PRE>
+ 1 
+ 2     &lt;match target="font"&gt;
+ 3         &lt;!-- check to see if the font is just regular --&gt;
+ 4         &lt;test name="weight" compare="less_eq"&gt;
+ 5             &lt;int&gt;100&lt;/int&gt;
+ 6         &lt;/test&gt;
+ 7         &lt;!-- check to see if the pattern requests bold --&gt;
+ 8         &lt;test target="pattern" name="weight" compare="more_eq"&gt;
+ 9             &lt;int&gt;180&lt;/int&gt;
+10         &lt;/test&gt;
+11         &lt;edit name="embolden" mode="assign"&gt;
+12             &lt;bool&gt;true&lt;/bool&gt;
+13         &lt;/edit&gt;
+14     &lt;/match&gt;
+15 
+</PRE>
+</P>
+
+<P> 这一段其实在标准的fonts.conf里面就有，但Debian下缺少会设成200，于是网页上的粗体就显示不出来，所以才要自己再设成180。其实在印刷上中文没有粗体这个说法，也没有斜体，在西文用粗体的地方中文一般用黑体，在用斜体的地方中文可用楷体或仿宋体，正文一般是宋体。 </P>
+
+<P>
+还有一段是关闭中文小字号的AA，也就是防锯齿，就是显得虚的那种，总之是小字号时点阵比较清楚漂亮些。
+<PRE>
+ 1 
+ 2     &lt;match target="font"&gt;
+ 3         &lt;test compare="contains" name="lang"&gt;
+ 4             &lt;string&gt;zh-cn&lt;/string&gt;
+ 5             &lt;string&gt;zh-tw&lt;/string&gt;
+ 6         &lt;/test&gt;
+ 7         &lt;test compare="more_eq" name="pixelsize" qual="any"&gt;
+ 8             &lt;double&gt;11&lt;/double&gt;
+ 9         &lt;/test&gt;
+10         &lt;test compare="less_eq" name="pixelsize" qual="any"&gt;
+11             &lt;double&gt;15&lt;/double&gt;
+12         &lt;/test&gt;
+13         &lt;edit mode="assign" name="antialias"&gt;
+14             &lt;bool&gt;false&lt;/bool&gt;
+15         &lt;/edit&gt;
+16     &lt;/match&gt;
+17 
+</PRE>
+</P>
+
+<P>
+中间指定的11-15点，这个依各人喜好设置。我记得Win2k上中文直到18点都不开AA，其实很不好看。simsun好看的原因之一也就是它内置了比较全比较多的点阵字体，WenQuanYi也是这样，效果也不错。这个关闭AA也可以针对字体来设置，而不是语言。 </P>
+
+<P> 还有英文用了和中文一样的宽度等问题，都可以在fonts.conf里面设置，这个就不说了。 </P>
+
+<P>
+最后是应用程序的设置，通常xft程序都带有字体设置，指定某个字体给它用就是了，一般可以指定一个好看的西文字体，然后中文就会按fons.conf里的顺序来自动查找。桌面上的窗口用的字体一般也有设置，Gnome/xfce都有，可以指定一下。Firefox的字体设置要分中文和西文。而gvim的设置是写在.gvimrc里的，可以命令模式下用set guifont?来查看。
+</P>
+
+</BODY>
+</HTML>

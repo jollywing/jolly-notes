@@ -1,0 +1,73 @@
+Developing Android Apps without EclipseAndroid Developement without Eclipse! 
+
+For those who find eclipse a beast to work with, I'm writing this article on how I develope android apps with just a text editor. This article applies to developing in the Windows OS. First you need a good text editor. I recomend TextPad, http://www.textpad.com/. Then you'll need to download the android SDK from http://developer.android.com/sdk/index.html. Here is instructions on installing the android SDK, http://developer.android.com/sdk/installing.html, just leave out any parts about setting up eclipse. You'll also need ANT, http://ant.apache.org/bindownload.cgi, and the java sdk http://java.sun.com/javase/downloads/index.jsp. After you've installed java, android, and ant you'll need to set a few environment variables. Right click on My Computer icon and select properties. Click on the advanced properties tab and then click the environment variables button. Select the Path environment variable under system variables and click edit. Add the tools folder of android from where you installed it. Example, if you installed android to c:\android then add c:\android\tools to the path variable. Seperate each new folder you add to the path by a semi-colon. Add the java bin folder to the path. For example if you installed the jdk to c:\Program Files\Java\jdk1.6.0_20 then add this to your path, c:\Program Files\java\jdk1.60.0_20\bin. Also add the bin folder of ant to your path. If you installed ant to c:\ant then add c:\ant\bin to your path. 
+
+Next you'll need to make a project. Open the command prompt and type: 
+
+android create project \ --target <target_ID> \ --name <your_project_name> \ --path /path/to/your/project \ --activity <your_activity_name> \ --package <your_package_namespace> 
+
+See more instructions here: http://developer.android.com/guide/developing/other-ide.html 
+
+Once you've programmed your app with your text editor you'll want to compile it. You can make a batch file that will compile the current project your working on. Edit a text file and put this in it: First you'll need to change directory to your projects directory. I put my projects in c:\android\projects\myApp 
+
+So I would put in the batch file: 
+
+cd\android\projects\myApp 
+
+Then you need to put the command to compile the project: 
+
+ant -debug 
+
+Then save the batch file as compile.bat Whenever you want to compile your project just click the compile.bat file. 
+
+This is all you need to do to compile your app. Since I use TextPad there is an easier way to do this than making a batch file. In TextPad click on tools, then run: 
+
+In the command textbox type: ant 
+
+In the parameters textbox type: debug 
+
+In the initial folder box type: the directory of your project, example: c:\android\projects\myApp 
+
+The run options will stay set until you change them. Then whenever you want to compile your app, just save the source code your editing, then go to tools, and run. 
+
+Next we want to run our app in the emulator. First you'll have to make a avd for the emulator, see the instructions here: http://developer.android.com/guide/developing/tools/avd.html. The avd is just a instance of the emulator you want, you can set the android version and other options when making the avd. I set it to the minimal android platform and the options I want for the target device I'm making the app for. Next make a batch file to open the emulator: Edit a text file and enter this: 
+
+emulator @yourAVDname 
+
+where @yourAVDname is the name you choose when you created your avd. 
+
+Save this as emulator.bat 
+
+Now whenever you want to start the emulator just click the emulator.bat file. 
+
+Next you want to install your app on the emulator. We'll make a batch file for this as well. Open a text file and enter: 
+
+adb install c:\android\projects\myApp\bin\myApp-debug.apk 
+
+Where c:\android\projects\myApp\bin is the folder for your app, and myApp-debug.apk is the debug compiled apk file for your app. Save it as install.bat 
+
+Now click install.bat with the emulator running and you will see the icon for your app under the programs icons. Whenever you compile a new version and want to install it on the emulator again, you will first have to unistall the old version. You can make a batch file to do this also: Open a text document and enter: 
+
+adb uninstall com.myApp 
+
+where com.myApp is the package name you chose when creating your project. Save the file as uninstall.bat. 
+
+I keep the emulator.bat, install.bat, and uninstall.bat files on my desktop. I edit my source code with TextPad when I'm ready to compile and test a new version. I go to tools -> run in TextPad. Then I click the emulator.bat on the desktop. Then the uninstall.bat on the destktop. Then the install.bat on the desktop. 
+
+When you want to compile your app for release to the market: First you'll need a keystore. See here for instructions on creating your own keystore: http://developer.android.com/guide/publishing/app-signing.html Once you have a keystore, you'll want to compile for release. Change the option in textpad under tools -> run -> options from debug, to release or change your compile.bat file to: 
+
+ant -release 
+
+Next you edit a new text file and enter this: 
+
+(we need to sign the apk with our keystore) 
+
+jarsigner -keystore c:\folderforyourkeystore\myKeystore.keystore c:\android\projects\myApp\bin\myApp-unsigned.apk myAlias 
+
+(Next you need to zip align the package) 
+
+zipalign -v 4 c:\android\projects\myApp\bin\myApp-unsigned.apk c:\android\projects\myApp\bin\myAppRelease.apk 
+
+where folderforyourkeystore is where you have saved your keystore to and myKeystore.keystore is the name of your keystore file. c:\android\projects\myApp\bin\ is your project directory for your app and myAlias is the alias you used when making your keystore. Always use -v 4 option in the zipalign command. 
+
+Save the file as release.bat. When you run release.bat it will create myAppRelease.apk signed and zipaligned for you. 

@@ -1,0 +1,43 @@
+﻿系统响铃是因为红帽企业LINUX默认安装并加载了pcspkr内核模块。
+
+出现响铃会有这几个地方： 
+控制台(CTRL+ALT+FN）， 
+虚拟终端(就是X里的gnome-terminal) 
+登录窗口 （输入用户和密码的gdm） 
+其它X程序（如gedit删掉所有内容后继续按退格键） 
+1. 关闭shell中的响铃
+整体关闭 vi /etc/inputrc
+添加 set bell-style=none
+关闭个人用户 vi ~/.inputrc
+添加 set bell-style=none
+
+2. 关闭vi中的响铃
+    vi /etc/vimrc   (vim)
+    vi /etc/virc    (vi)
+添加:
+set vb t_vb=
+
+3.
+登录进X后，在终端运行 
+xset -b
+X中所有程序不响了。控制台，登录界面依然响。这可条命令写进gdm登录后运行的脚本里，不过gdm还是会响的。如果写进“/etc/X11/xinit/xinitrc”末尾还是会响
+在菜单“系统”>>“首选项”>>“音效”，“音效”选项卡，取消勾选“播放报警声音”，其它X程序不响，虚拟终端响。 
+在菜单“系统”>>“系统管理”>>“登录窗口”，“辅助功能”选项卡，取消勾选“启用辅助功能登录”，登录窗口依然响，没任何效果。 
+4. 永久关闭系统的响铃
+要永久关闭系统响铃，可以在系统启动的时候把“rmmod pcspkr”命令放在/etc/rc.d/rc.local文件中：
+echo “rmmod pcspkr” >> /etc/rc.d/rc.local
+
+
+在X Window系统下，
+可以使用xset 命令为之，命令如下：xset b off (输入xset 回车后得到xset命令的选项)
+在gnome环境下，
+有个系统设置，记不清了，（很长时间没有用了）好像是有个选项关闭系统响铃，把前面的勾去掉就OK了。
+上边两个是自己摸索出来的。
+在console终端上怎样关闭响铃呢？
+原来系统响铃是由于，我们的应用程序想终端发出了一个0x7这个字符。终端收到这个字符后就会响铃，解决问题的方法已经出现了，对，就是不让我们的程序向终端发送这个字符。
+例如对于zsh 可以使用命令 "setopt nobeep nohistbeep nolistbeep"
+或者告诉我们的应用程序向终端发送其他字符，例如空字符等。这就涉及到两个文件terminfo或者termindo。这个没有试怎么弄。
+还有一种方法就是将PC喇叭的驱动模块去掉。使用的命令是 rmmod pcspkr 或者modprobe -r pcspkr还有就是使用expect，script或者screen，这些程序将我们的程序在虚拟的终端上运行，他们会将字符0x7解释成其他的字符。Gnu screen是最简单的方法，我们只要在~/.screenrc文件中添加 如下的两行内容：
+vbell on
+termcapinfo * vb=
+

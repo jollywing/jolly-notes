@@ -1,0 +1,471 @@
+OPENVPN安装手册
+by：http://blog.vfocus.net
+
+一、在网上下载openvpn的安装包http://openvpn.net/上下载openvpn的最新版，时至今 日是openvpn-2.0.9.tar.gz。
+
+    网上都说还需要lzo这个压缩库。这个包是压缩的，我没有安装，在编译程序的时候只需要加上--disable-lzo就可以了。然后再配置文件里面把这项注释掉就可以了，这样所有要安装的就是一个包openvpn-2.0.9.tar.gz。
+
+二、vpn服务端的网络结构
+
+    vpn服务端是有两个ip 其中eth0 172.16.6.79 提供vpn服务，由外部通过172.31.16.0/24 通过1194端口拨入，然后通过 eth1 192.168.253.79访问192.168.253.0/24去维护服务器
+
+三、安装openvpn
+
+tar zxvf openvpn-2.0.9.tar.gz 
+cd openvpn-2.0.9 
+./configure –prefix=/usr/local/openvpn –-disable-lzo 
+make;make install
+
+四、生成openvpn证书
+
+    1、cd openvpn-2.0.9/ easy-rsa/
+
+    vi vars
+
+    根据自己的情况设置
+
+根据自己的情况设置KEY_COUNTRY, KEY_PROVINCE, KEY_CITY, KEY_ORG, KEY_EMAIL,比如我的 
+export KEY_COUNTRY=CN 
+export KEY_PROVINCE=Beijing 
+export KEY_CITY=Beijing 
+export KEY_ORG=abc 
+export KEY_EMAIL=abc@123.com
+
+然后保存 
+. ./vars //注意两个点中间有空格 
+./clean-all 
+./build-ca 
+build-ca 命令使用openssl 命令生成certificate authority (CA) certificate 和密钥： 
+./build-ca 
+Generating a 1024 bit RSA private key 
+....++++++ 
+.......++++++ 
+writing new private key to 'ca.key' 
+----- 
+You are about to be asked to enter information that will be incorporated 
+into your certificate request. 
+What you are about to enter is what is called a Distinguished Name or a DN. 
+There are quite a few fields but you can leave some blank 
+For some fields there will be a default value, 
+If you enter '.', the field will be left blank. 
+----- 
+Country Name (2 letter code) [CN]: 
+State or Province Name (full name) [Beijing]: 
+Locality Name (eg, city) [Beijing]: 
+Organization Name (eg, company) [BUAA]: 
+Organizational Unit Name (eg, section) []: 
+Common Name (eg, your name or your server's hostname) []:zhang //这里随便输入即可
+
+    Email Address [zhangwenhao@wanmei.com]:
+
+    这些步骤一直按回车就可以了
+
+    2、为vpn server生成证书与密匙
+
+./build-key-server server 
+Common Name 处填server，其他默认，为上面编辑vars 文件时设置的值。"Sign the certificate? 
+[y/n]" 和"1 out of 1 certificate requests certified, commit? [y/n]"两处选y。
+
+    3、为vpn clients 生成证书与密匙
+
+./build-key client1 
+./build-key client2 
+./build-key client3 
+Common Name 处分别填client1 client2 client3，别的同vpn server 设置
+
+    4、生成diffie hellman 参数
+
+./build-dh
+
+现在生成了所需的文件。目录keys 下生成的文件中，ca.crt 是所有vpn 机器都需要的。vpn server 需要ca.crt ca.key dh1024.pem server.crt server.key，拷贝到vpn server 的/etc/openvpn目录。vpn client1 需要ca.crt ca.key lient1.crt client1.key，拷贝到vpn client1 的/etc/openvpn 目录。client2，client3 和client1 同，只是client1.crt 和client1.key 分别用client2 和client3 的对应文件。vpn client2 和vpn client3 也把对应的密钥文件拷贝到各自的/etc/openvpn 目录。
+
+五、配置server端与client端
+
+    1、server.conf 使用代码包目录sample-config-files 里的server.conf 修改即可。配置文件如下（）
+
+#################################################
+;local a.b.c.d 绑定的IP 地址，可以不填
+port 1194 绑定的端口
+proto tdp 选择udp 协议，也可用tcp
+# "dev tun" will create a routed IP tunnel,
+# "dev tap" will create an ethernet tunnel.
+;dev tap
+#使用tun 设备，路由IP 通道。FreeBSD 默认支持TUN/TAP 驱动。
+dev tun
+#下面4 处填上面为vpn server 生成的证书和密钥
+ca /etc/openvpn/ca.crt （如果启动的时候带了cd路径，则这里不需要绝对路径）
+
+cert /etc/openvpn/server.crt 
+key /etc/openvpn/server.key  # This file should be kept secret 
+dh /etc/openvpn/dh1024.pem
+
+#配置vpn 虚拟网段，会在vpn server 建立一条10.0.0.1 >10.0.0.2 的点对点虚拟链路。
+server 10.8.0.0 255.255.255.0
+#记录client 对应得虚拟地址，默认600 秒更新一次
+ifconfig-pool-persist ipp.txt
+#等价于ping 10 和ping-restart 120，对于vpn 机器有可能断开外网联线或者重起的，
+#或者vpn client 先于vpn server 运行的情况下很重要。Client 会重新连接。
+keepalive 10 120
+#开启压缩支持。如果编译的时候没有使用LZO 库则注释本行
+#comp-lzo
+#初始化完成后改变OpenVPN 进程的用户ID 为nobody
+user nobody
+#同上，改变进程的组ID 为nobody。如果是Windows 系统，注释掉这两行
+group nobody
+persist-key
+persist-tun
+#默认每分钟更新状态文件，可以看到client 的真实IP 虚拟IP 等信息。
+status openvpn-status.log
+verb 3
+
+    2、client端
+
+client1.conf 使用源代码包目录sample-config-files 里的client.conf 修改即可
+
+client
+dev tun
+proto tcp #和server.conf 一致即可
+remote 172.16.6.79 1194 #指定vpn server 的IP 地址和端口
+resolv-retry infinite #如果解析vpn server 失败则无限次重试
+nobind
+user nobody
+group nobody
+persist-key
+persist-tun
+ca ca.crt
+cert client1.crt #这2 行填给client1 生成的密钥文件。client2 client3 相应更改。
+key client1.key
+#comp-lzo
+keepalive 10 120
+
+如果有其他的客户端需要连过来  也采取同样的配置
+
+    3、分配client端的联入地址
+
+给server.confi添加如下行： 
+client-config-dir ccd
+并在vpn server 的/etc/openvpn 目录建立ccd 子目录，并在ccd 目录下建立文件client1，client2，client3（这里的文件名对应”为vpn clients 产生证书和密钥”步骤里的Common Name），当对应得client 连接时，vpn server 会读去对应文件里的配置信息。文件client1 里输入： 
+ifconfig-push 10.8.0.5 10.8.0.6，即给vpn client1 指定10.8.0.5,对端10.8.0.6 的虚拟链路。
+
+如果有其他的客户端也同样处理，如
+
+client2 内容：ifconfig-push 10.8.0.9 10.8.0.10
+client3 内容：ifconfig-push 10.8.0.13 10.8.0.14
+
+分别拷贝server.conf，client1.conf，client2.conf，client3.conf 到vpn server 和对应的client。
+
+    4、启动vpn
+
+分别在各个vpn 计算机启动vpn server 和vpn client
+
+启动server的时候用 守护进程启动
+
+./openvpn –daemon –config /etc/openvpn/server.conf
+
+启动client的时候 用client的配置文件
+
+./openvpn –daemon –config /etc/openvpn/client.conf
+
+查看端口1194端口是否起来，如果两个都起来则查看ifconfig 看vpn网卡是否起来
+
+到这一步，VPN 客户端和服务端可以相互通讯了。10.8.0.1 应该可以ping 通10.8.0.5，10.8.0.9，10.8.0.13。10.8.0.5，10.8.0.9，10.8.0.13 也可以ping 通10.8.0.1
+
+但是此时还仅仅是vpn 客户端与服务器可以通，但此时，vpn的客户端还不能访问服务器端同网段内机器
+
+    5、 vpn client 访问vpn server 所在172.16.6.0/24 网段内计算机
+
+第一种方法，添加如下行到server.conf 
+push "route 172.16.6.0 255.255.255.0"
+push 选项是把选项内容给连接的vpn 客户端执行，也就是在vpn 客户端执行“route 172.16.6.0 255.255.255.0”，即当client 连接时，添加路由到client 的路由表里。对于vpn client1，该选项相当于在vpn client1 的路由表里添加到网络172.16.6.0/24，下一跳为10.8.0.6的路由，这里10.8.0.6 为给vpn client1 分配的虚拟IP 对的服务器端IP，相当于路由到vpn server。
+
+第二种方法，如果不改变server.conf，在vpn client1 里route add –net 172.16.6.0 10.8.0.6 255.255.255.0 效果一样，也可route add –net 172.16.6.0 10.8.0.1 255.255.255.0 直接路由到vpn server 的本端IP 也可，但这样需要在所有的vpn 客户端改变路由表。
+
+这样在vpn 客户端可以ping 通172.16.6.0/24 网段内部计算机了。到此，vpn客户端可以访问服务端同网段的服务器了。
+
+    6、总结 
+在vpn server 的/etc/rc.local 文件添加如下行： 
+/usr/local/openvpn/openvpn –daemon --config /etc/openvpn/server.conf --cd /etc/openvpn/ 
+在vpn client1 的/etc/rc.local 文件添加如下行： 
+/usr/local/openvpn/openvpn –daemon --config /etc/openvpn/client1.conf --cd /etc/openvpn/
+
+这样完成了所有的配置。下面总结如下： 
+vpn server 的目录/etc/openvpn 下有文件ca.crt，ca.key，dh1024.pem，server.crt，server.key和server.conf 以及子目录ccd。/etc/openvpn/ccd 目录下有文件client1，client2 和client3。
+
+/etc/openvpn/server.conf 内容如下： 
+;local a.b.c.d
+port 1194
+proto tcp
+dev tun
+ca ca.crt
+cert server.crt
+key server.key # This file should be kept secret
+dh dh1024.pem
+server 10.8.0.0 255.255.255.0
+ifconfig-pool-persist ipp.txt
+keepalive 10 120
+comp-lzo
+user nobody
+group nobody
+persist-key
+persist-tun
+status openvpn-status.log
+verb 3
+client-config-dir ccd
+#使vpn clients 能访问vpn server 内部网段计算机
+push "route 172.16.6.0 255.255.255.0"
+#route 172.31.13.0 255.255.255.0 #使vpn server 能访问中文网计算机
+
+/etc/openvpn/ccd/client1 内容如下：
+ifconfig-push 10.8.0.5 10.8.0.6
+iroute 172.31.13.0 255.255.255.0
+
+vpn client1 的目录/etc/openvpn 下有文件ca.crt，ca.key client1.crt，client1.key 和client1.conf。 
+/etc/openvpn/client1.conf 内容如下： 
+##############################################
+# Sample client-side OpenVPN 2.0 config file #
+# for connecting to multi-client server. #
+##############################################
+client
+dev tun
+proto udp
+remote 172.16.6.79 1194
+resolv-retry infinite
+nobind
+user nobody
+group nobody
+persist-key
+persist-tun
+ca ca.crt
+cert client1.crt
+key client1.key
+comp-lzo
+verb 3
+keepalive 10 120
+
+
+本博原创，如转载请注明出处：http://blog.vfocus.net，谢谢。 
+
+本文的引用网址:
+http://www.vfocus.net/blog/mt-tb.cgi/345 
+
+Posted by vitter at November 14, 2008 03:10 PM | 引用 
+评论
+server要加默认路由个client
+push "route 10.8.0.1"
+push "redirect-gateway def1"
+;log-append openvpn.log不记录log
+内核要有iptable_nat和tun模块，分别是iptables转发和openvpn要用到的
+转发：iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
+sysctl -w net.ipv4.ip_forward=1
+Posted by: vitter at March 24, 2010 02:31 PM
+
+本文中介绍了 OpenVPN 的基本的安装与配置过程。要了解更多信息，请访问官方网站 HOWTO 以及 Manual.
+Contents [hide] 
+1 安装
+2 准备证书和密钥数据
+3 配置服务器
+3.1 复制默认服务器配置文件
+3.2 使用 PAM 和密码认证
+3.3 使用证书认证
+3.4 通过服务器路由
+4 客户端配置
+4.1 使用密码认证
+4.2 证书验证
+4.3 DNS
+5 连接到服务器
+安装
+
+安装位于官方软件源的 OpenVPN。
+软件包同时包含服务器和客户端软件，所以在需要在所有需要创建 vpn 连接的机器上安装。你可以选择从 AUR 安装 openvpn-authldap-plugin。
+本文档使用 easy-rsa 脚本以简化认证和密钥生成，通过如下方式安装：
+# cp -r /usr/share/openvpn/easy-rsa /etc/openvpn
+# cd /etc/openvpn/easy-rsa
+准备证书和密钥数据
+
+现在需要创建需要的证书和密钥，可以在任何机器上完成，即使没有联网以可以进行。 设置生成证书和密钥生成脚本的默认值。编辑 /etc/openvpn/easy-rsa/vars，设置 KEY_COUNTRY, KEY_PROVINCE, KEY_CITY, KEY_ORG 和 KEY_EMAIL 参数(不要留空任何参数)，然后导出环境变量。
+# source ./vars
+清理之前的密钥：
+# ./clean-all
+build-ca 脚本创建了 certificate authority (CA) ca.key，密钥认证机器需要这个密钥。服务器和客户端需要 ca.crt 证书。
+# ./build-ca
+build-key-server 为服务器创建一个证书和密钥对。使用中不要输入简单的密码或公司名。
+# ./build-key-server <server-name>
+build-dh 脚本创建服务器需要的 Diffie-Hellman pem 文件。
+# ./build-dh
+build-key 脚本创建客户端证书和密钥对。可以生成任意多个以给不同的客户端使用。只要保证客户端名 <client> 是唯一的。如果要用密码认证客户端，请使用 build-key-pass 脚本。
+# ./build-key <client1>
+# ./build-key <client2>
+生成的文件都保存在 /etc/openvpn/easy-rsa/keys。如果有错误，可以通过运行 clean-all 脚本，然后从头开始。注意这将删除之前生成的证书和密钥。
+# ./clean-all
+最后一步是将所有需要的文件通过安全通道放到正确的机器上。ca.crt 需要放到所有服务器和客户端。server.crt, server.key 和 dh{n}.pem 文件放到服务器， client.crt 和 client.key 文件放到客户端。
+配置服务器
+
+复制默认服务器配置文件
+# cp /usr/share/openvpn/examples/server.conf /etc/openvpn/openvpn.conf
+使用 PAM 和密码认证
+port 1194
+proto udp
+dev tap
+ca /etc/openvpn/easy-rsa/keys/ca.crt
+cert /etc/openvpn/easy-rsa/keys/<MYSERVER>.crt
+key /etc/openvpn/easy-rsa/keys/<MYSERVER>.key
+dh /etc/openvpn/easy-rsa/keys/dh1024.pem
+server 192.168.56.0 255.255.255.0
+ifconfig-pool-persist ipp.txt
+;learn-address ./script
+client-to-client
+;duplicate-cn
+keepalive 10 120
+;tls-auth ta.key 0
+comp-lzo
+;max-clients 100
+;user nobody
+;group nobody
+persist-key
+persist-tun
+status /var/log/openvpn-status.log
+verb 3
+client-cert-not-required
+username-as-common-name
+plugin /usr/lib/openvpn/openvpn-auth-pam.so login
+使用证书认证
+port 1194
+proto tcp
+dev tun0
+
+ca /etc/openvpn/easy-rsa/keys/ca.crt
+cert /etc/openvpn/easy-rsa/keys/<MYSERVER>.crt
+key /etc/openvpn/easy-rsa/keys/<MYSERVER>.key
+dh /etc/openvpn/easy-rsa/keys/dh1024.pem
+
+server 10.8.0.0 255.255.255.0
+ifconfig-pool-persist ipp.txt
+keepalive 10 120
+comp-lzo
+user nobody
+group nobody
+persist-key
+persist-tun
+status /var/log/openvpn-status.log
+verb 3
+
+log-append /var/log/openvpn
+status /tmp/vpn.status 10
+通过服务器路由
+将下面内容写入服务器的 openvpn.conf 配置文件，"192.168.1.1" 修改为外部 DNS IP 地址。
+push "dhcp-option DNS 192.168.1.1"
+push "redirect-gateway def1"
+使用 iptable 进行 NAT 转发：
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
+如果运行在 OpenVZ VPS 环境，参见 [1]:
+iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o venet0 -j SNAT --to (venet0 ip)
+如果一切正常，保存修改，编辑 /etc/conf.d/iptables 设置 IPTABLES_FORWARD=1
+/etc/rc.d/iptables save
+客户端配置
+
+配置客户端的 .conf 文件
+使用密码认证
+client
+dev tap
+proto udp
+remote <address> 1194
+resolv-retry infinite
+nobind
+persist-tun
+comp-lzo
+verb 3
+auth-user-pass passwd
+ca ca.crt
+被 auth-user-pass 引用的 passwd 文件必须包含如下两行:
+第一行 - username
+第二行 - password
+证书验证
+client
+remote <MYSERVER> 1194
+dev tun0
+proto tcp
+resolv-retry infinite
+nobind
+persist-key
+persist-tun
+verb 2
+ca ca.crt
+cert client1.crt
+key client1.key
+comp-lzo
+将ca.crt, client1.crt 和 client1.key复制到远程计算机：
+安装隧道模块:
+ # sudo modprobe tun
+要让 tun 模块自动启动，请将其加入 /etc/rc.conf 的 Modules 行。
+DNS
+系统使用的 DNS 服务器定义在/etc/resolv.conf。通常此文件由控制系统网络的模块(Wicd, NetworkManager 等)维护。然而，如果希望通过远程服务器解析地址，OpenVPN 需要修改这个文件。
+安装 openresolv软件包，它可以实现多个程序互不影响的修改 resolv.conf。安装后通过重启网络连接，保证 resolv.conf 是由 "resolvconf" 创建而且 DNS 解析工作正常。openresolv 不需要配置，它会自动检测和使用网络系统。
+然后将如下脚本保存到/usr/share/openvpn/update-resolv-conf:
+#!/bin/bash
+#
+# Parses DHCP options from openvpn to update resolv.conf
+# To use set as 'up' and 'down' script in your openvpn *.conf:
+# up /etc/openvpn/update-resolv-conf
+# down /etc/openvpn/update-resolv-conf
+#
+# Used snippets of resolvconf script by Thomas Hood <jdthood@yahoo.co.uk>
+# and Chris Hanson
+# Licensed under the GNU GPL.  See /usr/share/common-licenses/GPL.
+#
+# 05/2006 chlauber@bnc.ch
+#
+# Example envs set from openvpn:
+# foreign_option_1='dhcp-option DNS 193.43.27.132'
+# foreign_option_2='dhcp-option DNS 193.43.27.133'
+# foreign_option_3='dhcp-option DOMAIN be.bnc.ch'
+
+[ -x /usr/sbin/resolvconf ] || exit 0
+
+case $script_type in
+
+up)
+   for optionname in ${!foreign_option_*} ; do
+      option="${!optionname}"
+      echo $option
+      part1=$(echo "$option" | cut -d " " -f 1)
+      if [ "$part1" == "dhcp-option" ] ; then
+         part2=$(echo "$option" | cut -d " " -f 2)
+         part3=$(echo "$option" | cut -d " " -f 3)
+         if [ "$part2" == "DNS" ] ; then
+            IF_DNS_NAMESERVERS="$IF_DNS_NAMESERVERS $part3"
+         fi
+         if [ "$part2" == "DOMAIN" ] ; then
+            IF_DNS_SEARCH="$part3"
+         fi
+      fi
+   done
+   R=""
+   if [ "$IF_DNS_SEARCH" ] ; then
+           R="${R}search $IF_DNS_SEARCH
+"
+   fi
+   for NS in $IF_DNS_NAMESERVERS ; do
+           R="${R}nameserver $NS
+"
+   done
+   echo -n "$R" | /usr/sbin/resolvconf -a "${dev}.inet"
+   ;;
+down)
+   /usr/sbin/resolvconf -d "${dev}.inet"
+   ;;
+esac
+设置脚本可执行属性：
+$ chmod +x /usr/share/openvpn/update-resolv-conf
+然后将下面内容加入 OpenVPN 客户端的配置文件：
+script-security 2
+up /usr/share/openvpn/update-resolv-conf
+down /usr/share/openvpn/update-resolv-conf
+现在再启动 OpenVPN 连接，就能发现 resolv.conf 文件已经更新，关闭连接后恢复正常。
+连接到服务器
+
+启动服务器上的服务
+/etc/rc.d/openvpn start
+可以加入 rc.conf 以开机自动启动。
+在客户端，在主目录创建保存 OpenVPN 客户端配置文件的文件夹，包含 .crt/.key 文件。假设使用的 OpenVPN 配置目录是.openvpn 客户端配置文件是 vpn1.conf,要连接服务器，执行如下命令：
+cd ~/.openvpn && sudo openvpn vpn1.conf

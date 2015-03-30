@@ -1,0 +1,47 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>gdb的基本使用</title>
+</head>
+
+<body>
+
+<h1>gdb的基本使用</h1>
+
+<p>用gdb调试程序要确保调试的程序带有调试信息，这要求在链接程序的时候加上"-G"的参数。用gdb executable启动调试，其中executable表示执行文件的名称。启动调试后，进入交互式对话，命令提示符变成(gdb)$，等待你输入调试命令。</p>
+<ol>
+	<li>你输入run或r，回车，程序将开始运行，如果有断点会在断点处停住。</li>
+	<li>输入break或b,后面跟行号，将会在当前文件指定行设置断点；b后面也可以跟函数名（如果是类的成员函数，需要类名::成员函数名），会在进入该函数后停住。</li>
+	<li>info break，将会列出所有断点的信息。d breaknumber，将删除指定编号的断点，如果d后面什么都不加，将删除所有断点。disable breaknumber，并不会删除断点，只会禁用断点，可以用enable breaknumber重新启用。如果disable(enable)后面什么都不跟，将禁用(启用)所有断点。</li>
+    <li>使用tbreak可以设置一个临时断点，该断点被激活一次后自动清除。</li>
+	<li>continue或c，将继续运行程序，直到下一个断点停住。</li>
+    <li>使用condition，可以控制程序在满足条件时才在断点处停下。如：
+    condition 1 variable=700.</li>
+    <li>watch是另一种设置断点的方式，如<code>watch
+    counter<15</code>,程序会在<code>counter>=15</code>后停下。在满
+    足条件时会不停输出counter的值。</li>
+	<li>step或s，单步执行，但不会进入函数。</li>
+	<li>next或n，下一条指令，如果遇到函数会进入。</li>
+	<li>si和ni，对应于step和next，只不过用于汇编指令。</li>
+	<li>p 变量名。查看指定的变量值。</li>
+	<li>还有，基本的一点，如果不输入命令直接回车，则重复执行上一条指令。</li>
+	<li>q，退出调试过程。</li>
+	<li>until或u，跳出循环。</li>
+	<li>在gdb下可以直接make或编译，然后输入r，重新运行程序。</li>
+    <li>用print监控变量值，用print还可以对变量进行赋值（改变变量的
+    值？），如：(gdb) print 变量=表达式。print还可以打印出一块连续
+    内存空间的内容，用法为 (gdb) print 开始表达式@连续空间的大小。
+    </li>
+    <li>用display命令可以监控变量值的变化情况。用法是：(gdb)
+    display 表达式。每当程序运行到断点处，就会显示该表达式的值。
+    </li>
+    <li>当程序崩溃时，可以用gdb查看core dump，从而知道程序在崩溃时
+    做了什么。前提是你这个程序编译时，要通过-g加了调试信息。用法如
+    下：<code>gdb a.out core</code>。</li>
+</ol>
+
+<p>gdb真的很好用，至少纯键盘操作调试速度就比gui下快。我上面讲的只是gdb的一点皮毛，精通了gdb真的很强大。关于gdb的教程，可以看陈皓的《用gdb调试程序》，写得真不错。我很喜欢看他的教程，还有《跟我一起写makefile》以及《编程修养》，深入浅出，比外面卖的一些拼凑的教程强上百倍。</p>
+
+<p align=right>2007-11-1</p>
+
+
+</body>

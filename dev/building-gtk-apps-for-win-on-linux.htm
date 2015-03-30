@@ -1,0 +1,485 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+     "http://www.w3.org/TR/REC-html40/loose.dtd"> 
+
+<HTML>
+<HEAD><TITLE>Building GTK apps for MS Windows on Linux</TITLE>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="http://ricardo.ecn.wfu.edu/~cottrell/styles/css3.html">
+<META name="description" 
+      content="Information about cross-compiling GTK-based
+               applications for win32, on Linux">
+<META name="keywords" 
+      content="linux, win32, gtk, build, cross">
+<META NAME="GENERATOR" CONTENT="GNU Emacs">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</HEAD>
+
+<body>
+
+<h1>Building GTK apps for MS Windows on Linux</h1>
+
+<h2>Contents</h2>
+
+<p>
+<a href="#crosscomp">Cross-compiler and binutils</a><br>
+<a href="#win32-api">Win32 API</a><br>
+<a href="#gtk-api">GTK API for win32</a><br>
+<a href="#pkgconfig">GTK pkgconfig files</a><br>
+<a href="#config-build">Configuring and building sources for win32</a><br>
+<a href="#dll-magic">DLL-building magic</a><br>
+<a href="#makefile">Simple makefile example</a><br>
+<a href="#runtime">GTK runtime files</a><br>
+<a href="#mo-files">Message catalogs</a><br>
+<a href="#installer">Creating a self-installing exe</a><br>
+</p>
+
+<h2>Introduction</h2>
+
+<p>The intended readership for this page is those who are already
+quite comfortable with building GTK-based software on Linux (who know
+their way around the various tools), and who wish to prepare win32
+versions of their programs without having to mess with that Other OS
+themselves.</p>
+
+<p>I don't have time at present to write a full, coherent HOWTO.  What
+you'll find here are various ideas, tips and examples in a fairly raw
+state.  They are based on my experience in cross-building for Windows
+my program <a href="http://gretl.sourceforge.net">gretl</a>.  If you
+want to take a look at a fairly large-scale example of a cross build,
+grab the gretl source package from sourceforge and poke around in the
+<kbd>win32</kbd> subdirectory of the source.</p>
+
+<p>Since some elements below may date fairly quickly, I should say
+that I'm writing this in early October, 2004.  I'm sure to have
+overlooked various details in these notes: if anyone spots missing
+stuff, please let me know and I'll update this page. If you find this
+page of interest, you might also want to take a look at my
+page on <a href="../gtk_win32/">using some native win32 stuff</a> in a
+GTK context.</p>
+
+<h2><a name="crosscomp">Cross-compiler and binutils</a></h2>
+
+<p>Your first requirement is a cross-compiler and an appropriate set of
+binutils (<kbd>as</kbd>, <kbd>ld</kbd> and friends).</p>
+
+<p>You can assemble these yourself or there is the option of
+grabbing a cross-compiler package (in binary or source form) from <a
+href="http://www.libsdl.org/extras/win32/cross/">libsdl.org</a>.</p>
+
+<p>If you take the put-it-together-yourself route (as I have done), I
+recommend starting your shopping at <a
+href="http://www.mingw.org/">mingw.org</a>.  Take a look at the mingw
+<a
+href="https://sourceforge.net/project/showfiles.php?group_id=2435">download
+area</a> and decide how adventurous you want to be ("Candidate"
+releases of various vintages or the "Current" release).  Download the
+source for selected releases of binutils and gcc.  I am currently
+using gcc version 3.4.0 and binutils version 2.15.90, and they work
+fine.</p>
+
+<p>Now you need to decide on a location for your cross system.  I put it
+in <kbd>/opt/cross-tools</kbd>.  Having chosen a place to install the
+tools, configure and make them.  I use these scripts:</p>
+
+<pre>
+#!/bin/sh
+cd binutils-whatever
+mkdir build
+cd build
+../configure --disable-nls --target=mingw32 \
+--prefix=/opt/cross-tools --disable-shared
+make  "CFLAGS=-O2 -fno-exceptions" "LDFLAGS=-s"
+make install
+</pre>
+
+<pre>
+#!/bin/sh
+cd gcc-whatever
+mkdir build
+cd build
+../configure --target=mingw32 --prefix=/opt/cross-tools --disable-nls \
+ --disable-shared --enable-languages=c,c++,f77 
+make CFLAGS="-O2 -fomit-frame-pointer" LDFLAGS=-s
+make install
+</pre>
+
+<p>You can probably throw away the documentation for these tools,
+since you'll already have it for the Linux versions:</p>
+
+<pre>
+rm -rf /opt/cross-tools/info /opt/cross-tools/man
+</pre>
+
+<p>or something like that.</p>
+
+<h2><a name="win32-api">Win32 API</a></h2>
+
+<p>To get any further you need to install the appropriate headers and
+import libraries to support the win32 API.  As of this writing, the package
+you want is
+<a
+href="http://prdownloads.sourceforge.net/mingw/w32api-3.1.tar.gz?download">w32api-3.1.tar.gz</a>
+(again, from mingw.org).  Untar the package in the appropriate place.
+For example if you've chosen <kbd>/opt/cross-tools</kbd> for your
+cross tools root, and you've configured gcc with a target of mingw32,
+your cross-gcc will be found in <kbd>/opt/cross-tools/mingw32</kbd>
+and you'd do, e.g.</p>
+
+<pre>
+cd /opt/cross-tools/mingw32
+tar xvfz w32api-3.1.tar.gz
+</pre>
+
+<h2><a name="gtk-api">GTK API for win32</a></h2>
+
+<p>It's a GTK app you're building, so you need all the appropriate
+headers and import libs.  You could (perhaps) build all that stuff
+yourself, but why bother when Tor Lillqvist has done the job for us?
+[If you do feel like trying this, check out the documentation for
+<a href="http://developer.gnome.org/doc/API/2.0/glib/glib-cross-compiling.html">Cross-compiling 
+the GLib package</a>.]</p>
+
+<p>Pick up all the current "dev" zipfiles (atk, glib, gtk, pango) from
+the GTK <a
+href="http://www.gtk.org/download/win32.php">download
+page</a>.  Tor also offers links to win32 versions of various GTK
+dependencies, such as libiconv, libpng, zlib and libxml2.  You'll want
+to grab these too.  In all cases you need the "dev" files, containing
+headers and the "import libraries" (*.a or *.lib) that are needed at
+compile time.  If you want to package and
+distribute a GTK runtime along with your app (making it
+self-contained), you'll also need to grab the corresponding "bin" or
+"runtime" packages.  These contain the dlls corresponding to the
+import libraries, along with various other runtime files (see
+<a href="#runtime">below</a> for details on this).</p>
+
+<p>I recommend unzipping the GTK and associated "dev" files using the
+same root as mentioned above for the win32 API.  That is, import libs
+go into <kbd>/opt/cross-tools/mingw32/lib</kbd> on my system, and
+headers are based at <kbd>/opt/cross-tools/mingw32/include</kbd>.
+
+<p><b>Note on import libraries</b>: You're likely to run across more
+than one variety of import library.  There are *.a libs, which work
+nicely with a cross gcc.  Tor's packages include these.  But some
+packages don't include *.a libraries, only Microsoft-style *.lib
+files.  These can be used OK with the utility
+<kbd>mingw32-dllwrap</kbd>, but not (so far as I can tell) directly
+with cross gcc.  On the other hand, you may find that if the .lib
+files don't work (linker errors) you can substitute the corresponding
+dlls and get linking to work.</p>
+
+<h2><a name="pkgconfig">GTK pkgconfig files</a></h2>
+
+<p>The pkgconfig files supplied with Tor's GTK "dev" packages are
+designed for use on Windows and have to be modified slightly for a
+cross build (so that they contain the correct prefix).  Here is a
+script that does the job (to be run in the relevant cross pkgconfig
+directory) :</p>
+
+<pre>
+#!/bin/sh
+
+TARGET=/opt/cross-tools/mingw32
+
+for f in *.pc ; do
+   if grep 'prefix=/target' $f >/dev/null 2>&1 ; then
+     cat $f | sed s+^prefix=/target+prefix=$TARGET+ > $f.tmp
+     mv $f.tmp $f
+   fi
+done  
+</pre>
+
+<h2><a name="config-build">Configuring and building sources for win32</a></h2>
+
+<p>For cross-building your own app, or for cross-building special
+dependencies (extra dlls), there are broadly two approaches:</p>
+
+<ol>
+  <li><p>Use the regular mechanism of <kbd>configure</kbd> scripts in
+  conjunction with <kbd>pkg-config</kbd>, but in cross mode.</p></li>
+  <li><p>Use hand-crafted Makefiles.</p></li>
+</ol>
+
+<p>The first option is preferable if it works OK.  Obviously you're
+going to need some environment variable magic to get anything working.
+Having experimented a bit, I now start by sourcing the following
+(<kbd>source cross.env</kbd>).</p>
+
+<pre>
+# cross.env
+PREFIX=/opt/cross-tools
+TARGET=mingw32
+export CC="mingw32-gcc -mms-bitfields"
+export CXX="mingw32-g++ -mms-bitfields"
+export CFLAGS="-O2 -march=i586 -mms-bitfields"
+export CXXFLAGS="-O2 -march=i586 -mms-bitfields"
+export PKG_CONFIG_PATH=$PREFIX/$TARGET/lib/pkgconfig
+export PATH=$PREFIX/bin:$PREFIX/$TARGET/bin:/bin:/usr/bin
+export LD_LIBRARY_PATH=$PREFIX/$TARGET/lib
+export LDFLAGS=-L$PREFIX/$TARGET/lib
+export OBJDUMP=$PREFIX/bin/mingw32-objdump
+export HOST_CC=/usr/bin/gcc
+</pre>
+
+<p><b>Note</b>: The <kbd>-mms-bitfields</kbd> flag is essential if you
+want your app to actually run on win32 (when using Tor Lillqvist's
+pre-built GTK runtime at any rate).</p>
+
+<p>In place of plain <kbd>configure</kbd> I use this script called
+<kbd>cross-configure</kbd>:</p>
+
+<pre>
+#!/bin/sh
+
+TARGET=mingw32
+cache=win32.cache
+sh configure --cache-file="$cache" \
+        --target=$TARGET --host=$TARGET --build=i686-linux \
+        --prefix=/opt/cross-tools/mingw32 $*
+status=$?
+rm -f "$cache"
+exit $status
+</pre>
+
+<p>With the environment set up correctly, <kbd>make</kbd> can be used
+as is (no fancy stuff required).</p>
+
+<p><b>Note</b>: An alternative to the above approach is to load all
+the required environment settings into your <kbd>cross-configure</kbd>
+script, and write a corresponding <kbd>cross-make</kbd> script that
+invokes <kbd>make</kbd> with the appropriate environment.  Advantage
+of this alternative: you don't need to "pollute" your working
+environment with all the cross-compilation settings, as happens when
+you <kbd>source cross.env</kbd>.  Disadvantage: it's easy to forget
+what you're doing and type <kbd>make</kbd> when you mean
+<kbd>cross-make</kbd>, which results in a big mess.</p>
+
+<p>Whichever variant of the "cross-configure" approach you employ, you
+may run into problems building dlls.  For some reason libtool (I'm
+currently using version 1.5.10) does not seem to want to make Windows
+dlls on Linux (I can get static libraries OK).  There are several
+"issues" here -- I'm gradually coming to understand them, but I don't
+have a sure fix at this point.  [<i>Update October 6, 2004</i>: Making
+a bit more progress -- details <a href="./libtool.html">here</a>.]</p>
+
+<p>In the meantime, I tend to resort the following&hellip; </p>
+
+<h2><a name="dll-magic">DLL-building magic</a></h2>
+
+<p>Here's a sample of a Makefile that "works for me" for
+cross-building dlls (this one makes a dll out of the Cephes library
+code for figuring probability-values).  If I get stuck using other
+methods I copy-n-paste from this and modify as needed.</p>
+
+<pre>
+CC = mingw32-gcc -Wall -O2 -mms-bitfields
+AS = mingw32-as
+DLLWRAP = mingw32-dllwrap
+
+CFLAGS = -I.
+
+PROBSRC = bdtr.c btdtr.c chdtr.c drand.c expx2.c fdtr.c gamma.c gdtr.c \
+	igam.c igami.c incbet.c incbi.c mtherr.c nbdtr.c ndtr.c ndtri.c \
+        pdtr.c stdtr.c unity.c polevl.c const.c
+
+PROBOBJ = $(PROBSRC:.c=.o)
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $<
+
+DLLWRAP_FLAGS = --as=$(AS) --export-all --driver-name $(CC) -s
+
+# build libprob.dll, and create a corresponding import library
+# libprob.a
+
+libprob.dll: $(PROBOBJ) 
+	$(DLLWRAP) $(DLLWRAP_FLAGS) \
+	--output-def libprob.def --implib libprob.a \
+	-o $@ $^ 
+</pre>
+
+<p>The routine is: make all the object files as usual, then package
+them into a dll using <kbd>mingw32-dllwrap</kbd>.  If you need
+additional libraries linked in, stick them onto the end of the dllwrap
+command, as in:
+
+<pre>
+libgretl.dll: $(LIBOBJ) $(MINOBJ) 
+        $(DLLWRAP) $(DLLWRAP_FLAGS) \
+        --output-def libgretl.def --implib libgretl.a \
+        -o $@ $^ -lf2c -lm -L$(imports) -lxml2 -lz -lintl -lprob -lgmp \
+        -lmingwex $(GLIBLIB) $(LAPACK_LIBS)
+</pre>
+
+<h2><a name="makefile">Simple makefile example</a></h2>
+
+<p>Here's an example of a complete cross-Makefile for a trivial GTK
+program.  Note the compiler flag <kbd>-mwindows</kbd>: this is
+required to produce a windows application as opposed to a win32
+console application (which automatically spawns a console when invoked
+via a menu or icon).</p>
+
+<pre>
+CC = mingw32-gcc -O2 -Wall -mms-bitfields -mwindows
+PKG_CONFIG_PATH = /opt/cross-tools/mingw32/lib/pkgconfig
+
+CFLAGS := $(shell PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
+          pkg-config --cflags gtk+-win32-2.0)
+LIBS := $(shell PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
+          pkg-config --libs gtk+-win32-2.0)
+
+foo.exe: foo.c
+        $(CC) -o $@ $(CFLAGS) $< $(LIBS)
+</pre>
+
+<h2><a name="runtime">GTK runtime files</a></h2>
+
+<p>By "GTK runtime files" I mean the set of DLLs, modules,
+configuration files and message catalogs that support the actual
+execution of a GTK program.</p>
+
+<p>When you distribute a GTK application for Linux, it's natural to
+assume that the GTK runtime will already be in place -- or if it's
+not, that the user will be able to install it easily from packages
+such as rpms or debs.  It's not your responsibility as an application
+developer to provide the basic runtime.</p>
+
+<p>On MS Windows, of course, GTK is not part of the basic kit and you
+face a choice:</p>
+
+<ul>
+  <li><p>Tell users that your package depends on the GTK runtime, and
+  point them towards a third-party package containing that
+  runtime.</p></li>
+  <li><p>Package with your app that portion of the GTK runtime that
+  the app requires, thereby making your package self-contained.</p></li>
+</ul>
+
+<p>If you decide on the first option you may want to take a look at
+the GTK installers offered by <a
+href="http://members.lycos.co.uk/alexv6/">Alex Shaduri</a> and <a
+href="http://www2.arnes.si/~sopjsimo/gimp/stable.html">Jernej
+Simoncic</a>.</p>
+
+<p>I have gone for the second option: I prefer to give users the
+simplest possible one-step installation.  If you take this approach
+you will probably want to find out what is the minimal subset of GTK
+runtime files required to support your application.  You will surely
+need all the basic DLLs for atk, glib, gtk and pango, plus their
+essential dependencies such as zlib, libxml2, libiconv and libintl.
+You'll need some of the dynamically-loadable modules for gtk and
+pango, but probably not all of them.  You may or may not need message
+catalogs for gtk and friends.  It may take a bit of trial and error to
+figure out the essential subset.</p>
+
+<p>For reference, I show below a listing of the GTK runtime files that
+I distribute with my application.  The path to these files is relative
+to the installation directory chosen by the user at install time (see
+<a href="#installer">Creating a self-installing exe</a> below).</p>
+
+<p>The GPL:</p>
+<pre>
+COPYING
+</pre>
+
+<p>Core GTK DLLs:</p>
+<pre>
+libatk-1.0-0.dll
+libgdk_pixbuf-2.0-0.dll
+libgdk-win32-2.0-0.dll
+libglib-2.0-0.dll
+libgmodule-2.0-0.dll
+libgobject-2.0-0.dll
+libgthread-2.0-0.dll
+libgtk-win32-2.0-0.dll
+libpango-1.0-0.dll
+libpangoft2-1.0-0.dll
+libpangowin32-1.0-0.dll
+</pre>
+
+<p>Basic dependency DLLs:</p>
+<pre>
+iconv.dll
+intl.dll
+libpng12.dll
+libxml2.dll
+zlib1.dll
+</pre>
+
+<p>Basic config files:</p>
+<pre>
+etc/pango/pango.modules
+etc/pango/pango.aliases
+etc/gtk-2.0/gdk-pixbuf.loaders
+etc/gtk-2.0/gtkrc
+</pre>
+
+<p>Image-file loaders (subset for the image formats used by my app):</p>
+<pre>
+lib/gtk-2.0/2.4.0/loaders/libpixbufloader-png.dll
+lib/gtk-2.0/2.4.0/loaders/libpixbufloader-xpm.dll
+</pre>
+
+<p>Message catalogs (subset for the languages supported by my app):</p>
+<pre>
+lib/locale/es/LC_MESSAGES/atk10.mo
+lib/locale/es/LC_MESSAGES/glib20.mo
+lib/locale/es/LC_MESSAGES/gtk20.mo
+lib/locale/fr/LC_MESSAGES/atk10.mo
+lib/locale/fr/LC_MESSAGES/glib20.mo
+lib/locale/fr/LC_MESSAGES/gtk20.mo
+lib/locale/it/LC_MESSAGES/atk10.mo
+lib/locale/it/LC_MESSAGES/glib20.mo
+lib/locale/it/LC_MESSAGES/gtk20.mo
+lib/locale/ja/LC_MESSAGES/glib20.mo
+lib/locale/ja/LC_MESSAGES/gtk20.mo
+lib/locale/pl/LC_MESSAGES/glib20.mo
+lib/locale/pl/LC_MESSAGES/gtk20.mo
+</pre>
+
+<p>Pango modules (subset: my app only supports European languages):</p>
+<pre>
+lib/pango/1.4.0/modules/pango-basic-win32.dll
+lib/pango/1.4.0/modules/pango-basic-fc.dll
+</pre>
+
+<p><a href="http://gtk-wimp.sourceforge.net/">"WIMP"</a> support
+(optional: let
+the user make the app look more Windows-like):</p>
+
+<pre>
+etc/gtk-2.0/gtkrc.wimp
+lib/gtk-2.0/2.4.0/engines/libwimp.dll
+</pre>
+
+
+<h2><a name="mo-files">Message catalogs for your application</a></h2>
+
+<p>If your app is internationalized, you'll want to make binary
+message catalogs (.mo) in win32 format.  I do this by using
+<kbd>msgfmt.exe</kbd> (available in the GNU gettext package for win32)
+under <a href="http://www.winehq.com/">wine</a>.</p>
+
+<h2><a name="installer">Creating a self-installing exe</a></h2>
+
+<p>Yes, you can even do this without leaving Linux -- with a little
+help from <a href="http://www.winehq.com/">wine</a>.  Jordan Russell
+makes available a nice free installer-builder, <a
+href="http://www.jrsoftware.org/isinfo.php">Inno Setup</a>.  It's a
+Windows program, but it runs fine on Linux under wine (its own
+self-installer works fine under wine too.)  It is fully scriptable and
+its compiler can be run non-interactively.</p>
+
+<p>In case you're interested, here is a sample script, <a
+href="gretl.iss">gretl.iss</a>, for use with Inno Setup.</p>
+
+<hr>
+<address>Allin Cottrell <a href="mailto:cottrell@wfu.edu">&lt;cottrell@wfu.edu&gt;</a></address>
+<p>Last modified: Wed Oct 6, 2004</p>
+
+<p>
+      <a href="http://validator.w3.org/check?uri=referer"><img border="0"
+          src="http://www.w3.org/Icons/valid-html40"
+          alt="Valid HTML 4.0!" height="31" width="88"></a>
+    </p>
+
+</body> </html>

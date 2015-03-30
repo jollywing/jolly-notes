@@ -5,10 +5,18 @@ php代码在线执行, http://www.mcqyy.com/RunCode/php/
 * 环境部署
 在windows下安装PHP，可以安装XAMPP(https://www.apachefriends.org/zh_cn/index.html)。下载windows后安装即可，可以定制要安装的程序。
 
-** LAMP, LEMP
+** LAMP
 Linux Apache Mysql Php.
+** LEMP
 Linux Nginx Mysql Php. 其中 Nginx 发音同 engine x。
 国内目前用Nginx的用户多于Apache用户。
+
+安装nginx,
+
+*** php-fpm
+
+FastCGI Process Manager for PHP
+nginx 就是靠转发php脚本给 fastcgi服务器，来解析php脚本的。
 
 * 字符串
 单引号和双引号都能表示字符串。

@@ -1,0 +1,208 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>读书笔记-数据结构与问题求解（C++版）</title>
+</head>
+<body>
+
+<h3>关于这本书</h3>
+<ul>
+	<li>书名：数据结构与问题求解（C++版）</li>
+	<li>作者：（美）Mark Allen Weiss</li>
+	<li>译者：张丽萍</li>
+	<li>出版：清华大学出版社，2005-8</li>
+</ul>
+<h3>一些要点</h3>
+<ul>
+	<li><b>聚合</b>是存储在一个单元里的对象集合。如果对象的类型相同，就是<b>数组</b>。如果对象类型不同，就是<b>structure</b>。</li>
+	<li>头等对象可以以所有“平常方式”操作，即支持&gt;,&lt;,=, ==等运算符。像数组、字符串等都是次等对象。	</li>
+	<li>传递“常量引用”给函数省去了参数复制的开销，又能防止参数被改变。如：int
+    findMax( const vector&lt;int&gt; &amp; a);</li>
+	<li>c++没有对象回收机制。</li>
+	<li>引用变量必须在声明时就初始化，如：int &amp; cnt = longVariableName。不要试图让它指向新的对象，如果你这样做了，实际上相当于对原来指向的对象赋值。</li>
+	<li>c++中的结构对c中的结构进行了扩展，允许函数作为成员，同时还允许成员访问有所限制。</li>
+	<li>结构之间用"="赋值，默认是逐个成员复制。</li>
+	<li><b>内部数据</b>完全蕴含在结构内，<b>外部数据</b>在结构外侧，通过结构的指针成员访问。<b>浅复制</b>是对指针的复制，而不是对所指数据的复制。<b>深复制</b>与浅复制正相反。</li>
+	<li>c++中实现代码重用的两个原则是模板和继承。</li>
+	<li>如果类的数据成员是常量，那么数据成员的值只能使用初始值列表进行初始化。</li>
+	<li>通常，单参数构造函数定义了隐式类型转换，它创建一个临时对象，使赋值（或函数的参数）能够兼容。例如: <br/>
+	obj=37;编译器应该报错，因为37与obj在类型上不兼容，但编译器会作以下工作：<br/>
+	IntCell temp(37); obj = temp;为了避免这种情况，对于单参数构造函数要使用显式构造函数，如：explicit IntCell(int intValue);
+	</li>
+	<li>默认情况下，所有成员函数都是赋值函数（会改变对象状态）。在包含参数类型列表的括号后添加关键字const，使之成为访问函数。</li>
+	<li>把类的声明和类的成员函数的定义分开写，叫做接口与实现分离。</li>
+	<li>作用域运算符用于指明作用范围。成员函数的作用域就是类。</li>
+	<li>在c++中，类在创建时，就创建了3个特殊的函数：析构函数、复制构造函数和赋值运算符。</li>
+	<li>一般，如果类有指针类型的成员，需要手动写构造函数，赋值运算符，复制构造函数和析构函数。</li>
+	<li>类的构造函数使用初始值列表，是调用带参数的构造函数来初始化数据成员；而没有在初始值列表中指定的数据成员都将通过无参数构造函数初始化，然后在构造函数体内调用复制赋值运算符进行赋值运算。</li>
+	<li>如果数据成员没有无参数构造函数，必须使用初始值列表初始化。对常量数据成员要使用初始值列表进行初始化。<u>如果数据成员是引用变量，不能在初始值列表中赋值。</u></li>
+	<li>隐式类型转换的过程，如：int i; double d; d=i;先利用i创建一个临时double型变量，然后用临时变量给d赋值。临时对象是通过执行构造函数创建的。如果不想要隐式类型转换，应将单参数构造函数声明为显式的。</li>
+	<li>运算符重载：只能重载现有的运算符，不能创建运算符。运算符的元数不能被改变。四个运算符不能被重载：".",".*","?:"和"sizeof"。</li>
+	<li>关于运算符重载的参数（类成员函数）。一元运算符不带参数。对于增量运算符（++或--），前置运算符参数为空，后置形式含有一个不被使用的int参数。一般情况下使用前置形式比使用后置形式高效，因为后置有创建临时对象保存对象初始值的开销。<br/>
+	二元运算符带运算符右边的参数。<br/>
+	输入和输出运算符&lt;&lt;,&gt;&gt;。不能重载为类的成员函数，因为ostream和istream才是主控对象。能用普通函数重载这两个运算符，带两个参数，分别是lhs和rhs。</li>
+	<li>在类接口中说明某些函数是友元，则这些函数可以访问类的private成员，函数声明前加friend。不知道<u>友元声明是否只能放在public后面？</u></li>
+	<li>静态类成员实际上是个全局变量，但它只对类成员是可见的。声明的时候加static。</li>
+	<li>static const int在类内定义整形变量，但这是个较新的特性，有的编译器不支持。另外使用枚举可以定义整型常量，如<br/>
+	public:<br/>
+	enum{RED=0, BLACK=1};</li>
+	<li>将类的对象作为其他类的数据成员使用，叫做组合。</li>
+	<li>默认的析构函数按照与成元声明的相反的顺序进行析构。</li>
+	<li>通过使用函数模板，可以编写与类型无关的算法。另外，typedef也是实现通用例程的简单机制。</li>
+	<li>每次使用未知参数类型调用函数模板时，都会产生新的实例。</li>
+
+</ul>
+
+<h3>类模板</h3>
+<p>template&lt;class object&gt;与template&lt;typename object&gt;是一样的，新的c++标准允许用typename替换class，也就是说，老旧的编译器可能不支持typename。</p>
+
+<p>一般情况下，类模板的声明和实现都放在一个.h文件中，大多数STL都是这样实现的。如果你把类模板的接口和实现分别放在.h和.cpp文件中，编译器可能不支持。所以推荐都写在一个.h文件中。另外，写在一个.h文件中也有两种写法：一种是成员函数的定义写在类的内部；另一种是函数的定义写在类外面，写法如下：<br/>
+<span style="color:blue;"><pre>
+template&lt; class object &gt;
+class className
+{
+public:
+	//public members
+private:
+	//private members
+};
+
+template&lt; class object &gt;
+ReturnType ClassName&lt;object&gt;::MemberName( Parameter List)
+{
+	//member body
+}
+</pre></span>
+</p>
+
+<p>类模板可以有多个实例化参数，如：
+<span style="color:blue;"><pre>
+template&lt; class KeyType, class ValueType &gt;
+class Map
+{
+	... ...
+};
+</pre></span>
+</p>
+
+<p>默认模板参数，如：
+<span style="color:blue;"><pre>
+template&lt; class KeyType, class ValueType = string &gt;
+class Map
+{
+	... ...
+};
+</pre></span>
+默认模板参数在STL中用的很多，但不是所有的编译器都支持它。
+</p>
+
+<h3>继承</h3>
+
+<p>模板是一项代码重用的技术,继承是另一种支持代码重用的技术.看下面的代码: 
+<div style="color:blue;"><pre>
+class class1
+{
+	... ...
+};
+
+class class2: public class1
+{
+	... ...
+};
+</pre></div>
+称class2继承class1，class1称为class2的基类，class2称为class1的派生类。class2 IS-A class1，反之则不然。class2拥有class1的全部成员，同时又具有另一些自己的成员。如果class3也继承了class1，则称class2和class3是兄弟关系。
+</p>
+
+<p>c++支持多态，指一个引用(指针)变量可以引用（指向）多个不同类型的对象，调用方法时，根据引用的对象调用相应的方法。但是如果基类的被覆盖的方法在声明时没有virtual修饰，则引用变量调用的方法在编译时就静态绑定了，如果引用的类型是基类，即使引用的对象是派生类，调用的方法也将是基类的方法。但是如果被覆盖的是virtual函数（不加virtual修饰，默认是nonvirtual函数），则调用的方法只能在运行时动态绑定。如果引用的对象是派生类的对象，就会调用派生类的方法，反之会调用基类的方法。virtual的属性能被继承，如果基类的方法被声明为virtual，那么派生类的方法不需要virtual修饰也是virtual函数。<b>一般，基类将被覆盖的方法都声明为virtual。</b><br/>
+类的构造函数不能声明为virtual，因为我们总是能够确定在创建什么对象，所以virtual标签没有意义。<br/>
+基类的析构函数必须声明为virtual。</p>
+
+<p>继承一般都是public继承，如果没有public关键字，就是私有继承。使用私有继承时，即使是基类的公有成员，对派生类也是隐藏的。如果基类想对外隐藏某些成员，但想让派生类看到，就要用protected修饰。当然，有些基类的私有成员，虽然派生类看不到，但仍可以通过基类的公有成员函数访问。</p>
+
+<p>派生类将继承基类的所有成员函数，派生类可以禁用和覆盖基类的成员的函数，也可以增加成员函数。派生类禁用基类的成员函数的方法是在私有部分声明这些成员函数。于是这些函数对外是不可见的。派生类覆盖(overwrite)基类的成员函数的方法是，写一个具有同样签名和兼容的返回类型的成员函数。这里说兼容的返回类型是指，如果基类的成员函数返回的是基类对象的引用，那么如果派生类的成员函数返回的是派生类对象的引用就称返回类型兼容。如果在派生类覆盖的成员函数中调用了基类中被覆盖的函数，称为部分覆盖。如：
+<div style="color:blue;"><pre>
+void Derived::work()
+{
+	Base::work();
+	... ...
+}
+</pre></div>
+</p>
+
+<p>友元关系并不能被继承，如果函数a是类A的友元，而类B继承自A，那么函数a并不是B的友元。也就是说，a并不能访问B的非公有成员。</p>
+
+<p>下面是一个很奇怪的例子：
+<div style="color:blue;"><pre>
+class Base
+{
+public:
+	virtual void a(); 
+}
+
+class Derived : pubic Base
+{
+public:
+	void a(int x);
+}
+</pre></div>
+通过基类对象可以调用a()，通过派生类可以调用a(x)，按道理说，通过派生类对象也可以调用a()，但是如果这样做，编译会报错。<br/>
+这是c++一个比较烦人的特性：派生类中的方法会隐藏基类中所有同名的方法。<br/>
+解决这个问题的一个方法是：调用基类的a()覆盖基类的a()，如：void a(){ Base::a();}。<br/>
+另一个办法是使用using：using Base::a； 不过这个特性不是所有的编译器都支持。
+</p>
+
+<p>如果一个方法声明为virtual，并且后面有"=0"的标识，该方法为抽象方法，也叫纯虚函数。含有抽象方法的类叫做抽象类。抽象类不能实例化。如果派生类中没有实现抽象方法，则派生类也是抽象类。<br/>
+抽象类虽然不能实例化，但仍可以有构造函数，可供派生类的构造函数调用。<br/>
+构造函数和析构函数不能为纯虚函数。</p>
+
+<!-- 设计模式 -->
+<h3>设计模式</h3>
+
+<h4>Functor</h4>
+<p>Functor也叫函数对象，这个对象没有数据成员，只有一个方法，如：
+<div style="color:blue;"><pre>
+class funcClass
+{
+public:
+	ReturnType funcName( param list)
+	{ handle something; }
+};
+</pre></div>
+
+调用函数对象的方法如下：
+<div style="color:blue;"><pre>
+main()
+{
+	... ...
+	someFunc( otherParam, funcClass() );
+}
+</pre></div>
+
+其实函数对象也可以通过函数指针的方法来代替，但是使用函数指针效率不高。
+</p>
+
+<p>通常，函数对象的使用比上面更有技巧性，它里面方法是重载()运算符。如：
+<div style="color:blue;"><pre>
+class funcClass
+{
+public:
+	ReturnType operator() ( param list)
+	{	do somthing;}
+};
+</pre></div>
+调用函数对象的方法依然如上面所示，但在调用函数对象的函数实现如下：
+
+<div style="color:blue;"><pre>
+ReturnType someFunc( otherParam, funcClass funcObject)	//不是传引用
+{
+	... ...
+	funcObject(param list);
+	... ..
+}
+看似直接把方法传给了someFunc，实际上调用了
+funcObject.operator()(param list);
+</pre></div>
+</p>
+
+</body>
+</html>

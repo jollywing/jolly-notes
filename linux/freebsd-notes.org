@@ -1,0 +1,72 @@
+
+Alt-F1, Alt-F2, ..., Alt-F8 在8个虚拟控制台间切换.
+如果你选择单
+用户模式启动系统, 则只能使用一个控制台.
+
+FreeBSD 支持文件标志, 只对普通文件有效,
+如果文件得到文件标志的保护, 即使是root用户也无法删除和修改之.
+文件标志可以用 `chflags` 来修改.
+: chflags sunlink file1
+就为file1加了一个禁止删除的标志, 要取消这个标志:
+: chflags nosunlink file1
+如果想查看文件标志, ls 要加 -o 选项:
+: ls -lo file1
+
+除了读写执行三个权限外,
+还有几个特殊的权限:
+setuid, setgid, sticky.
+
+setuid可以提升用户的执行权限,
+对一个可执行文件设置setuid后, 即使是普通用户启动进程,
+但相当于root用户在执行这个命令.
+一个典型的例子是 passwd, =ls -l /usr/bin/passwd=
+: -rwsr-xr-x 1 root root 42148 Feb 25  2012 /usr/bin/passwd
+对一个文件设定setuid后, 会在所有者的执行权限处显示s. 
+(Linux 中显示为大写的S)
+: chmod u+s file1
+在权限数字前加4, 相当于 u+s, 如:
+: chmod 4755 file1
+
+setgid可以把用户的权限提升到文件所属用户组的权限.
+: chmod g+s file1
+=ls -l file1= 可以看到:
+: -rwxr-sr-x 1 john wheel 42148 Feb 25  2013 file1
+在权限数字前加2, 相当于 g+s,
+: chmod 2755 file1
+
+当在文件目录上设定了 sticky bit后,
+该目录下的文件将只能由目录的主人删除.
+在权限数字前加1, 会设定sticky bit.
+: chmod 1755 dir1
+或
+: chmod +t dir1
+=ls -l= 查看信息
+: drwxr-xr-t 10 wuchen wuchen 4096 Apr 10 21:48 dir1
+可以看到其它用户的权限的最后一个字符变成了t.
+
+想要去除 sticky bit
+: chmod -t dir1
+
+FreeBSD安装第三方应用有两种途径，
+一种是ports，从源码编译安装。
+只要执行一些简单的命令，
+就可以自动完成下载, 解压, 补丁, 编译, 安装.
+ports系统也可以做出package包,
+类似于 ArchLinux 上的 AUR.
+为了防止安装的程序存在安全漏洞,
+安装 ~ports-mgmt/portaudit~,
+安装某个程序后, 可以用 ~portaudit -F -a~ 检查该程序的安全漏洞.
+
+如何在ports collection中找到自己需要的软件?
+1. 使用ports自己的搜索机制.
+   如果你知道一个程序的准确名称, 你可以
+   ~make search name=program-name~,
+   如果你想进行模糊查找, 可以 ~make search key=string~.
+2. 使用echo语句: 比如你要搜索Emacs, =echo /usr/ports/*/*emacs*=
+   将返回下载 =/usr/ports/distfiles= 中所有符合条件的文件.
+3. 在 http://www.FreeBSD.org/ports/ 查看可用应用的列表.
+4. 如果你在 http://www.freashmeat.net 上发现什么好的应用, 可以用以
+   上的方法看看该应用有没有包含在ports中.
+
+一种是packages, 安装预编译好的二进制包。
+软件包采用 .tgz 和 .tbz 两种格式.

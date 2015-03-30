@@ -1,0 +1,71 @@
+<head><title>Quake-III代码里神奇的浮点开方函数</title></head>
+
+<body>
+<H1>Quake-III代码里神奇的浮点开方函数 </H1>
+<BLOCKQUOTE>
+来源：中国IT实验室收集整理　作者：佚名　时间：2007-6-14 
+</BLOCKQUOTE>
+
+<P>　Quake-III Arena （雷神之锤3）是我大学时期爱玩的经典游戏之一。喜爱这个系列的游戏，不仅因为画面和内容，更重要的是我得计算计配置低，但Q3A却能极其流畅地运行。这要归功于它3D引擎的开发者约翰-卡马克（John Carmack）。事实上早在90年代初DOS时代，只要能在PC上搞个小动画都能让人惊叹一番的时候，John Carmack就推出了石破天惊的Castle Wolfstein， 然后再接再励，doom， doomII， Quake……每次都把3-D技术推到极致。他的3D引擎代码资极度高效，几乎是在压榨PC机的每条运算指令。当初MS的Direct3D也得听取他的意见，修改了不少API.最近，QUAKE的开发商ID software 遵守GPL协议，公开了QUAKE-III的原代码，让世人有幸目睹Carmack传奇的3D引擎的原码。</P> 
+  　
+<P>　这是QUAKE-III原代码的下载地址：http://www.chinagamedev.net/showtopic-461.aspx我们知道，越底层的函数，调用越频繁。3D引擎归根到底还是数学运算。那么找到最底层的数学运算函数（在game/code/q_math.c）， 必然是精心编写的。里面有很多有趣的函数，很多都令人惊奇，估计我们几年时间都学不完。</P>　
+　
+<P>　最令人惊讶的是平方根函数sqrt（）。课本里说的，基本上是牛顿跌代法，通过若干步的叠代，结果越来越接近真实结果。</P>　
+　
+<P><PRE>
+　但q_math.c里面却给出了这样奇异的平方根函数：（我的注释）
+float Q_rsqrt( float number )
+{
+  long i;
+  float x2, y;
+  const float threehalfs = 1.5F;
+  x2 = number * 0.5F;
+  y  = number;
+  i  = * ( long * ) &y;        // 浮点数按BIT强行赋给长整形
+  i  = 0x5f3759df - ( i &gt;&gt; 1 ); // 没天理！！！！！
+  y  = * ( float * ) &i;
+  y  = y * ( threehalfs - ( x2 * y * y ) ); // 第1次叠代
+  // y  = y * ( threehalfs - ( x2 * y * y ) ); // 第2次叠代，可以删除
+  #ifndef Q3_VM
+  #ifdef __linux__
+    assert( !isnan(y) ); // bk010122 - FPE?
+  #endif
+  #endif
+  return y;
+}
+</PRE></P>
+
+<P>函数返回1/sqrt(x)，这个函数在图像处理中比sqrt(x)更有用。<BR>
+       注意到这个函数只用了一次叠代！（其实就是根本没用叠代，直接运算）。编译，实验，这个函数不仅工作的很好，而且比标准的sqrt()函数快4倍！要知道，编译器自带的函数，可是经过严格仔细的汇编优化的啊！ </P>
+
+<P> 这个简洁的函数，最核心，也是最让人费解的，就是标注了“没天理”那句：（原代码的注释是 what the fu*ck ?）<BR>
+    i  = 0x5f3759df - ( i &gt;&gt; 1 ); // 没天理！！！！！ <BR>
+         再加上y  = y * ( threehalfs - ( x2 * y * y ) );<BR>
+两句话就完成了开方运算！而且注意到，核心那句是定点移位运算，速度极快！特别在很多没有乘法指令的RISC结构CPU上，这样做是极其高效的。
+</P>
+
+<P>     最让人感兴趣的，是那个常数0x5f3759df。我的猜测是这样的：牛顿叠代法用1/2作为初始点进行N步叠代得到精确结果。这里计算一个最佳猜测值i,然后，以i为起始点，只需要做1步叠代，就可以得到相当精确的结果。如果做2次叠代，就更为精确了（屏蔽掉那句）。</P>
+  
+<P>     搜索包含关键字“0x5f3759df”的文章，找到普渡大学数学系的Chris Lomont的一篇论文，专门对这个函数研究，尝试用严格的方法推导出这个常数（他还提到有人认为这个函数是在NVidia工作过的Gary Tarolli写的）。Chris推出的常数是0x5f37642f)，和Q_rsqrt里的稍有不同，而且实际表现也稍有不如。卡马克到底怎么推出这个常数的就是谜了。</P>
+
+ <P>论文下载地址：
+http://www.math.purdue.edu/~clomont/Math/Papers/2003/InvSqrt.pdf </P> 
+
+<P><PRE>
+最后，给出最精简的1/sqrt()函数：
+float InvSqrt(float x)
+{
+  float xhalf = 0.5f*x;
+  int i = *(int*)&x; // get bits for floating value
+  i = 0x5f375a86- (i>>1); // gives initial guess y0
+  x = *(float*)&i; // convert bits back to float
+  x = x*(1.5f-xhalf*x*x); // Newton step, repeating increases accuracy
+  return x;
+}  
+</PRE></P>
+
+  <P>大家可以尝试在PC机、51、AVR、430、ARM、上面编译并实验，惊讶一下它的工作效率。<BR>
+  技术方面就说到这，看看别人对一个最普通函数都压榨到这种地步，再对比国内不求甚解的所谓“搞技术”，再看自己浮躁的心态，自觉惭愧不已...
+</P>
+  
+</body>

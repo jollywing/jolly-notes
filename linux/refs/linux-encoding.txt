@@ -1,0 +1,61 @@
+ Linux查看文件编码格式及文件编码转换
+分类： linux命令及工具使用 2009-08-19 11:41 2229人阅读 评论(1) 收藏 举报
+如果你需要在Linux 中操作windows下的文件 ，那么你可能会经常遇到文件 编码 转换的问题。Windows中默认的文件 格式是GBK(gb2312)，而Linux 一般都是UTF-8。下面介绍一下，在Linux 中如何查看 文件 的编码 及如何进行对文件 进行编码 转换。
+
+查看 文件 编码
+在Linux 中查看 文件 编码 可以通过以下几种方式：
+1.在Vim 中可以直接查看 文件 编码
+:set fileencoding
+即可显示文件 编码 格式。
+如果你只是想查看 其它编码 格式的文件 或者想解决用Vim查看 文件 乱码的问题，那么你可以在
+~/.vimrc 文件 中添加以下内容：
+
+set encoding=utf-8 fileencodings=ucs-bom,utf-8,cp936
+
+这样，就可以让vim自动识别文件 编码 （可以自动识别UTF-8或者GBK编码 的文件 ），其实就是依照 fileencodings提供的编码 列表尝试，如果没有找到合适的编码 ，就用latin-1(ASCII)编码 打开。
+2. enca (如果你的系统中没有安装这个命令，可以用sudo yum install -y enca 安装 )查看 文件 编码
+$ enca filename
+filename: Universal transformation format 8 bits; UTF-8
+CRLF line terminators
+需要说明一点的是，enca对某些GBK编码 的文件 识别的不是很好，识别时会出现：
+Unrecognized encoding
+
+文件 编码 转换
+1.在Vim中直接进行转换文件 编码 ,比如将一个文件 转换成utf-8格式
+:set fileencoding=utf-8
+
+2. enconv 转换文件 编码 ，比如要将一个GBK编码 的文件 转换成UTF-8编码 ，操作如下
+enconv -L zh_CN -x UTF-8 filename
+
+3. iconv 转换，iconv的命令格式如下：
+iconv -f encoding -t encoding inputfile
+比如将一个UTF-8 编码 的文件 转换成GBK编码
+iconv -f GBK -t UTF-8 file1 -o file2
+
+
+Linux 文件名编码转换
+
+
+从Linux 往windows拷贝文件 或者从windows往Linux 拷贝文件 ，有时会出现中文文件 名 乱码的情况，出现这种问题的原因是因为，windows的文件 名 中文编码 默认为GBK,而Linux 中默认文件 名 编码 为UTF8,由于编码 不一致，所以导致了文件 名 乱码的问题，解决这个问题需要对文件 名 进行转码。
+
+在Linux 中专门提供了一种工具convmv进行文件 名 编码 的转换 ，可以将文件 名 从GBK转换 成UTF-8编码 ,或者从UTF-8转换 到GBK。
+
+首先看一下你的系统上是否安装了convmv,如果没安装的话用:
+yum -y install convmv
+安装。
+下面看一下convmv的具体用法：
+
+convmv -f 源编码 -t 新编码 [选项] 文件 名
+
+常用参数：
+-r 递归处理子文件 夹
+--notest 真正进行操作，请注意在默认情况下是不对文件 进行真实操作的，而只是试验。
+--list 显示所有支持的编码
+--unescap 可以做一下转义，比如把%20变成空格
+比如我们有一个utf8编码 的文件 名 ，转换 成GBK编码 ，命令如下：
+
+convmv -f UTF-8 -t GBK --notest utf8编码 的文件 名
+
+这样转换 以后"utf8编码 的文件 名 "会被转换 成GBK编码 （只是文件 名 编码 的转换 ，文件 内容不会发生变化）。
+
+注意：不要在NTFS和FAT文件 系统中使用此命令，否则可能产生意外结果，如果要在Linux 中正确的显示NTFS和 FAT的中文件名，可以通过mount参数来解决，具体方法查看一下man手册。

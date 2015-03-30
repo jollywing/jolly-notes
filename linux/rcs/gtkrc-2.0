@@ -1,0 +1,8 @@
+include "/usr/share/themes/Crux/gtk-2.0/gtkrc"
+style "gtk-mine" {
+    font_name="Monospace 10"
+}
+class "GtkWidget" style "gtk-mine"
+gtk-can-change-accels = 1
+gtk-icon-theme-name="ROX"
+

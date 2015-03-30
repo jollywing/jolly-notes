@@ -1,8 +1,0 @@
-digraph G {
-    tracker_logic -> ot_mutex;
-    tracker_logic -> ot_clean;
-    tracker_logic -> ot_fullscrape;
-    tracker_logic -> ot_accesslist;
-    tracker_logic -> ot_livesync;
-    tracker_logic -> ot_stats;
-}

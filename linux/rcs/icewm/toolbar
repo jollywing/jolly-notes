@@ -1,0 +1,11 @@
+# This is a default toolbar definition file for IceWM
+#
+# Place your personal variant in $HOME/.icewm directory.
+
+prog XTerm xterm uxterm
+prog rox file rox
+#prog FTE fte fte
+#prog Netscape netscape netscape
+prog    "Vim" vim /usr/bin/gvim 
+#prog    "WWW" /usr/share/pixmaps/firefox.png x-www-browser
+

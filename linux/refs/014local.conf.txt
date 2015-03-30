@@ -1,0 +1,798 @@
+中文显示效果是一个老生常谈的问题了，论坛里相关的文章也特别多，不过详 
+细讲解local.conf配置的好像并不多见，在此小弟奉上自己的两款配置，包括 
+Windows细腻效果的和带AA适合阅读效果的，并附上详细注释和截图，希望对大 
+家有所帮助，能够腾出更多的时间去深入linux的其它部分。 
+
+在此，先感谢为中文字体效果而努力的大大们，有了你们，让linux中文也能如 
+此精彩。 
+
+两篇重要的参考文章 
+1.Fontconfig 2.3.2用户手册，感谢3n 
+2.Linux 字体微调 - windows 效果版，感谢quanliking 
+
+
+[说明：本人在FreeBSD下测试，目录均采用FreeBSD中的目录，使用不同发行 
+版的朋友，请调整好目录] 
+
+前提：字体准备(采用MS字体、华文字体、WenQuanYi，仅供参考，注重版权 
+的朋友，请慎用) 
+1)将Windows的几款英文字体拷到字体目录msfonts下 
+推荐的字体有Tahoma、Verdana、Arial、Times New Roman、Courier New 
+等，还有一种卡通字体Comic Sans MS，用来作窗口标题字体不错。 
+
+2)将Windows的几款中文字体拷到字体目录zhfonts下 
+推荐的字体有SimSun、SimHei、STxxx华文系列字体（装了office一般都有） 
+
+3)安装文泉驿字体最新版，或直接将文泉驿字体拷到wqyfonts目录下 
+
+4)如果已经配置有XFLD字体如SimSun和Tahoma，并做好了相应的fonts.dir， 
+那么可以建一个目录gtkfonts，将原来的字体和fonts.dir、fonts.scale拷过来，并 
+在xorg.conf的fontpath中加入gtkfonts，这样不会影响GTK1中英文显示。 
+
+
+
+第一部分:AA效果适合阅读型 
+（只需修改local.conf，不用修改fonts.conf，所有字体优先级等只用在 
+local.conf中修改即可） 
+
+1.头部 
+代码: 
+
+<?xml version="1.0"?> 
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd"> 
+<!-- /etc/fonts/local.conf file to configure local fonts --> 
+<fontconfig> 
+ 
+
+注解: 
+local.conf配置头部，fontconfig是字体匹配设置的开始。 
+
+2.字体别名设置 
+代码: 
+
+<!-- 
+   fonts alias settings 
+--> 
+   <match target="pattern"> 
+      <test name="family"> 
+         <string>宋体</string> 
+      </test> 
+      <edit name="family" mode="assign"> 
+         <string>SimSun</string> 
+      </edit> 
+   </match> 
+   <match target="pattern"> 
+      <test name="family"> 
+         <string>新宋体</string> 
+      </test> 
+      <edit name="family" mode="assign"> 
+         <string>NSimSun</string> 
+      </edit> 
+   </match> 
+ 
+
+注解: 
+SimSun字体有两个别名，一个是SimSun，一个就宋体，在网页设计时，有些 
+采用的字体名是SimSun，有些是宋体，通常，这不会影响到字体的匹配，不管哪 
+种设置，浏览器总是可以找到SimSun来显示中文。 
+
+但是，SimSun的英文不好看，粗体英文更是破粹影响阅读，所以好多朋友也是 
+采用其它的英文来替换掉SimSun中的英文，要么修改SimSun字体中的英文部分， 
+要么使用Substitution。我也采用Substitution，在后面也是把SimSun的英文部分 
+替换成Tahoma，在替换时，用来判断SimSun的标准是通过英文字体名SimSun为 
+依据的，fontconfig在匹配过程中，如果发现要显示SimSun字体，则把Tahoma强 
+加在SimSun之前，这样可以保证大部分网页用Tahoma来显示SimSun的英文。但 
+是，如果网页指定的字体名是宋体，那么匹配就会失败，结果还是使用原来 
+SimSun中的英文，所以，这里把中文字体名改为英文字体名，适应这些网页的英 
+文显示，典型例子是www.FreeBSDChina.org的论坛。 
+
+那么上段代码的意思是：碰到要匹配宋体或新宋体，就强制把要请求的字体名 
+改为SimSun和NSimSun。 
+
+
+3.字体族与字体名设置 
+代码: 
+
+<!-- 
+   Mark common families with their generics so we'll get 
+   something reasonable 
+--> 
+<!-- 
+   Sans-serif faces 
+--> 
+   <alias> 
+      <family>Tahoma</family> 
+      <family>Verdana</family> 
+      <family>Arial</family> 
+      <family>Trebuchet MS</family> 
+      <family>Comic Sans MS</family> 
+      <family>SimSun</family> 
+      <family>SimHei</family> 
+        ... 
+      <family>STHupo</family> 
+      <family>STXinwei</family> 
+      <family>FZYaoTi</family> 
+      <family>FZShuTi</family> 
+      <family>Arial Unicode MS</family> 
+      <default><family>sans-serif</family></default> 
+   </alias> 
+<!-- 
+   Serif faces 
+--> 
+   <alias> 
+      <family>Georgia</family> 
+      <family>Times New Roman</family> 
+      <family>WenQuanYi Bitmap Song</family> 
+      <default><family>serif</family></default> 
+   </alias> 
+<!-- 
+   Monospace faces 
+--> 
+   <alias> 
+      <family>Courier New</family> 
+      <family>Andale Mono</family> 
+      <family>NSimSun</family> 
+      <default><family>monospace</family></default> 
+   </alias> 
+ 
+
+注解： 
+这一部分是针对各个字体族中的字体设置字体名称，好像没什么可讲的，大家 
+平常修改时最常见到，可以把你喜欢的字体按照自己喜好的顺序列在这里，当然 
+也可以省去这一段不写，最重要是下面的prefer一段。 
+
+
+
+4.字体匹配顺序 
+代码: 
+
+<!-- 
+   Provide required aliases for standard names 
+--> 
+   <alias> 
+      <family>sans-serif</family> 
+      <prefer> 
+         <family>Tahoma</family> 
+         <family>Verdana</family> 
+         <family>Arial</family> 
+         <family>Trebuchet MS</family> 
+         <family>Comic Sans MS</family> 
+         <family>SimSun</family> 
+         <family>SimHei</family> 
+            ... 
+         <family>STHupo</family> 
+         <family>STXinwei</family> 
+         <family>FZYaoTi</family> 
+         <family>FZShuTi</family> 
+         <family>Arial Unicode MS</family> 
+      </prefer> 
+   </alias> 
+   <alias> 
+      <family>serif</family> 
+      <prefer> 
+         <family>Georgia</family> 
+         <family>Times New Roman</family> 
+         <family>WenQuanYi Bitmap Song</family> 
+      </prefer> 
+   </alias> 
+   <alias> 
+      <family>monospace</family> 
+      <prefer> 
+         <family>Courier New</family> 
+         <family>Andale Mono</family> 
+         <family>NSimSun</family> 
+      </prefer> 
+   </alias> 
+ 
+
+注解： 
+同上面一段字体名称设置，不同的是这里设定了字体的优先顺序，fontconfig 
+会参照这里的优先顺序来进行字体匹配，因此这一段比较重要。 
+
+说明： 
+在fonts.conf中也有一段字体匹配优先顺序的设定，个人感觉fontconfig整体的 
+优先顺序会参照local.conf和fonts.conf，由于local.conf包含在fonts.conf中prefer 
+那一段之前，所以优先顺序应该是local.conf中的优先字体列表，再加上fonts.conf 
+中的优先字体列表，由于man中没有说明，这点只是个人理解。 
+
+[注意]： 
+这里把WenQuanYi字体加在Serif族中，原因如下： 
+1)有些支持xft的程序，不支持字体替换，即只支持一种字体，当它匹配到这种 
+字体后，不管中文还是英文，都用这一种字体来显示，典型的是fvwm、mrxvt、 
+fcitx等。 
+
+2)本来中文用SimSun普通和粗体显示效果都非常好，但在对SimSun中的英文 
+作了替换之后，导致的结果是：fontconfig匹配SimSun时，把Tahoma强加在 
+SimSun之前，这样，上述的一类程序得到了字体就是Tahoma，而非SimSun，它 
+们也不会再去匹配合适的字体来显示中文，因此，这类程序如果设置字体为Sans 
+或SimSun的话，中文会显示成方框或乱码。 
+
+3)由于大部分的中文字体都设置在Sans-Serif中了，NSimSun也被替换过了，因 
+此，解决这类问题就可以用WenQuanYi来代替，WenQuanYi虽然只支持点阵，但 
+它的中英文显示都还不错，粗体也非常好，不用作替换，所以这里把WenQuanYi 
+加在Serif中，而这类有问题的程序就设置中文字体为Serif，可以很好的解决。 
+
+4)该问题还有一种解决方法，就是把SimSun用fontforge改掉字体名，成为一 
+种新字体，之后把这类程序的字体名设置为TSimSun(假定)，就可以很好的解决 
+了，因为它没有定义替换动作。 
+
+
+5.SimSun英文部分替换动作 
+代码: 
+
+<!-- 
+   SimSun english portion substitutionsubstitution 
+--> 
+   <match target="pattern"> 
+      <test name="family" > 
+         <string>SimSun</string> 
+      </test> 
+        <edit name="family" mode="prepend" binding="strong"> 
+         <string>Tahoma</string> 
+      </edit> 
+   </match> 
+ 
+
+注解： 
+上面已经讲到，SimSun英文不好看，粗体英文会破粹，因此，这一段代码就强 
+制把Tahoma加在SimSun之前，fontconfig匹配得到的字体列表就是Tahoma、 
+SimSun、...此时，网页上的英文部分就会很好的显示，不管它设置中文字体是 
+SimSun还是宋体，因为宋体在最开始已经被替换名称为SimSun了。 
+
+所谓的替换，实际上是在匹配到的字体列表中，把要替换的英文字体加在目标 
+字体之前，即动态改变字体的优先顺序。 
+
+
+6.同上，替换NSimSun的英文部分 
+代码: 
+
+<!-- 
+   NSimSun english portion substitutionsubstitution 
+--> 
+   <match target="pattern"> 
+      <test name="family" > 
+         <string>NSimSun</string> 
+      </test> 
+      <edit name="family" mode="prepend" binding="strong"> 
+         <string>Courier New</string> 
+      </edit> 
+   </match> 
+ 
+
+注解： 
+NSimSun的粗体英文跟SimSun一样会破粹，具体体现在firefox的源码查看、 
+Gedit默认字体中。所以，这里把NSimSun的英文替换为Courier New，它在终端 
+中有很好的表现，在很多论坛的[ code ]代码段也显示的很好。 
+
+
+
+
+7.Courier字体的替换 
+代码: 
+
+<!-- 
+   Courier substitution 
+--> 
+   <match target="pattern"> 
+      <test name="family" > 
+         <string>Courier</string> 
+      </test> 
+      <edit name="family" mode="prepend" binding="strong"> 
+         <string>Courier New</string> 
+      </edit> 
+   </match> 
+ 
+
+注解： 
+Courier New字体显示较courier好看，虽然上面Courier New加在Monospace最 
+前，但是如果有的程序直接指定字体名Courier，还是会以Courier字体来显示，这 
+里强制替换成好看的Courier New字体。 
+
+
+
+8.Tahoma/Verdana粗体替换 
+代码: 
+
+<!-- 
+   Bold Tahoma/Verdana substitution: 
+   when its size more than 20px,substitution with Bold Arial 
+--> 
+   <match target="pattern"> 
+      <test name="family" > 
+         <string>Tahoma</string> 
+         <string>Verdana</string> 
+      </test> 
+      <test name="weight" compare="more_eq"> 
+         <int>180</int> 
+      </test> 
+      <test name="pixelsize" compare="more_eq" > 
+         <double>20</double> 
+      </test> 
+      <edit name="family" mode="prepend" binding="strong"> 
+         <string>Arial</string> 
+      </edit> 
+   </match> 
+ 
+
+注解： 
+Tahoma和Verdana字体显示还是不错的，但是大号粗体英文表现的好像过粗， 
+如果不喜欢的话，可以用相对较细一点的Arial来替换，看个人喜好了。 
+
+
+
+
+9.设置字体显示的DPI 
+代码: 
+
+<!-- 
+   Target dots per inch, change dpi to 96 
+--> 
+   <match target="pattern" > 
+      <edit name="dpi" mode="assign" > 
+         <double>96</double> 
+      </edit> 
+   </match> 
+ 
+
+注解： 
+有朋友如果喜欢用FVWM的话，之后切换到Gnome或KDE，则会发现以前设置 
+好的字体大小，都发生了变化，好像都变大了一样。这是因为Xorg默认dpi是75， 
+FVWM不会修改这个值，当然也是75，而Gnome和KDE的DPI都是96，所以两者会 
+有不一样。 
+
+这里就不多说了，详见上面的链接[linux字体微调--Windows效果]. 
+
+
+
+10.子像素渲染 
+代码: 
+
+<!-- 
+   Enable sub-pixel rendering. 
+   If you are using CRT, set rgb -> none 
+--> 
+   <match target="font"> 
+      <edit name="rgba" mode="assign"> 
+         <const>none</const> 
+      </edit> 
+   </match> 
+ 
+
+注解： 
+man中和不少文章也说，LCD建议使用rgb渲染效果，但在我的本本上rgb还是 
+会泛蓝或泛绿，设置为none就好了，看来还是要根据自己的实际情况来测试。 
+
+
+
+11.最小字体号设置 
+代码: 
+
+<!-- 
+   Font size settings: 
+   set the apposite font size,so it's easy to be read 
+--> 
+   <match target="pattern" > 
+      <test name="pixelsize" compare="more_eq" > 
+         <double>8</double> 
+      </test> 
+      <test name="pixelsize" compare="less_eq" > 
+         <double>12</double> 
+      </test> 
+      <edit name="pixelsize" mode="assign" > 
+         <double>12</double> 
+      </edit> 
+   </match> 
+ 
+
+注解： 
+这里设置了最小的字体号，基于两点： 
+1)小字体显示的效果一般都不好。当然也有用别的字体中的点阵来替换，如华 
+文细黑就提供了10px、11px的点阵，在SimSun过小时，可以用华文细黑来代替。 
+
+2)小字体读起来累，本文是AA适合阅读型，当然不能太累眼，所以自己设置一 
+个合适的最小字体大小。 
+
+这里所有字体统一处理了，当然如果希望中英文最小字体大小不一样的话，可 
+以另外设置。 
+
+
+
+12.支持伪粗体 
+代码: 
+
+<!-- 
+   Artificial oblique for fonts without an italic or oblique version 
+--> 
+   <match target="font"> 
+      <!-- check to see if the font is roman --> 
+      <test name="slant"> 
+         <const>roman</const> 
+      </test> 
+      <!-- check to see if the pattern requested non-roman --> 
+      <test target="pattern" name="slant" compare="not_eq"> 
+         <const>roman</const> 
+      </test> 
+      <!-- multiply the matrix to slant the font --> 
+      <edit name="matrix" mode="assign"> 
+         <times> 
+            <name>matrix</name> 
+            <matrix> 
+               <double>1</double><double>0.2</double> 
+               <double>0</double><double>1</double> 
+            </matrix> 
+         </times> 
+      </edit> 
+      <!-- pretend the font is oblique now --> 
+      <edit name="slant" mode="assign"> 
+         <const>oblique</const> 
+      </edit> 
+   </match> 
+ 
+
+注解： 
+这一段是从fonts.conf中粘过来的，考虑到别的发行版中可能会没有，因此还 
+是加到local.conf中来了。 
+
+具体意思是： 
+如果当前字体不是斜体，而要求匹配的字体是斜体的话，则修改模拟斜体所需 
+要的值来产生斜体，并且设置斜体属性。这一段一般不会修改，有这一段就能支 
+持算法模拟斜体，效果不错。 
+
+
+
+
+13.支持伪粗体 
+代码: 
+
+<!-- 
+   Synthetic emboldening for fonts that do not have bold face available 
+--> 
+   <match target="font"> 
+      <!-- check to see if the font is just regular --> 
+      <test name="weight" compare="less_eq"> 
+         <int>100</int> 
+      </test> 
+      <!-- check to see if the pattern requests bold --> 
+      <test target="pattern" name="weight" compare="more_eq"> 
+         <int>180</int> 
+      </test> 
+      <!-- set the embolden flag --> 
+      <edit name="embolden" mode="assign"> 
+         <bool>true</bool> 
+      </edit> 
+   </match> 
+ 
+
+注解： 
+同上，拷自fonts.conf，通过算法支持粗体显示。 
+
+具体意思是： 
+如果当前字重不超过100，且请求的字号超过180，那么设置模拟粗体属性。 
+
+
+
+
+14.默认AA，Auto，Hinting设置 
+代码: 
+
+<!-- 
+   Default Fonts setting 
+   here autohint = ture / hinting = false is for free fonts in your system 
+   we will use autohint = false / hinting = true for MS core fonts 
+--> 
+   <match target="font" > 
+      <edit name="antialias" mode="assign" > 
+         <bool>true</bool> 
+      </edit> 
+      <edit name="autohint" mode="assign" > 
+         <bool>true</bool> 
+      </edit> 
+      <edit name="hinting" mode="assign" > 
+         <bool>false</bool> 
+      </edit> 
+      <edit name="hintstyle" mode="assign" > 
+         <const>hintfull</const> 
+      </edit> 
+   </match> 
+ 
+
+注解： 
+设置基本的抗锯齿、自动微调、微调、微调样式。 
+
+一般规则： 
+一般字体在显示时，都会由原字体缩放后再画在屏幕上，那么就会产生一定程 
+度的走样。当然，点阵字体则是以位图的形式直接画的，因此本身效果就很好， 
+如SimSun。为了防止走样好难看，大部分专业字体公司都会为这些字体做 
+hinting，即微调，MS大部分字体均是如此，所以MS的字体打开hinting效果就很 
+好，不打开就比较难看。 
+
+而linux下的自由字体，由于商业的原因，这些字体的hinting都不好或是没有， 
+因此linux下就采用算法来自动hinting，称为autohint，也能适当的改善效果。 
+
+因此，这里的设置是打开AA，和autohint，关掉hinting，样式采用完全微调。 
+中文是没有hinting的，因为汉字众多且复杂，而英文较好，所以有hint。一般 
+说来，autohint和hinting不是一起开的，要么开彼，要么开此。 
+
+
+
+
+15.解决中英文间距过宽的问题 
+代码: 
+
+<!-- 
+   The dual-width Asian fonts (spacing=dual) are not rendered correctly, 
+   apparently FreeType forces all widths to match. Trying to disable the 
+   width forcing code by setting globaladvance=false alone doesn't  help. 
+   As a brute force workaround, also set spacing=proportional, i.e. handle 
+   them as proportional fonts: 
+--> 
+   <match target="font"> 
+      <test name="lang" compare="contains" > 
+         <string>zh</string> 
+         <string>ja</string> 
+         <string>ko</string> 
+      </test> 
+      <edit name="spacing" mode="assign" > 
+         <const>proportional</const> 
+      </edit> 
+      <edit name="globaladvance" mode="assign" > 
+         <bool>false</bool> 
+      </edit> 
+   </match> 
+ 
+
+注解： 
+这一段改善中英文间距过大的问题，具体小弟也不太理解，只知道用，望大大 
+告知：） 
+
+
+
+16.CJK字体AA设置 
+代码: 
+
+<!-- 
+   CJK antialias settings: 
+   when font size (in pixel) between 8 and 20px 
+--> 
+   <match target="font" > 
+      <test name="lang" compare="contains" > 
+         <string>zh</string> 
+         <string>ja</string> 
+         <string>ko</string> 
+      </test> 
+      <test name="pixelsize" compare="more_eq" > 
+         <double>8</double> 
+      </test> 
+      <test name="pixelsize" compare="less_eq" > 
+         <double>20</double> 
+      </test> 
+      <edit name="antialias" mode="assign" > 
+         <bool>false</bool> 
+      </edit> 
+      <edit name="autohint" mode="assign" > 
+         <bool>false</bool> 
+      </edit> 
+      <edit name="hinting" mode="assign" > 
+         <bool>false</bool> 
+      </edit> 
+   </match> 
+ 
+
+注解： 
+这里设置中文8px-20px显示时，不打开AA，不需要微调。此时，多半是点阵 
+显示，当超过16px时才用TrueType，这个临界值可以按自己喜好设置。 
+
+
+
+17.CJK字体AA设置 
+代码: 
+
+<!-- 
+   CJK antialias settings: 
+   when font size (in pixel) more than 20px, enable AA. 
+--> 
+   <match target="font" > 
+      <test name="lang" compare="contains" > 
+         <string>zh</string> 
+         <string>ja</string> 
+         <string>ko</string> 
+      </test> 
+      <test name="pixelsize" compare="more_eq" > 
+         <double>20</double> 
+      </test> 
+      <edit name="antialias" mode="assign" > 
+         <bool>true</bool> 
+      </edit> 
+      <edit name="autohint" mode="assign" > 
+         <bool>true</bool> 
+      </edit> 
+      <edit name="hinting" mode="assign" > 
+         <bool>true</bool> 
+      </edit> 
+   </match> 
+ 
+
+注解： 
+当中文字体超过20px时，就打开AA，效果非常好。不过我这里把Autohint和 
+hinting都打开了，一般来说这两个只开其一，不过我发现都打开时的效果比前者 
+要好，所以都开了，样式还是选择完全微调。 
+
+
+
+18.CJK斜体字AA设置 
+代码: 
+
+<!-- 
+   Italic CJK fonts,enable AA 
+--> 
+   <match target="font"> 
+      <test name="lang" compare="contains" > 
+         <string>zh</string> 
+         <string>ja</string> 
+         <string>ko</string> 
+      </test> 
+      <test name="slant" compare="not_eq"> 
+         <const>roman</const> 
+      </test> 
+      <edit name="antialias" mode="assign" > 
+         <bool>true</bool> 
+      </edit> 
+      <edit name="autohint" mode="assign" > 
+         <bool>true</bool> 
+      </edit> 
+      <edit name="hinting" mode="assign" > 
+         <bool>true</bool> 
+      </edit> 
+   </match> 
+ 
+
+注解： 
+我不太喜欢系统模拟出来的中文斜体，笔画有点破粹，因此这里打开AA，设置 
+微调，来改善斜体显示效果。 
+
+
+
+
+19.MS字体AA设置 
+代码: 
+
+<!-- 
+   Microsoft fonts settings 
+--> 
+<!-- 
+   default : smoothed and hinted 
+--> 
+   <match target="font" > 
+      <test name="foundry" > 
+         <string>monotype</string> 
+         <string>microsoft</string> 
+      </test> 
+      <edit name="antialias" mode="assign" > 
+         <bool>true</bool> 
+      </edit> 
+      <edit name="autohint" mode="assign" > 
+         <bool>false</bool> 
+      </edit> 
+      <edit name="hinting" mode="assign" > 
+         <bool>true</bool> 
+      </edit> 
+      <edit name="hintstyle" mode="assign" > 
+         <const>hintfull</const> 
+      </edit> 
+   </match> 
+ 
+
+注解： 
+对于MS字体，要打开hinting、关闭autohint，因此这里的设置也比较好理解。 
+
+
+
+
+20.MS YAHEI 字体AA设置 
+代码: 
+
+<!-- 
+   Microsoft YaHei Enable AA 
+--> 
+   <match target="font" > 
+      <test name="family" compare="eq" > 
+         <string>Microsoft YaHei</string> 
+      </test> 
+      <edit name="antialias" mode="assign" > 
+         <bool>true</bool> 
+      </edit> 
+      <edit name="autohint" mode="assign" > 
+         <bool>false</bool> 
+      </edit> 
+      <edit name="hinting" mode="assign" > 
+         <bool>true</bool> 
+      </edit> 
+      <edit name="hintstyle" mode="assign" > 
+         <const>hintfull</const> 
+      </edit> 
+   </match> 
+ 
+
+注解： 
+上面已经针对字体公司做了AA设置，这一段多余了。 
+
+
+21.Courier New 字体AA设置 
+代码: 
+
+<!-- 
+   Courier New: 
+   both enable autohint and hinting looks very well. 
+--> 
+   <match target="font" > 
+      <test name="family" > 
+         <string>Courier</string> 
+         <string>Courier New</string> 
+      </test> 
+      <edit name="antialias" mode="assign" > 
+         <bool>true</bool> 
+      </edit> 
+      <edit name="autohint" mode="assign" > 
+         <bool>true</bool> 
+      </edit> 
+      <edit name="hinting" mode="assign" > 
+         <bool>true</bool> 
+      </edit> 
+      <edit name="hintstyle" mode="assign" > 
+         <const>hintfull</const> 
+      </edit> 
+   </match> 
+ 
+
+注解： 
+对于Courier New字体，有点奇怪，跟其它的MS字体不一样，它在把autohint 
+和hinting都打开后，效果非常的好，笔画清晰，又有AA效果，我比较喜欢，所以 
+这里都开了。好像MS字体中这个比较例外。 
+
+
+
+22.Courier New 字体大小设置 
+代码: 
+
+<!-- 
+   Courier New font size 
+--> 
+   <match target="font" > 
+      <test name="family" > 
+         <string>Courier New</string> 
+      </test> 
+      <test name="pixelsize" compare="less_eq" > 
+         <double>14.7</double> 
+      </test> 
+      <edit name="pixelsize" mode="assign" > 
+         <double>14.7</double> 
+      </edit> 
+   </match> 
+ 
+
+注解： 
+这里设置了Courier New最小字体。理由是： 
+1)对此字体，我把autohint 和 hinting都开了，这样效果很好，但是有个问题， 
+当字体小于14.7px(即11pt)时，‘#’显示的不太好看，而14.7px(11pt)就OK了，所 
+以我设置最小为这个值。 
+
+2)很多网页上显示 [ code ]段时，字体都用的Courier New，但是字体设置的 
+过小，读起来不太舒服，因此，这里强制修改一下Courier New的最小值，在论坛 
+中查看代码时，效果非常好。 
+
+
+23.结束 
+代码: 
+
+</fontconfig> 
+ 
+
+
+
+总结： 
+以上代码设置比较简单，但是由于开了AA，对不同字体做了调整，使得阅读起 
+来非常舒服。不过对MS字体和CJK字体的大小，AA效果等，有一刀切之闲，不过 
+这样效果也非常的不错，供大家参考一下。 
+
+当然也有设置的比较精细的，quanliking大大就对MS每款字体作了不同的设 
+置，具体请参见上面的贴子。

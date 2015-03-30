@@ -1,0 +1,198 @@
+<HTML>
+<HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<TITLE>Code Reading</TITLE>
+</HEAD>
+<BODY>
+<H1>Code Reading: The Open Souce Perspective</H1>
+<P>Author: Diomidis Spinellis</P>
+<H2>第1章&nbsp;导论</H2>
+<H3>1.1&nbsp; 为什么及如何阅读代码</H3>
+<UL>
+<LI>把高质量的代码作为文献，以提高自己的水平。主动地修改代码来检验你对代码的理解是否正确。</LI>
+<LI>以代码为范例。找到你要找的东西后，可以把它复制到一个临时文件中，删除不相关的部分，这个过程叫切片(slicing)。</LI>
+<LI>维护。如果调试器不能共同运转（如C++中基于模板的代码），可以在关键位置加入输出语句。</LI>
+<LI>演进。如增加新的功能、改变代码使之适应新的环境、或重构以提高代码品质。</LI>
+<LI>重用。对于找到可重用的代码，别抱太大希望。</LI>
+<LI>审查。</LI>
+</UL>
+
+<H3>1.2&nbsp; 如何阅读本书</H3>
+<P>使用UML表达设计图：
+<UL>
+<LI>边框加粗的类框来绘制过程。</LI>
+<LI>带有开放箭头的实线描绘数据元素之间的指针。</LI>
+<LI>用一端为菱形的线表示组合。</LI>
+<LI>带有中空箭头的实线表示继承。</LI>
+<LI>中空箭头的虚线表示实现。</LI>
+<LI>开放箭头的虚线表示依赖。</LI>
+</UL></P>
+<HR>
+
+<H2>第2章&nbsp;基本编程元素</H2>
+<P>代码阅读是一项自底向上的活动。</P>
+
+<H3>2.1&nbsp; 一个完整的程序</H3>
+<UL>
+<LI>C, C++和java程序都从main开始执行，因此main是一个好的起始点。</LI>
+<LI>阅读老的C程序时，可能遇到类似这样的函数定义：
+<PRE>
+main(argc, argv)
+    int argc;
+    char *argv[];
+{
+    ......
+}
+</PRE>
+这是旧式的C语法，称为K&amp;R C。</LI>
+<LI>程序结束时可以用exit(0)，0表示成功；这和return 0的结果是相同的。</LI>
+</UL>
+
+<H3>2.2&nbsp; 函数和全局变量</H3>
+<UL>
+<LI>函数和变量声明为static，意味着它们只在该文件中可见。好的做法是确保所有只用于单一文件的变量都声明为static。</LI>
+<LI>要了解函数的功用，可以：1）基于函数名猜；2）阅读位于函数开始部分的注释；3）分析如何使用该函数；4）阅读函数体代码；5）查阅外部程序文档。</LI>
+<LI>许多显示命令行程序用法信息的函数都是usage()。</LI>
+</UL>
+<H3>2.3&nbsp; while循环、条件和块</H3>
+<H3>2.4&nbsp; switch语句</H3>
+<H3>2.5 &nbsp; for循环</H3>
+<H3>2.6&nbsp; break和continue语句</H3>
+<H3>2.7&nbsp; 字符和布尔型表达式</H3>
+<H3>2.8&nbsp; goto语句</H3>
+<H3>2.9&nbsp; 小范围重构</H3>
+<H3>2.10&nbsp; do循环和整型表达式</H3>
+<H3>2.11&nbsp; 再论控制结构</H3>
+<HR>
+<H2>第3章&nbsp;高级C数据类型</H2>
+<H2>第4章&nbsp;C数据结构</H2>
+<H2>第5章&nbsp;高级控制流程</H2>
+<HR>
+
+<H2>第6章&nbsp;应对大型项目</H2>
+
+<H3>6.1&nbsp; 设计与实现技术</H3>
+<P>没什么可记录的。</P>
+
+<H3>6.2&nbsp; 项目的组织</H3>
+<P>没什么可记录的。</P>
+
+<H3>6.3&nbsp; 编译过程和制作文件</H3>
+<UL>
+<LI>在大型项目中，makefile常常由配置步骤动态地生成。</LI>
+<LI>在makefile中，变量名一般全部大写。在使用变量时，如果是单字母名称，用$直接引用，如$L；如果是多字母名称，用$(xxx)引用。常见的用户自定义变量有：
+  <UL>
+  <LI>SRCS &nbsp; 源文件</LI>
+  <LI>INCLUDES&nbsp; 包含文件</LI>
+  <LI>OBJS &nbsp; 目标文件</LI>
+  <LI>LIBS &nbsp; 库</LI>
+  <LI>CC &nbsp; C编译器</LI>
+  <LI>CPP &nbsp; C预处理器</LI>
+  <LI>CFLAGS &nbsp; C编译期的标志</LI>
+  <LI>LFLAFS &nbsp; 连接器的标志</LI>
+  </UL>
+</LI>
+<LI>由make维护的变量有：
+  <UL>
+  <LI>$$ &nbsp; $符号</LI>
+  <LI>$@ &nbsp; 正在制作的文件的名称</LI>
+  <LI>$? &nbsp; 比目标文件更早的文件的名称</LI>
+  <LI>$&gt; &nbsp; 目标依赖的源文件清单</LI>
+  <LI>$&lt; &nbsp; 目标文件转换自的文件名</LI>
+  <LI>$* &nbsp; 目标文件的前缀，不含目录部分和后缀</LI>
+  </UL>
+</LI>
+<LI>在makefile中，常见的伪目标名称有：
+  <UL>
+  <LI>all或build &nbsp; 生成项目中的所有目标</LI>
+  <LI>doc &nbsp; 生成项目的文档</LI>
+  <LI>depend &nbsp; 生成依赖信息</LI>
+  <LI>install &nbsp; 安装</LI>
+  <LI>clean &nbsp; 清理编译过程中生成的文件</LI>
+  </UL>
+</LI>
+<LI>make -n可以进行预演，即显示将要执行的命令，但不会真的执行它们。</LI>
+</UL>
+
+<H3>6.4&nbsp; 配置</H3>
+<H3>6.5&nbsp; 修订控制</H3>
+<H3>6.6&nbsp; 项目的专有工具</H3>
+<H3>6.7&nbsp; 测试</H3>
+<HR>
+
+<H2>第7章&nbsp;编码规范和约定</H2>
+<P> 有三种常用的编码规范：1）GNU编码规范；2）BSD风格指导；3）java编码约定。 另外在Microsoft Windows世界里，多使用匈牙利命名标记。 </P>
+
+<H3>7.1&nbsp; 文件的命名和组织</H3>
+<UL>
+<LI>C头文件使用.h作后缀，只是一种风格，没有任何编译器规定必须使用它。</LI>
+<LI>项目中包含的文件一般有：
+  <UL>
+  <LI>README&nbsp; 项目概况</LI>
+  <LI>MANIFEST&nbsp; 项目文件的清单，带有简单的解释</LI>
+  <LI>INSTALL&nbsp; 安装指示</LI>
+  <LI>LICENSE或Copying &nbsp; 许可信息</LI>
+  <LI>TODO &nbsp; 希望将来进行扩充的清单</LI>
+  <LI>NEWS&nbsp; 介绍用户可视的更改的文档</LI>
+  <LI>ChangeLog或Changes&nbsp; 代码更改汇总</LI>
+  <LI>configure &nbsp; 平台配置脚本</LI>
+  <LI>Makefile和Makefile.SH&nbsp; makefile和生成makefile的脚本</LI>
+  <LI>config.h和config_H.SH&nbsp; 平台相关的配置定义和生成它的脚本</LI>
+  </UL>
+</LI>
+<LI>可能被忽略的文件的扩展名：
+  <UL>
+  <LI>.digit .man Unix手册页的源文件</LI>
+  <LI>.asm .s 汇编语言源码</LI>
+  <LI>.bas .frm MS Visual Basic的源文件</LI>
+  <LI>.C, .cc, .cpp, .cxx C++源文件</LI>
+  <LI>.hpp C++头文件</LI>
+  </UL>
+</LI>
+<LI>BSD风格指定了include语句的顺序：内核包含文件、/usr包含文件、用户的包含文件。</LI>
+<LI>Java的代码约定规定，Java类中的元素定义按照如下的顺序：1）类变量；2）实例变量；3）构造函数；4）方法。另外，变量和方法应该以private，protected，public的次序来定义。</LI>
+</UL>
+
+<H3>7.2&nbsp; 缩进</H3>
+<P>Java规定缩进四个空格，BSD风格规定使用8个字符宽度的制表符，如果一个语句跨越多行，延续行的缩进为4个空格。</P>
+
+<H3>7.3&nbsp; 编排</H3>
+<H3>7.4&nbsp; 命名约定</H3>
+<H3>7.5&nbsp; 编程实践</H3>
+<H3>7.6&nbsp; 过程规范</H3>
+<HR>
+
+<H2>第8章&nbsp;文档</H2>
+<H2>第9章&nbsp;系统构架</H2>
+<H2>第10章&nbsp;代码阅读工具</H2>
+<H3>10.1 &nbsp; 正则表达式</H3>
+<H3>10.2 &nbsp; 用编辑器浏览代码</H3>
+<H3>10.3 &nbsp; 用grep搜索代码</H3>
+<H3>10.4 &nbsp; 找出文件的差异</H3>
+<H3>10.5 &nbsp; 开发自己的工具</H3>
+<H3>10.6 &nbsp; 借助编译器</H3>
+<H3>10.7 &nbsp; 代码浏览器和美化器</H3>
+<H3>10.8 &nbsp; 运行期间的工具</H3>
+<P>分析程序如何与操作系统交互，能够更好地理解程序的功能。
+Unix系统中的strace工具能够跟踪系统调用和对信号的处理。</P>
+<H3>10.9 &nbsp; 非软件工具</H3>
+<UL>
+<LI>将觉得难以理解的代码打印到纸上。</LI>
+<LI>绘制图示：<UL>
+  <LI>实体关系图，大型系统的各个部分如何组织在一起。</LI>
+  <LI>函数调用和数据流向</LI>
+  <LI>类层次和类图</LI>
+  <LI>数据结构，树和表等。</LI>
+  <LI>状态图</LI>
+</UL></LI>
+<LI>向别人介绍你在阅读的代码能够增进您对代码的理解。</LI>
+</UL>
+
+<H2>第11章&nbsp;一个完整的例子</H2>
+<UL>
+<LI>读源码时，如果对一个函数的参数不理解，可以查找调用这个函数的地方，
+通常比阅读函数代码更有效。</LI>
+</UL>
+</BODY>
+</HTML>
+你好

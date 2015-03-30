@@ -1,0 +1,70 @@
+<head><title>const char *与 char * const</title></head>
+
+<body>
+<h1>const char *与 char * const</h1>
+
+<p>const char*, char const*, char*const的区别问题几乎是C++面试中每次都会有的题目。<br/> 
+
+Bjarne在他的The C++ Programming Language里面给出过一个助记的方法： <br/>
+<u>把一个声明从右向左读。</u> <br/>
+<div style={color:red;}><pre>
+char  * const cp; ( * 读成 pointer to ) 
+cp is a const pointer to char 
+
+const char * p; 
+p is a pointer to const char; 
+
+</pre></div>
+char const * p; <br/>
+同上因为C++里面没有const*的运算符，所以const只能属于前面的类型。 也就是说相当于const char * p。
+</p>
+
+<p>
+下面定义的一个指向字符串的常量指针： <br/>
+
+　　char * const prt1 = stringprt1; <br/>
+
+　　其中，ptr1是一个常量指针。因此，下面赋值是非法的。 <br/>
+
+　　ptr1 = stringprt2; <br/>
+
+　　而下面的赋值是合法的：<br/> 
+
+　　*ptr1 = "m"; <br/>
+
+　　因为指针ptr1所指向的变量是可以更新的，不可更新的是常量指针ptr1所指的方向(别的字符串)。 <br/>
+
+　　下面定义了一个指向字符串常量的指针： <br/>
+
+　　const * ptr2 = stringprt1; <br/>
+
+　　其中，ptr2是一个指向字符串常量的指针。ptr2所指向的字符串不能更新的，而ptr2是可以更新的。因此， <br/>
+
+　　*ptr2 = "x"; <br/>
+
+　　是非法的，而： <br/>
+
+　　ptr2 = stringptr2; <br/>
+
+　　是合法的。 <br/>
+
+　　所以，在使用const修饰指针时，应该注意const的位置。定义一个指向字符串的指针常量和定义一个指向字符串常量的指针时，const修饰符的位置不同，前者const放在*和指针名之间，后者const放在类型说明符前。</p>
+
+<p><b>const char **是什么意思？</b> <br/>
+const char ** p <br/>
+
+p 是一个指针，指向一个 指向char的指针，这个指向char的指针所指向的内容不可改变<br/> 
+<div style={color:red;}><pre>
+#define null 0 
+void test() 
+{ 
+const char **p; 
+p=null; 
+*p=null; 
+**p=null; // error 
+} 
+</pre></div>
+</p>
+
+<p align=right>本问并非原创，来自csdn博客。2007-11-2</p>
+</body>
