@@ -796,6 +796,9 @@ global相当于ctags + cscope。
 - Python代码的 *折叠显示* 。C-u 4 C-x $ ，只显示缩进级别小于4的
   行；C-u 8 C-x $ ，只显示缩进级别小于8的行； C-x $ ，显示所有行。
 
+** Grep
+如果不想记住复杂的grep参数，可以使用 =M-x rgrep= (递归子目录), =M-x lgrep= (只搜索当前目录)
+
 * 会话管理
 
 Emacs 23已经集成了desktop包，在退出emacs时，我们可以使用 =M-x
