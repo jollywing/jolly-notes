@@ -1,0 +1,76 @@
+
+* 2015-10-20 Tue
+
+** config network for Fedora 22 for power 8
+
+/etc/sysconfig/network-scripts/ifcfg-eth0
+
+#+begin_example
+NAME=eth0
+HWADDR=98:BE:94:00:16:48
+TYPE=Ethernet
+BOOTPROTO=static
+IPADDR=10.1.60.100
+NETMASK=255.255.255.0
+GATEWAY=10.1.60.254
+DNS=202.106.0.20
+ONBOOT=yes
+PEERDNS=yes
+PEERROUTES=yes
+IPV6INIT=no
+#+end_example
+
+/etc/sysconfig/network
+
+#+begin_example
+NETWORKING=yes
+HOSTNAME=localhost.local
+GATEWAY=10.1.60.254
+#+end_example
+
+config DNS on /etc/resolv.conf
+
+then ~service restart network~.
+
+** Emacs edit remote file through ssh:
+
+: /ssh:root@10.1.60.100:/etc/sysconfig/network
+
+Maybe it request you to input password.
+
+** 面试
+
+今天下午面试了一个叫邢超的人
+
+优点：
+
+- 对Linux很有热情，还写过vim的插件
+- 工作意愿很强烈，可能是等钱吃饭的缘故
+- 薪水要求不高，填写的八千，面试时说 =你说了算= 。
+
+缺点：
+
+- 技术一般，笔试题只能得一半的分。
+- 工作经验不多，还卖过半年的保险。
+- 形象比较邋遢，头发乱，肤色黑，衣服不整洁。
+- 年龄不占优势，81年的。
+
+* 2015-10-21 Wed
+
+
+** 人力推荐 王耀杰
+
+1. 项目是什么时候做的，项目来源
+2. 上一家公司为什么工作时间那么短
+3. 感兴趣的领域，想长期发展的领域
+
+约他明天上午来复试一下.
+
+** 邢超
+
+和徐博请示了一下，徐博说我看着办.
+
+** koji 服务器
+
+- download fedora 22 for x86_64. burn image to cdrom.
+- install Fedora 22 to a x86 machine. start to setup koji server.
