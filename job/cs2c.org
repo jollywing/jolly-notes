@@ -56,8 +56,6 @@ Maybe it request you to input password.
 - 年龄不占优势，81年的。
 
 * 2015-10-21 Wed
-
-
 ** 人力推荐 王耀杰
 
 1. 项目是什么时候做的，项目来源
@@ -74,3 +72,8 @@ Maybe it request you to input password.
 
 - download fedora 22 for x86_64. burn image to cdrom.
 - install Fedora 22 to a x86 machine. start to setup koji server.
+* 2015-10-22 Thu
+** 复试王耀杰
+决定录用。
+** 复试邢超
+上机不行，不予录用。
