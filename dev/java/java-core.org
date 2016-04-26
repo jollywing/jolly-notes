@@ -33,7 +33,7 @@
 
 ** 其它
 
-- *java中的垃圾回收机制*: =System.gc()= 强制垃圾回收器回收资源。 
+- *java中的垃圾回收机制*: =System.gc()= 强制垃圾回收器回收资源。
 
 * 数据结构
 
@@ -72,18 +72,18 @@ java中有四种成员访问的修饰符：public, private, protected和package;
 - 子类终结函数的最后一句应该是对超类终结函数的调用：super.finalize()。
 - 调用自己的构造函数，使用 =this= ，如：
   #+BEGIN_SRC java
-  public class AA { 
+  public class AA {
       private String a;
       private String b;
-   
-      public AA(String a){ 
+
+      public AA(String a){
           this.a = a;
-      } 
-     
-      public AA(String a, String b){ 
+      }
+
+      public AA(String a, String b){
           this(a);
           this.b = b;
-      } 
+      }
   }
   #+END_SRC
 
@@ -187,7 +187,7 @@ java gui需要四种基本元素：组件、容器、布局管理器和事件处
 - GridLayout  布局在一个严格的网格中。
 - GridBagLayout  布局在一个灵活的网格中。
 
-组件包括：JLabel, JTextField, JPasswordField, 
+组件包括：JLabel, JTextField, JPasswordField,
 JButton, JRadioButton, JCheckBox, JComboBox,
 JList, JTable, JDialog.
 
@@ -289,13 +289,13 @@ JList, JTable, JDialog.
 - public void setLabel(String s)
 - public boolean isSelected();
 - public void setSelected(boolean b);
- 
+
 - public void setActionCommand(String s)
 - public void setMnemonic(char mnemonic);
 - public void setToolTipText(String text);
 - public void setDisabledIcon(Icon icon);
 - public void setEnabled(boolean b);
- 
+
 - public void setHorizontalAlignment(int alignment);
 - public void setHorizontalTextPosition(int textPosition);
 - public void setVerticalAlignment(int alignment);
@@ -311,7 +311,7 @@ JList, JTable, JDialog.
 - public JRadioButton( Icon image, boolean state );
 - public JRadioButton( String s, Icon image);
 - public JRadioButton( String s, Icon image, boolean state );
- 
+
 # 把一组RadioButton放在一个ButtonGroup中，才能保证互斥
 
 - public ButtonGroup(); # button group 的构造函数
@@ -434,7 +434,7 @@ swt是eclipse团队开发的java图形库，用于使java程序的界面风格�
 	Display.getDefault().asyncExec(new Runnable(){
 		@Override
 		public void run(){
-			MessageDialog.openInformation(null, 
+			MessageDialog.openInformation(null,
 					"接收到数据", "从营机接到气象通报和目标数据");
 		}
 	});
@@ -459,163 +459,207 @@ Java中的泛型，变长参数，自动拆箱/装箱，条件编译等都是，
 在源代码存在，只供编译器检查使用，编译后的字节码文件已擦除了泛型类型，同时在
 必要的地方插入了强制转型的代码。
 
-泛型代码： 
+泛型代码：
 #+BEGIN_SRC java
-public static void main(String[] args) {    
-    List<String> stringList = new ArrayList<String>();    
-    stringList.add("oliver");    
-    System.out.println(stringList.get(0));    
-}   
+public static void main(String[] args) {
+    List<String> stringList = new ArrayList<String>();
+    stringList.add("oliver");
+    System.out.println(stringList.get(0));
+}
 #+END_SRC
 
-将上面的代码的字节码反编译后： 
+将上面的代码的字节码反编译后：
 #+BEGIN_SRC java
-public static void main(String args[])    
-{    
-    List stringList = new ArrayList();    
-    stringList.add("oliver");    
-    System.out.println((String)stringList.get(0));    
-}    
+public static void main(String args[])
+{
+    List stringList = new ArrayList();
+    stringList.add("oliver");
+    System.out.println((String)stringList.get(0));
+}
 #+END_SRC
 
-*** 自动拆箱/装箱 
+*** 自动拆箱/装箱
 
-+ 自动拆箱/装箱是在编译期，依据代码的语法，决定是否进行拆箱和装箱动作。 
-+ 装箱过程：把基本类型用它们对应的包装类型进行包装，使基本类型具有对象特征。 
-+ 拆箱过程：与装箱过程相反，把包装类型转换成基本类型。 
++ 自动拆箱/装箱是在编译期，依据代码的语法，决定是否进行拆箱和装箱动作。
++ 装箱过程：把基本类型用它们对应的包装类型进行包装，使基本类型具有对象特征。
++ 拆箱过程：与装箱过程相反，把包装类型转换成基本类型。
 + 需要注意的是：包装类型的“==”运算在没有遇到算数运算符的情况下不会自动拆箱，
   而其包装类型的equals()方法不会处理数据类型转换，所以：
 
 #+BEGIN_SRC java
-Integer a = 1;    
-Integer b = 1;    
-Long c = 1L;    
-System.out.println(a == b);    
-System.out.println(c.equals(a));   
+Integer a = 1;
+Integer b = 1;
+Long c = 1L;
+System.out.println(a == b);
+System.out.println(c.equals(a));
 #+END_SRC
 
-这样的代码应该尽量避免自动拆箱与装箱。 
+这样的代码应该尽量避免自动拆箱与装箱。
 
 *** 循环历遍（foreach）
 
-语法： 
+语法：
 #+BEGIN_SRC java
-List<Integer> list = new ArrayList<Integer>();    
-for(Integer num : list){    
-    System.out.println(num);    
-}   
+List<Integer> list = new ArrayList<Integer>();
+for(Integer num : list){
+    System.out.println(num);
+}
 #+END_SRC
 
 Foreach要求被历遍的对象要实现Iterable接口，由此可想而知，foreach迭代也是调用
 底层的迭代器实现的。反编译上面源码的字节码：
 #+BEGIN_SRC java
-List list = new ArrayList();    
-Integer num;    
-Integer num;    
-for (Iterator iterator = list.iterator(); iterator.hasNext(); System.out.println(num)){    
-    num = (Integer) iterator.next();    
-}    
+List list = new ArrayList();
+Integer num;
+Integer num;
+for (Iterator iterator = list.iterator(); iterator.hasNext(); System.out.println(num)){
+    num = (Integer) iterator.next();
+}
 #+END_SRC
 
 *** 条件编辑
 很多编程语言都提供了条件编译的途径，C，C++中使用#ifdef。Java语言并没有提供这
 种预编译功能，但是Java也能实现预编译。
 #+BEGIN_SRC java
-if(true){    
-    System.out.println("oliver");    
-}else{    
-    System.out.println("lee");    
-}    
+if(true){
+    System.out.println("oliver");
+}else{
+    System.out.println("lee");
+}
 #+END_SRC
 
-这段代码的字节码反编译后只有一条语句： 
+这段代码的字节码反编译后只有一条语句：
 #+BEGIN_SRC java
-System.out.println("oliver");    
+System.out.println("oliver");
 #+END_SRC
 
-在编译器中，将会把分支不成立的代码消除，这一动作发生在编译器解除语法糖阶段。 
-所以说，可以利用条件语句来实现预编译。 
+在编译器中，将会把分支不成立的代码消除，这一动作发生在编译器解除语法糖阶段。
+所以说，可以利用条件语句来实现预编译。
 
 *** 枚举
-枚举类型其实并不复杂，在JVM字节码文件结构中，并没有“枚举”这个类型。 
-其实源程序的枚举类型，会在编译期被编译成一个普通了类。利用继承和反射，这是完全可以做到的。 
-看下面一个枚举类： 
+枚举类型其实并不复杂，在JVM字节码文件结构中，并没有“枚举”这个类型。
+其实源程序的枚举类型，会在编译期被编译成一个普通了类。利用继承和反射，这是完全可以做到的。
+看下面一个枚举类：
 
 #+BEGIN_SRC java
-public enum EnumTest {    
-    OLIVER,LEE;    
-}    
+public enum EnumTest {
+    OLIVER,LEE;
+}
 #+END_SRC
 
-反编译字节码后： 
+反编译字节码后：
 #+BEGIN_SRC java
-public final class EnumTest extends Enum {    
-    
-    private EnumTest(String s, int i) {    
-        super(s, i);    
-    }    
-    
-    public static EnumTest[] values() {    
-        EnumTest aenumtest[];    
-        int i;    
-        EnumTest aenumtest1[];    
-        System.arraycopy(aenumtest = ENUM$VALUES, 0,    
-                aenumtest1 = new EnumTest[i = aenumtest.length], 0, i);    
-        return aenumtest1;    
-    }    
-    
-    public static EnumTest valueOf(String s) {    
-        return (EnumTest) Enum.valueOf(EnumTest, s);    
-    }    
-    
-    public static final EnumTest OLIVER;    
-    public static final EnumTest LEE;    
-    private static final EnumTest ENUM$VALUES[];    
-    
-    static {    
-        OLIVER = new EnumTest("OLIVER", 0);    
-        LEE = new EnumTest("LEE", 1);    
-        ENUM$VALUES = (new EnumTest[] { OLIVER, LEE });    
-    }    
-}   
+public final class EnumTest extends Enum {
+
+    private EnumTest(String s, int i) {
+        super(s, i);
+    }
+
+    public static EnumTest[] values() {
+        EnumTest aenumtest[];
+        int i;
+        EnumTest aenumtest1[];
+        System.arraycopy(aenumtest = ENUM$VALUES, 0,
+                aenumtest1 = new EnumTest[i = aenumtest.length], 0, i);
+        return aenumtest1;
+    }
+
+    public static EnumTest valueOf(String s) {
+        return (EnumTest) Enum.valueOf(EnumTest, s);
+    }
+
+    public static final EnumTest OLIVER;
+    public static final EnumTest LEE;
+    private static final EnumTest ENUM$VALUES[];
+
+    static {
+        OLIVER = new EnumTest("OLIVER", 0);
+        LEE = new EnumTest("LEE", 1);
+        ENUM$VALUES = (new EnumTest[] { OLIVER, LEE });
+    }
+}
 #+END_SRC
 
-至于更多细节，可以参考父类 =Enum= 。 
+至于更多细节，可以参考父类 =Enum= 。
 
 *** 变长参数
-变长参数允许我们传入到方法的参数是不固定个数。 
-对于这个方法： 
+变长参数允许我们传入到方法的参数是不固定个数。
+对于这个方法：
 
 #+BEGIN_SRC java
-public void foo(String str,Object...args){    
-    
-}  
-#+END_SRC
-  
-我们可以这样调用： 
-#+BEGIN_SRC java
-foo("oliver");    
-foo("oliver",new Object());    
-foo("oliver",new Integer(1),"sss");    
-foo("oliver",new ArrayList(),new Object(),true,1);    
+public void foo(String str,Object...args){
+
+}
 #+END_SRC
 
-参数args可以是任意多个。 
-其实，在编译阶段，args是会被编译成Object [] args。 
+我们可以这样调用：
 #+BEGIN_SRC java
-public transient void foo(String s, Object aobj[])    
-{    
-}   
+foo("oliver");
+foo("oliver",new Object());
+foo("oliver",new Integer(1),"sss");
+foo("oliver",new ArrayList(),new Object(),true,1);
 #+END_SRC
 
-这样，变长参数就可以实现了。 
-但是要注意的是，变长参数必须是方法参数的最后一项。 
+参数args可以是任意多个。
+其实，在编译阶段，args是会被编译成Object [] args。
+#+BEGIN_SRC java
+public transient void foo(String s, Object aobj[])
+{
+}
+#+END_SRC
+
+这样，变长参数就可以实现了。
+但是要注意的是，变长参数必须是方法参数的最后一项。
 
 *** 总结
 除了上面介绍的语法糖，还有内部类，断言以及 /JDK7/ 的 /switch支持字符串/ ，
-/自动关闭资源（在try中定义和关闭）/ 等。 
-感兴趣的同学可以反编译字节码了解它们的本质。 
+/自动关闭资源（在try中定义和关闭）/ 等。
+感兴趣的同学可以反编译字节码了解它们的本质。
 
 无疑，语法糖方便了程序员的开发，提高了开发效率，提升了语法的严谨也减少了编码
 出错误的几率。我们不仅仅在平时的编码中依赖语法糖，更要看清语法糖背后程序代码
 的真实结构，这样才能更好的利用它们。
+* Java
+** 包内的类不能引用默认包中的类
+
+用Eclipse写程序时，发现一个问题：当一个位于某个包中的类 (代码顶端
+有 package xxx;) 访问 默认包中的类 (代码顶端没有 pacakge xxx;) 时，
+代码检查通不过。
+
+我怀疑是否Eclipse对此做了限制，于是就用 Emacs 试验了一下：
+
+建立B.java，定义 class B：
+#+BEGIN_SRC java
+class B
+{
+  public void print()
+  {
+    System.out.println("This is an object of B class.");
+  }
+}
+#+END_SRC
+
+建立A.java，定义class A，A在test命名空间中，引用B:
+#+BEGIN_SRC java
+package test;
+
+class A
+{
+  public static void main(String [] args)
+  {
+    B b = new B();
+    b.print();
+  }
+}
+#+END_SRC
+
+=javac B.java A.java= 发现不管A.java中是否 =import B= ，编译都不通
+过，看来是javac的限制。
+
+通过网上搜索发现，用java 1.2, 1.3时，是可以从包中引用默认包中的类
+的，但java 1.4之后就不行了：[[http://java.sun.com/javase/compatibility_j2se1.4.html][Java 1.4兼容文档]] 中有说明，并建议把所
+有在未命名的名字空间（默认包）中的类放到某个命名空间中。
+
+无奈，只好顺从吧。
+
+2012-06-10

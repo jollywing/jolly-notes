@@ -1,7 +1,7 @@
 
 
 ## 程序员的经典书目 ##
-> TAG: programmer, book  
+> TAG: programmer, book
 > DATE: 2013-08-20
 
 1. 代码大全
@@ -34,18 +34,3 @@
 28. [Done] 高效程序员的45个习惯：敏捷开发修炼之道
 29. 测试驱动开发
 30. 点石成金：访客至上的网页设计秘笈
-
-------------------------------
-
-## 做个对别人有帮助的程序员 ##
-> TAG: programmer, think, life, hacker  
-> DATE: 2013-08-20
-
-1. Donate open source software, like *vim*, *emacs*, *gcc*.
-2. Share my knowledge through blog, forum and 知识问答社区。
-3. Help my family, my friends and others 解决应用电脑过程中遇到的问题。
-4. 对亲人、朋友的项目提供直接或间接的技术支持。
-5. 做开源项目。
-6. 提高自己，用自己的学习精神和专业态度影响别人。
-
-

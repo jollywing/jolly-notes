@@ -1,6 +1,3 @@
-使用nm可以看到目标文件、函数库或可执行文件中包含的函数。
-使用ldd可以查看可执行文件需要的共享库。
-要查看系统使用的shell，输入/bin/sh -version。
 标准文件描述符：0是标准输入，1是标准输出，2是标准错误输出。
 如果想将标准输出和标准错误输出都重定向到一个文件，可以用>&来结合两个输出。如：kill -l 1234 >killouterr.txt 2>&1
 如果想丢弃程序的输出信息，可以将之重新定向到Unix的通用回收站:/dev/null：kill -l 1234 >/dev/null 2>&1
@@ -17,6 +14,6 @@ shell的通配符扩展（globbing）
 再加上管道，一个命令可以有三种表达方式：
 1 more `grep -l POSIX *`
 2 more $(grep -l POSIX *)
-3 grep -l POSIX * |more 
+3 grep -l POSIX * |more
 
 使用file工具可以查看文件类型。如file /usr/bin/gvim

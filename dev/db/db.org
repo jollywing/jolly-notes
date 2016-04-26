@@ -1,0 +1,43 @@
+
+* SQL数据类型
+** 数值类型
+
+| Type         |      Bytes | Range         |
+|--------------+------------+---------------|
+| TINYINT      |          1 | -128, 127     |
+| SMALLINT     |          2 | -32768, 32767 |
+| MEDIUMINT    |          3 |               |
+| INT,INTEGER  |          4 |               |
+| BIGINT       |          8 |               |
+| FLOAT        |          4 |               |
+| DOUBLE       |          8 |               |
+| DECIMAL(m,d) | m+2 or d+2 |               |
+
+** 日期和时间类型
+
+| Type      | Bytes | Format              |
+|-----------+-------+---------------------|
+| DATE      |     3 | YYYY-MM-DD          |
+| TIME      |     3 | HH:MM:SS            |
+| YEAR      |     1 | YYYY                |
+| DATETIME  |     8 | YYYY-MM-DD HH:MM:SS |
+| TIMESTAMP |     8 | YYYYMMDD HHMMSS     |
+
+** 字符串类型
+
+| Type       |  Bytes |
+|------------+--------|
+| CHAR       |  0-255 |
+| TINYTEXT   |  0-255 |
+| VARCHAR    | 0-2^16 |
+| TEXT       | 0-2^16 |
+| MEDIUMTEXT | 0-2^24 |
+| LONGTEXT   | 0-2^32 |
+| TINYBLOB   |  0-255 |
+| BLOB       | 0-2^16 |
+| MEDIUMBLOB | 0-2^24 |
+| LONGBLOB   | 0-2^32 |
+
+
+http://www.ruanyifeng.com/blog/2013/12/getting_started_with_postgresql.html
+**

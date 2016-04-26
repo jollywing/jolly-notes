@@ -1,0 +1,8 @@
+* sqlite新建文本数据库
+: sqlite demo.db
+* 创建数据表
+: CREATE TABLE heroes (name varchar, race varchar, skill1 varchar, skill2 varchar, skill3 varchar, superskill varchar);
+* 向表中插入数据
+: INSERT INTO heroes VALUES(...);
+* 查看数据库中有哪些表
+* 导出表
