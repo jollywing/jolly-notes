@@ -1,0 +1,1006 @@
+* 工作
+** TASK
+*** 201604
+    - [X] 让董哥和乔总沟通一下项目情况
+    - [X] 问朱健伟密码卡的事情
+    - [X] 军队信息安全单位组织结构图（取消）
+    - [X] 和徐博说明上海提供帮助的情况
+    - [X] 问董哥买内存的事
+    - [X] 用命令行查询库表
+    - [X] 跟董哥说买USBKey (cancel)
+    - [X] 梳理分保标准中的问题
+
+*** 201605
+    - [X] 学习X.509
+    - [X] 问朱健伟USBKEY插件的事情
+*** 201606
+    - [X] 建立安全审计日志的库表
+    - [X] 给secure_admin_info 加入 name 字段
+    - [X] 给 secure_node_info 加入 name 字段
+    - [X] 将概要设计加入项目代码管理
+    - [X] 和上海沟通项目分工
+    - [X] 准备和三楼沟通的问题
+    - [X] 详细设计文档的大纲
+    - [X] 三员管理的详细设计
+    - [X] 审计日志模块的设计
+    - [X] 对于涉密计算机，保证一人一机，怎么从设计上做到？
+    - [X] 和三楼约开会的时间
+    - [X] 参加公司战略发布会
+    - [X] 项目研发代号
+*** 201607
+    - [X] 和沙文娜要高级服务器OS 6.5的光盘。
+    - [X] 为USBKEY生成公钥、私钥和证书
+*** 201608
+    - [X] 整理需要再请教谭总的问题。
+    - [X] 用户信息表存入ukey_cert
+    - [X] 管理员登录验证模块的设计
+    - [X] 管理员结点的UKEY证书，管理结点的数据库
+    - [X] 细化设计方案，数据保护模块
+    - [X] 访问控制中需要加入备份恢复的操作？
+    - [X] 阅读审计日志外部接口的文档
+    - [X] 阅读汤福发的USBKEY插件参考资料
+*** 201610
+    - [X] iptables 学习
+*** 201611
+    - [X] 产品送测
+*** 201612
+    - [ ] 青铜器上创建项目
+    - [ ] 完善产品功能：监控到联网，断开。
+    - [ ] 完善产品功能：监控到设备连接，移除。
+    - [ ] WBS工作任务拆分表
+    - [ ] 不同角色的管理员能够操作的数据库表格不同
+    - [ ] 什么是设计基线，向胡丹尼请教
+    - [ ] 模型裁剪
+
+** 服务器虚拟化项目
+*** 工作计划
+    1. 详细设计, 2016年6月
+    2. 编码实现，2016年6月-10月
+    3. 准备文档和测试用例
+*** DONE 修改概要设计
+    CLOSED: [2016-06-14 二 13:29]
+     1. python编码规范包括哪些？
+        python变量名、函数名和Linux c命名规则相同。
+        类名、结构名用首字母大写，比如SqliteParser。
+        Python的代码块缩进，用空格而不是TAB。缩进4个空格。
+     2. C编码规范。
+        变量名、函数名、类名、结构名与python类似。
+        缩进要求与python相同。
+     3. javascript编码规范。
+        与3楼要求相统一。
+     4. 虚拟机度量是加密后的度量？
+        加密、度量、更新
+        度量、解密、加载
+     5. 怎么做到松耦合？
+        尽量将代码隔离到不同的文件中。
+*** 代码梳理
+    1. spec文件用来做RPM包。
+    2. 网页视图在 =sc/base/templates= 目录下。
+    3. js中\_(), \_在哪里定义的。 ref  =underscore.js=
+    4. 代码中何处创建库表？
+       =ssh root@10.1.123.18= password is q-r1-4, 旧版代码位于 =/opt/systemcenter2.0=.
+       在旧版代码中 =api/rest/config= 目录下，有包含sql命令的文件和创建数据库表的shell脚本。
+       =SC.py= 是一个配置项目的图形程序，用 =pygtk= 实现。
+    5. dashboard.html and dashboard.js 用于绘制监控图表。
+    6. 导航树的页面在 =sc/base/templates/system/system_index.html=. ~<div id="cluste_tree"></div>~
+       对应的js文件在 =sc/base/static/js/system/system_index.js=.
+       获取导航树数据的url是 =/api/desctree=, 在 system_index.js 中的 clusterVar.API.getTreeData 中。
+       在 =sc/base/api/data_center.py= 中的函数 =api_get_desctree=
+    7. 库表是和三楼分开还是在三楼的基础上增加列? 使用表格关联的方法比较好。
+    8. =Lazy_Tree= 的定义在 =sc/base/static/js/common/lazy_tree= 目录下。三楼自己开发，似乎基于backbone.
+
+**** ovirt模块代码
+     1. create VM. 当使用post方法访问 =/api/vm= 时，会访问 =sc/ovirt/api/vm.py= 中的 ~api_create_virt_vm~. 同模块中 =task/vm.py= 中的 ~CreateVirtVm~. 该任务中调用 =api.vms.add=. 然后调用 ovirtSDK 添加虚拟机，并把虚拟机的信息插入到数据库中。
+
+**** bug list
+
+*** 详细设计
+**** 标准
+     6.1 启动过程完整性校验
+     6.2 管理员用户鉴别
+     6.3 三员管理
+     6.4 访问控制
+     6.5 安全审计
+     6.6 虚拟机密级标志
+     6.7 虚拟机隔离
+     6.8 虚拟网络安全
+     6.9 虚拟机备份和恢复
+     6.10 恶意代码防护
+     6.11 剩余信息保护
+     6.12 数据保护
+     6.13 安全管理功能
+**** 访问控制
+
+**** 三员管理
+
+**** 审计日志
+     管理员登录审计
+     1. 管理员登录，验证成功或失败。向数据库中插入记录，包括（ID，时间，登录IP，登录结果）。
+     2. _虚拟机之间的网络访问_ 包含什么。虚拟机A访问虚拟机B的服务。可以和终端登录虚拟机的审计结合起来。
+     3. syslog接口有什么意义吗？将日志写入数据库的同时发送给syslog。
+     4. windows安全日志的分析
+        logparser: http://sec.chinabyte.com/237/13494737.shtml
+     5. Linux syslog日志：
+        + /var/log/lastlog ：记录最后一次用户成功登陆的时间、登陆IP等信息
+        + /var/log/messages ：记录Linux操作系统常见的系统和服务错误信息
+        + /var/log/secure ：Linux系统安全日志，记录用户和工作组变坏情况、用户登陆认证情况
+        + /var/log/btmp ：记录Linux登陆失败的用户、时间以及远程IP地址
+        + /var/log/cron ：记录crond计划任务服务执行情况
+        用python写入syslog后，可以 ~tail /var/log/messages~ 来查看。
+     6. Fedora 20+, 使用journalctl, =/var/log/messages= 不复存在。安装 rsyslog, journalctl就会使用 =/var/log/messages= 了。
+
+**** 管理员登录验证
+
+     1. 密码强度检测，Javascript。
+     2. 得到USBKEY, 飞天诚信2001H. 公司曾经于2013年采购过50个，关明那里有。
+     3. epass 2001H 和 firefox 关联。高级--安全设备--Load--choose libshuttle。
+     4. epass 2001H的证书问题。
+     5. 管理员信息表。
+     6. usbkey驱动。
+     7. 读取usbkey密钥。
+     8. Javascript用密钥加密？
+     9. 飞天诚信的技术支持说：epass2000不支持国密算法，可以购买国密产品epass3000gm
+
+     USBKEY：
+     1. 朱健伟说直接可以从淘宝买到飞天诚信的UsbKey。（已具备）
+     2. 浏览器认证，朱健伟说他们有代码。可以借鉴。（需阅读）
+
+     2016-04-29 Fri, ePass2001和ePass2001H可用，按readme中所说，要以root权限运行 config.sh
+     ukey的默认密码是 =1234=. 默认的SO PIN码是 =rockey=.
+
+**** 虚拟机安全
+     1. iptables添加规则
+     2. iptables保存
+**** 数据保护
+     国密算法：
+     1. 加密虚拟机镜像，C语言实现。
+     2. UKEY驱动，C语言。
+     3. 会话加密。
+**** 宿主机管理
+
+*** 项目沟通
+**** 20160414 项目沟通情况
+     参加人员：通用事业部的刘涛、马俊杰、马立克；总体中心的吴吉庆、李山峰、朱健伟（电话接入）。
+     会议时间：2016/04/14 10:00 - 11:30
+     会议要点：
+     1. 三楼正进行虚拟化项目的底层重构，希望总体中心基于新代码进行安全开发。
+     2. 三楼的oVirt迁移工作大概到6月份才能完成。
+     3. 马俊杰介绍了python开发的环境、重构带来的系统架构变动和项目约定，向总体中心说明了安全代码要遵守的规范，对总体中心当前可以展开的工作提出建议。
+     4. 总体中心明确：对于标准要求的拓扑图工作展示、资源自动发现，如果现有平台不能满足过级要求，需要三楼再做工作。
+     5. 就代码管控问题，鉴于三楼的代码在不停地更新，总体中心建议在项目中期三楼的代码管控对总体中心的研发人员开放，方便协作。
+     6. 总体中心接下来将制定项目计划和详细设计。
+**** 立项准备
+     1. 上海人员，郭荣春、朱健伟
+     2. 董哥，项目立项文档
+**** 待沟通的问题
+     1. ovirt模块是否已经准备好？
+     2. 挂起恢复是否有接口？
+     3. 备份恢复是否有接口？删除虚拟机的时候是否删除备份。
+     4. 我们最近的工作: a, web入口原型, 三员管理, 访问控制. b, 立项准备, 董哥回来. c, 和谭的沟通.
+
+     和航天科技谭总的沟通内容：
+     1. 谭总的背景
+     2. 项目评估太简单，偏web层的工作，底层工作量大：三员管理不只在web界面，宿主机的隔离要修改kvm等。
+     3. 遵从保密局标准，BMB17, BMB20, BMB22
+     4. 硬件防火墙、IDS、IPS需要。
+**** 需要再请教谭总的问题
+     1. 三合一是否要使用保密局指定的，还是自己研发的也可以。
+     2. 秘密计算机和机密计算机要互相隔离，那秘密计算机之间是否能够互相访问。
+**** 20160701项目沟通会议记要
+     会议时间：20160701 10:30 - 11:30
+     参会人员: 通用事业部刘涛、白占来、沙文娜、马立克；总体中心董军平、吴吉庆、李山峰。
+     会议内容：项目进展沟通、总体中心立项评审。
+     会议细节：
+     通用事业部刘涛汇报近两周工作。（1）HA7.0已经结项，研发人员已经撤出，正在进行监控集群的返工工作。（2）返工监控集群的同时，虚拟化集群同时开始联调。（3）与分保过级相关的监控集群及虚拟化集群最终代码将会按原有目标推进实现。
+     总体中心吴吉庆汇报近两周工作。（1）和上海同事讨论项目分工；（2）双因子认证，firefox插件的研发。（3）三员管理模块中安全管理员的前端和后台逻辑研发。(4) 推进项目立项审批流程。
+     总体中心立项评审：总体中心邀请通用事业部审查了客户需求说明书、青铜器上的立项审批申请，通用事业部的同事提出了修改意见。
+
+*** 实现
+**** 任务
+     1. 在 <module>/task 目录下添加一个 task 文件，定义Task类。里面定义 =execute= 和 =revert= 函数。
+     2. 在 <module>/api 下建一个 接口文件，或者在已有的接口文件中添加 函数，函数里调用 =run_task_flow= 执行任务。
+     3. 为了确保自定义的接口载入，在 =<module>/api/__init__.py= 中添加 =from sc.base.api.hello import *= ，其中hello指你在 =<module>/api= 中添加的 hello.py。
+     4. 系统已有的taskflow:
+        sc.base.task.user.CreateUser,
+        sc.monitor.task.user.CreateUser,
+        sc.base.task.user.UpdateUser,
+        sc.monitor.task.user.UpdateUser,
+        sc.base.task.user.DeleteUser,
+        sc.base.task.datacenter.CreateDatacenter,
+        sc.base.task.datacenter.UpdateDatacenter,
+        sc.base.task.datacenter.DeleteDatacenter,
+        sc.base.task.datacenter.DestoryDatacenter,
+        sc.haproxy.task.host.CreateHost,
+        sc.monitor.task.host.CreateHost,
+        sc.monitor.task.cluster.CreateMonCluster
+
+**** 数据库
+     标准版的库表在 =sc.base.models= 里定义。
+     安全版的库表可以在 =sc.base.secure_models= 中定义。 =sc/base/secure_models.py=
+     UserInfo表中的 /monitorid/ 是做什么用的？
+     UserInfo 中的 privilege 是否可以更改?
+
+     #+begin_src sql
+     CREATE TABLE secure_admin_info (
+         id integer NOT NULL UNIQUE,
+         role smallint NOT NULL,
+         security_level smallint NOT NULL);
+
+     ALTER TABLE secure_admin_info ADD name CHARACTER VARYING(64);
+
+     CREATE TABLE secure_admin_info (
+         id integer PRIMARY KEY NOT NULL,
+         role smallint NOT NULL,
+         security_level smallint NOT NULL);
+
+     insert into secure_admin_info values(1, 1, 3); -- admin's id is 1
+     #+end_src
+
+     dump a table of a database into a txt file, use follow command:
+     : pg_dump -h 10.1.123.18 -p 5432 -U systemcenter -W -d system_center -t secure_admin_info -f secure_admin_info.sql
+
+     #+begin_src sql
+     CREATE TABLE secure_node_info (
+         id integer PRIMARY KEY NOT NULL,
+         measure_value character varying(128) NOT NULL,
+         security_level smallint NOT NULL);
+
+     ALTER TABLE secure_node_info ADD name CHARACTER VARYING(64);
+     #+end_src
+
+     #+begin_src sql
+     CREATE TABLE secure_access_matrix (
+         admin_id INTEGER PRIMARY KEY NOT NULL,
+         start_stop_op TEXT NOT NULL,
+         suspend_restore_op TEXT NOT NULL,
+         edit_op TEXT NOT NULL,
+         delete_op TEXT NOT NULL );
+     #+end_src
+
+     #+begin_src sql
+     CREATE TABLE secure_audit_log (
+         event_id INTEGER PRIMARY KEY NOT NULL,
+         subject CHARACTER VARYING(64) NOT NULL,
+         object CHARACTER VARYING(64) NOT NULL,
+         description TEXT,
+         result BOOLEAN NOT NULL,
+         time TIMESTAMP NOT NULL,
+         risk_level SMALLINT NOT NULL,
+         event_type CHARACTER VARYING(128) NOT NULL,
+         behavior CHARACTER VARYING(128) NOT NULL,
+         reserved TEXT);
+     #+end_src
+
+     | Column      | Type                        | Modifiers | desc   |
+     |-------------+-----------------------------+-----------+--------|
+     | event_id    | integer                     | not null  | 事件id |
+     | subject     | character varying(64)       | not null  | 主体   |
+     | object      | character varying(64)       | not null  | 客体   |
+     | description | text                        |           | 描述     |
+     | result      | boolean                     | not null  | 结果     |
+     | time        | timestamp without time zone | not null  | 时间     |
+     | risk_level  | smallint                    | not null  | 风险级别   |
+     | event_type  | character varying(128)      | not null  | 事件类型   |
+     | behavior    | character varying(128)      | not null  | 行为类型   |
+     | reserved    | text                        |           | 保留     |
+
+     导出整个数据库:
+     : pg_dump -h 10.1.123.18 -p 5432 -U systemcenter -W -d system_center -f system_center.sql
+
+*** 代码管理
+**** 已废弃
+     代码克隆地址: git clone ssh://git@10.1.30.154/home/git/secure-cloud-repo/.git
+     password: w-r1-4
+     分支: branch -r, 有上海分支 shanghai
+     创建并切换到shanghai分支: git checkout shanghai
+     做了变更直接push即可。
+**** bitbucket
+     目前项目代码托管在bitbucket: https://bitbucket.org/monk-coder/secure-cloud-cs2c
+     @健伟，把你的bitbucket帐号，我加你进项目，有时间可以熟悉一下三楼的代码。
+
+     where to load vm image?
+     There is not image path in database. Ask _LiuTao_.
+
+     General Department provides *backup/restore* interface?
+
+* 生活
+** 201604
+   - [X] 缴话费, 50
+   - [X] 复印户主和我的身份证
+   - [X] 2016年3月收支统计
+   - [X] 2016年3月日记总结
+   - [X] 领燃气补贴（让女房东领了）
+   - [ ] 去看望任伯伯
+   - [X] Linux下的nbtstat
+   - [X] 还信用卡
+   - [X] 给艳平孩子发满月红包 (艳平没要)
+** 201605
+   - [X] 还房贷
+   - [X] 还信用卡
+   - [X] 4月日记总结
+   - [X] 给刘大伯买书
+   - [X] 整理日记
+   - [X] 取500元
+   - [X] 和林轩约吃饭
+   - [X] 把书送到刘大伯家
+   - [X] 清理血管
+   - [X] 预存644.
+** 201606
+   - [X] sina vdisk 数据迁移
+   - [X] 201605日志总结
+   - [X] 取回体检报告
+   - [X] 手机缴费
+   - [X] 取医保
+   - [X] 请韩友新吃饭
+   - [X] 还房贷
+   - [X] 还信用卡
+   - [X] 缴手机费
+   - [X] 装修包含哪些程序，顺序如何
+   - [X] 京东装修，土巴兔
+   - [X] 去大湖西边收房
+   - [X] 去看房，定装修公司
+   - [X] 预存644保费到工商银行
+** 201607
+   - [X] 7月份房贷
+   - [X] 7月份信用卡
+   - [X] 定水电位置
+** 201608
+   - [X] 预存保费
+   - [X] 给爸妈加入夸克意外计划
+   - [X] 房贷
+   - [X] 信用卡
+   - [X] 交强险续保
+   - [X] 请赵鹏吃饭（西少爷肉夹馍，或楼下面）
+   - [X] 在京东上买角阀
+   - [X] d 铺瓷砖
+   - [X] 抽油烟机埋管
+   - [X] f 漆墙
+** 201609
+   - [X] 9.2 预存保费644
+   - [X] 9.8 蚂蚁花呗还款
+   - [X] 9.19 房贷还款
+   - [X] 9.28 信用卡还款
+   - [X] 9.30 手机充值
+   - [X] 装修抽油烟机调位置
+   - [X] 厕所连管
+   - [X] 装抽油烟机
+   - [X] 安装橱柜
+   - [X] 在京东上买开关插孔面板
+   - [X] h 安装木门
+** 201610
+   - [X] 10.2 预存保费644
+   - [X] 10.8 蚂蚁花呗还款
+   - [X] 10.20 房贷还款
+   - [X] 10.28 信用卡还款
+   - [X] 10.30 手机充值
+   - [X] i 安装灯和电力开关
+   - [X] 解决书房没电的问题
+   - [X] 补踢脚
+   - [X] 检查消化系统
+** 201611
+   - [X] 11.2 预存保费644
+   - [X] 11.8 蚂蚁花呗还款
+   - [X] 11.20 房贷还款
+   - [X] 11.28 信用卡还款
+   - [ ] 11.30 手机充值
+   - [X] 补漆
+   - [X] 拉家具
+   - [X] 量家具，定做
+** 201612
+   - [X] 12.1 预存保费644
+   - [X] 12.5 去北大第一医院挂号，看医生
+   - [X] 12.8 蚂蚁花呗还款
+   - [X] 12.19 房贷还款
+   - [ ] 12.28 信用卡还款
+   - [ ] 12.30 手机充值
+   - [X] 装修：安装卫浴
+   - [X] 装修：和装修公司解决后续手续
+   - [X] 问李慧霸面试的结果
+   - [ ] 装修：安装衣柜
+   - [ ] 装修：让燃气公司验收
+   - [ ] 装修：让物业验收
+   - [ ] k 安装窗帘
+   - [ ] 给劳亚民打电话
+   - [ ] 请李峤吃饭
+   - [ ] 请刘建华吃饭
+   - [ ] 整理笔记本上的照片
+   - [ ] 脂肪瘤手术
+   - [ ] 收集医疗单子，看是否多于600
+   - [ ] 查平安保险的账单
+   - [ ] 整理手机里的照片
+   - [ ] 要不要开始吃降压药呢？
+** 医疗
+多于600可以找公司报销
+多于1800可以走医保
+
+** 感悟
+   1. 这个世界上的人群可以二八分类，20%的人是与众不同的，是杰出的。当你面临选择的时候，想想20%的人是怎么选择的，然后强迫自己去做那20%的人。
+* 写作
+** 游戏设计
+   收钱，帮人杀人，得杀手名号，道德减。
+** 写一本像哈利波特一样的书
+* 技术
+** TASK
+   - [ ] 了解硬件的虚拟化扩展
+   - [ ] 学习svirt
+   - [ ] emacs xsel blog
+** Emacs
+   elisp乘方 =(expt 2 3)= 表示2的3次方
+   C-x 5 o 在多个frames中切换
+** git
+   查看远程仓库的分支： =git ls-remote origin=, 假设 origin 是远程仓库的名称。
+   =git checkout <commit-id>=, git会处于HEAD detached状态. 这时候可以直接 =git checkout <branch-name>=, 切换到某个分支.
+** Unix/Linux
+   Fedora 23中找不到udev, libudev, libudev-devel这些包
+   因为这些包都被包含在systemd, systemd-libs, systemd-devel中了。
+
+   机制与策略。机制关注需要提供什么功能，策略关注如何使用这些功能。
+   这两个部分由程序的不同部分来处理，或者由不同的程序来处理，容易开发，更易于调整。
+   区分机制与策略是是Unix设计背后隐藏的最好的思想之一。
+   如：中断架构，设备驱动，TCP/IP网络，图形显示器的管理…
+
+   /update-grub/ 用于探测所有已经安装的系统，并生成grub引导菜单。
+   如果你已经安装了grub，再安装系统的时候就不用再安装grub，在原有的系统中运行一下 /update-grub/ 即可。
+   如果你安装了新的grub，又想恢复用原系统的grub引导，进入原系统，运行 =grub-install /dev/sda=
+   （假设你的硬盘文件是 =/dev/sda= ）
+
+   添加一个用户 /useradd/ 是传统的Unix命令，使用 /adduser/ 更加方便。
+
+   Debian中查询某个是否已经安装，使用 =dpkg -s xxx= 来查看 =xxx= 是否已经安装。
+   =-s= 相当于 =--status=.
+   如果想模糊查找，可以使用 =dpkg --get-selections <pattern>=, pattern是一个模式字符串，
+   比如 =postgresql*= 就是以postgresql开头的包名。
+
+   /expect/ 是一种能够按照脚本内容里面设定的方式与交互式程序进行“会话”的程序。
+   根据脚本内容 /Expect/ 可以知道程序会提示或反馈什么内容以及 什么是正确的应答。
+   =apt-get install expect=
+
+   shell知识，看下面的代码
+   #+begin_src
+   cat <<EOF
+   I'm a good boy.
+   I'm hansome.
+   I want to hit you.
+   EOF
+   #+end_src
+   表示把两个 =EOF= 之间的内容作为标准输入送给 =cat= 命令做参数。
+
+   在Linux终端下，按 =C-s= 会冻结终端的输入输出。可以按 =C-q= 解锁。
+
+   Fedora下安装rpmbuild需要安装包 =rpm-build=.
+
+   =unar= is a new extractor. =dnf install unar=, then you can list archive with ~lsar~, extract it with ~unar~.
+** Database
+   安装postgresql. If it complains `can not find pg_config', you need install =postgresql-devel= package.
+
+   =postgresql= 的命令行客户端是 =psql=. 包含在 =postgresql-client-common= 这个包中。
+   使用 psql 登录远程数据库
+   : psql -h <host_ip> -p <port> -U <username> -W <db_name>
+   其中 =-W= 表示要求输入密码。
+
+   =postgresql= 中除了 table 还有 sequence, 创建一个表的时候，如果表中有自增列，还会为表生成一个 sequence.
+   当向表中插入记录时，自增列就从该sequence获取下一个值。
+
+   在postgresql的会话中, =\i FILE=, FILE是包含sql命令的文件。
+   =select now();= 显示当前的时间。
+
+   postgresql 支持数组类型.
+
+   =schema= 可以理解为 Table 的集合。有个比喻是这样的，Database好比是一个大仓库。大仓库里有许多房间，房间就相当于 schema。每个房间里有各种各样的货物。这些货物就相当于 =Table= 。使用 schema 的好处在于，避免不同用户的 Table 名字发生冲突，也便于管理。 /postgresql/ 中默认的 schema 是 =public=.
+
+   =view= vs =table=
+   /view/ is not /table/. It is used to display or hide some colums of a /table/.
+   for example, create a view:
+   #+begin_src sql
+   CREATE [TEMP | TEMPORARY] VIEW view_name AS
+   SELECT column1, column2.....
+   FROM table_name
+   WHERE [condition];
+   #+end_src
+   Then you can watch the view with: =select * from VIEWNAME;=
+   If you want to delete a /view/, use: =drop view VIEWNAME;=
+
+   #+begin_src sql
+   create schema myschema;
+   create table myschema.mytable(...);
+   drop schema myschema; -- 如果myschema是空的
+   drop schema myschema cascade; --如果myschema不空
+   #+end_src
+
+   *postgresql command help*
+   =\! SHELL_COMMAND= execute external shell command;
+   =\?= show help;
+   =\conninfo= show current connection info;
+   =\d tbl_name= describe a table;
+   =\d= show tables, views, sequence;
+   =\dn= show schema list;
+   =\dp= list table access previlidges;
+   =\dt= list tables;
+   =\dT= list data types;
+   =\h <cmd_name>= show help for a sql command;
+   =\i FILE= execute query commands in FILE;
+   =\l= list databases;
+   =\o= output command result to extern file;
+   =\password USER= set password for USER;
+   =\q= quit psql;
+
+   查询不相同的列: =select DISTINCT columnName from tableName;=
+   某列的值在某个范围内: =SELECT col1Name FROM tblName WHERE col2Name BETWEEN minValue AND maxValue;=
+   排序: =SELECT * FROM tblName ORDER BY col1Name DESC, col2Name ASC;= 先按 =col1Name= 降序排列，对于 =col1Name= 相同的，再按照 =col2Name= 升序排列。 =order by= 默认是升序排列。
+   向数据库中插入记录时，可以只为具体的列指定值: =INSERT INTO tblName (col1, col2) VALUES(v1, v2);=
+   如果库表中的字段为关键字，要加双引号： =INSERT INTO tblName ("localtime", event) VALUES (v1, v2);=
+   删除表内所有的记录: =DELETE FROM tblName;= or =DELETE * FROM tblName;=
+   增加列: =ALTER TABLE tblName ADD COLUMN col1 int;=
+   增加非空约束: =ALTER TABLE tblName ALTER COLUMN col1 SET NOT NULL;=
+   移除非空约束: =ALTER TABLE tblName ALTER COLUMN col1 DROP NOT NULL;=
+   增加唯一约束： =ALTER TABLE tblName ADD CONSTRAINT unique_constraint_name UNIQUE(colName);=
+   增加默认值: =alter table tblName alter column col1 set default xxx;=
+   增加primary key约束： =alter table vm_disk_measure add constraint disk_uuid_pkey primary key (disk_uuid);=
+   移除primary key约束： =alter table vm_disk_measure drop constraint disk_uuid_pkey;=
+   更改列的类型: =alter table tblName alter column col1 TYPE int;=
+
+   模糊查询: =select * from tblName where colName like x%;= 查询某列的值以 =x= 开头的记录。
+   =select * from tblName where colName like %x;= 以 =x= 结尾的记录。 =%x%= 中间包含 =x= 的记录。
+   =select * from tblName where colName NOT LIKE %x%;= 某列值中间不包含 =x= 的记录.
+   通配符:
+   | %              | 一个或多个字符   |
+   | \_             | 一个字符         |
+   | [abcd]         | abcd中的任一字符 |
+   | [^abc]或[!abc] | 非abc的任一字符  |
+   匹配多个值: =select * from tblName where colName IN (v1, v2, v3);=
+   从两个表中查询数据: =select tbl1.col1, tbl2.col3 from tbl1,tbl2 where tbl1.col1 = tbl2.col1;=
+
+   刚安装完postgresql后，要使用 =pg_ctl initdb= 对数据库进行初始化。
+   然后就可以用 =systemctl start postgresql= 启动服务了。
+
+** 了解ovirt
+*** ovirt
+ 虚拟化平台，也就是虚拟化集群的管理工具。
+ web接口
+ 管理虚拟机、存储和虚拟网络。
+ Hypervisor: Linux上的KVM。
+*** libvirt
+ [[http://libvirt.org/][libvirt]] 是控制Linux虚拟化能力的工具。也叫虚拟化API。
+ 提供C语言可以调用的库。
+ 目标是支持远程管理虚拟机、存储和虚拟网络。
+ [[https://segmentfault.com][segmentfault]] 上关于libvirt的介绍:
+
+IBM关于libvirt的文章摘记（http://www.ibm.com/developerworks/cn/linux/l-libvirt/）
+libvirt 将物理主机称作节点，将来宾操作系统称作域。这里需要注意的是，libvirt（及其应用程序）在宿主 Linux 操作系统（域 0）中运行。
+
+需要安装 ~python-libvirt~ 才能在python中 ~import libvirt~。
+安装 libvirt-clients 就可以使用 =virsh= 了。
+
+*** Linux container system
+Lxc简单介绍: https://segmentfault.com/a/1190000000443812
+
+*** 网络知识
+    路由器按IP分发报文，交换机按MAC分发报文。
+    交换机只认识MAC地址。
+    自己作为新设备想要一个IP地址，要么RARP要一个，要么走基于UDP的DHCP要一个，当然都只限于局域网内。
+
+    Linux下 =ufw= 是比 iptables 更直观的防火墙管理工具，还有 =gufw= 是带图形界面的。
+
+*** 安全
+    keystore: 是一个加密的文件，用于存储密钥和证书。
+    证书：一般包括一个实体的数字签名，和公钥。签名是用私钥加密过的实体信息，公钥用来验证签名。
+** HTML
+   input控件的placeholder可以设置文本框的提示字符串。
+   : <meta http-equiv="pragma" content="no-cache"/>
+   关于Pragma:no-cache，跟Cache-Control: no-cache相同。Pragma: no-cache兼容http 1.0 ，Cache-Control: no-cache是http 1.1提供的。因此，Pragma: no-cache可以应用到http 1.0 和http 1.1，而Cache-Control: no-cache只能应用于http 1.1.
+   =http-equiv= 类似HTTP的头部协议。例如：
+   : <meta http-equiv="refresh" content="5"; url="http://www.downme.com">
+   每隔5秒，刷新一次，如果设定了url, 则跳转到url指定的页面。http-equiv通常用来描述网页的行为。
+   ~<meta name="xxx" content="yyy">~ 用来描述网页的内容。
+
+   : <link type="text/css" rel="stylesheet" href="./style.css">
+   其中rel表示当前文档与被链接文件的关系。
+
+** Javascript
+   正则表达式，test执行的结果是true或false。比如 ~/[0-9]/.test(s)~ 如果s中含有数字，则返回true.
+   true和false可以进行加减操作。进行加减操作时，true相当于1，false相当于0。
+
+   快捷的实践javascript的方法。
+   在浏览器的地址栏中输入 =javascript:alert('hello')=, =javascript:('hello'+'world')=, 等等。
+   另一种方法是浏览器的开发者工具，其console窗口就是一个javascript解释器。
+** Web
+   SOAP：简单对象访问协议。
+   WebService三要素：SOAP、WSDL(Web Services Description Language)、UDDI(Universal Description Discovery andIntegration)
+   gSOAP编译工具提供了一个SOAP/XML 关于C/C++ 语言的实现，从而让C/C++语言开发web服务或客户端程序的工作变得轻松了很多。
+   安装gsoap: =apt-get install gsoap=, 可以得到两个小工具：soapcpp2和wsdl2h。
+
+   *backbone* 是一个轻量级框架，用于创建MVC的前端应用。强制依赖于 *Underscore.js* (一个实用型库)。
+   *drupal* 是一个PHP语言实现的CMS应用。
+   *way.js* 实现数据绑定. https://github.com/gwendall/way.js
+   在login.js中用 =way.set= 给绑定的元素赋值. =way.get= 来取值, 很方便. 在顶层元素设定 =way-scope=, 在要绑定值的元素添加 =way-data= 属性。
+** Python
+   怎么查看python已经安装了哪些包，进入python交互环境，输入 /help('modules')/ 就会列出所有安装包。
+   requests 并不是python的标准库，可能需要单独安装。
+   python列表中的双冒号是什么意思。是切片。通常我们用 `li[2:5]` 其实切片的原型是 `li[begin:end:step]`, 如果把begin和end都省略，就变成了双冒号。比如 `li = [1, 2, 3, 4, 5]`, `li[::2]`将返回 [1, 3, 5].
+   `__init__.py` 。如果一个目录作为python的一个包，其中必须有 `__init__.py` 文件，哪怕该文件是空的。`__init__.py` 中也可以定义类和函数，如果导入包，就直接导入了 `__init__.py` 中定义的东西，可以通过包名直接调用`__init__.py` 中定义的函数等。
+   `hasattr`是检查给定的对象（模块、对象等）是否有对应属性和方法的函数。`getattr`获得对给定属性的引用。
+   bool是python的内建类，它的唯一实例是True和False。bool()返回False. 传给bool的参数如果是空列表、空字典、空列表、0等，bool(x)会返回False，否则会返回True.
+
+   with statement:
+   #+begin_src python
+   with open('123.txt') as f:
+       msg = f.read()
+   #+end_src
+   with表达式结束后，会自动调用file对象的退出方法。
+
+   virtualenv 用来创建隔离的开发环境。(http://virtualenv-chinese-docs.readthedocs.org/en/latest/#id28)
+   安装virtualenv: =pip install virtualenv=
+   创建一个virtualenv: =virtualenv <DIR>=
+   激活virtualenv: =source bin/activate=
+   关闭virtualenv: =deactivate=
+
+   pip 安装 lxml, 报错
+   : fatal error: libxml/xmlversion.h: No such file or directory
+   解决方案：Debian安装 libxml2-dev, libxslt1-dev; Fedora安装 libxml2-devel and libxslt-devel.
+
+   批量安装python模块， =pip install -r requirements.txt=
+
+   =str.strip()= 移除str两端的空格. =str.strip('w,.')=
+   只要str两端有 =w,.= 字母的组合，就会被移除。如 'www.ehouse.net'.strip('w,.') 会返回 'ehouse.net'
+
+   =sys.path= 显示系统路径，大概是python搜寻模块的路径。
+
+   python egg: 俗称 _蟒蛇蛋_ ，通常是一个python 包的zip压缩文件，可以通过 =easy_install= (来自 python setup tools 的工具)安装。类似于java的jar文件。也可以不是zip文件，而是一个标明egg的目录。
+
+   =globals()= 返回当前进程的名字表。
+
+   Python中单下划线在交互式解释器中代表上一条执行过的语句的结果。
+   =_= 也可以用作临时的变量名。该临时变量名你以后不需要再用到，就可以用 =_=, 如
+   #+begin_src python
+   for _ in range(5):
+       do_something()
+   #+end_src
+   单下划线有时也被用作函数名。
+   它通常用于实现国际化和本地化字符串之间翻译查找的函数名称，这似乎源自并遵循相应的C约定。如：
+   #+begin_src python
+   from django.utils.translation import ugettext as _
+   from django.http import HttpResponse
+   def my_view(request):
+       output = _("Welcome to my site.")
+	   return HttpResponse(output)
+   #+end_src
+   以单下划线为变量或函数名的前缀，从惯例上来说，该变量或函数为私有成员。
+   Python文档中所说：以下划线“_”为前缀的名称（如_spam）应该被视为API中非公开的部分（不管是函数、方法还是数据成员）。此时，应该将它们看作是一种实现细节，在修改它们时无需对外部通知。
+   如果你写了代码 =from <模块/包名> import *= ，那么以“_”开头的名称都不会被导入，除非模块或包中的“__all__”列表显式地包含了它们。
+*** python 装饰器 (Decorator)
+
+    #+begin_src python
+    def hello(fn):
+        def wrapper():
+            print "hello, %s" % fn.__name__
+            fn()
+            print "goodby, %s" % fn.__name__
+        return wrapper
+
+    @hello
+    def foo():
+        print "i am foo"
+
+    foo()
+    #+end_src
+
+    会输出什么？
+    #+begin_example
+    hello, foo
+    i am foo
+    goodby, foo
+    #+end_example
+
+    #+begin_src python
+    @decorator
+    def func():
+        pass
+    #+end_src
+
+    解释器会把它解释成：
+
+    : func = decorator(func)
+
+    多个decorator
+
+    #+begin_src python
+    @decorator_one
+    @decorator_two
+    def func():
+        pass
+    #+end_src
+
+    相当于：
+
+    : func = decorator_one(decorator_two(func))
+
+    注意 decorator必然返回一个函数。
+
+
+    带参数的decorator：
+    #+begin_src python
+    @decorator(arg1, arg2)
+    def func():
+        pass
+    #+end_src
+
+    相当于：
+
+    : func = decorator(arg1,arg2)(func)
+
+    这意味着decorator(arg1, arg2)这个函数需要返回一个“真正的decorator”。
+
+*** python的带星参数
+    =func(*args)= 代表把参数作为一个元组来接收。
+    比如 =func(1,3,5)= 相当于只接收了一个元组参数，该元组的值是 (1,3,5).
+    =func(**kargs)= 代表接收带关键词的参数，并把这些键值对作为字典来接收。
+    比如 =func(volvo='America", haval='China')=, 相当于接收了一个字典 /{'volvo': 'America', 'haval': 'China'}/.
+    注意，作为参数传递的键值不能是字符串等表达式。
+
+*** SqlAlchemy
+    SqlAlchemy是python的ORM框架，需要单独安装。
+    python的数据库API返回的记录集合用列表表示，列表的每一个元素是一个元组。
+    #+begin_src python
+    [('John', 18, 'male'), ('Joan', 16, 'female'),
+    ('Jack', 30, 'male'), ('Shelly', 12, 'female')]
+    #+end_src
+
+    使用元组的缺点是难看出表的结构，为解决这个问题，可以用对象来表示每条记录。把关系数据库中的每条记录影射到对象上，这就是传说中的ORM。如：
+    #+begin_src python
+    class Person(object):
+        def __init__(self, name, age, sex):
+            self.name = name
+            self.age = age
+            self.sex = sex
+
+    [ Person('John', 18, 'male'),
+      Person('Joan', 16, 'female'),
+      Person('Jack', 30, 'male'),
+      Person('Shelly', 12, 'female') ]
+    #+end_src
+
+    SqlAlchemy 的用法举例
+    #+begin_src python
+    # 导入:
+    from sqlalchemy import Column, String, create_engine
+    from sqlalchemy.orm import sessionmaker
+    from sqlalchemy.ext.declarative import declarative_base
+
+    # 创建对象的基类:
+    Base = declarative_base()
+
+    # 定义User对象:
+    class User(Base):
+        # 表的名字:
+        __tablename__ = 'user'
+
+        # 表的结构:
+        id = Column(String(20), primary_key=True)
+        name = Column(String(20))
+
+    # 初始化数据库连接:
+    # '数据库类型+数据库驱动名称://用户名:口令@机器地址:端口号/数据库名'
+    engine = create_engine('mysql+mysqlconnector://root:password@localhost:3306/test')
+    # 创建DBSession类型:
+    DBSession = sessionmaker(bind=engine)
+
+    # 创建session对象:
+    session = DBSession()
+    # 创建新User对象:
+    new_user = User(id='5', name='Bob')
+    # 添加到session:
+    session.add(new_user)
+    # 提交即保存到数据库:
+    session.commit()
+
+    # 创建Query查询，filter是where条件，最后调用one()返回唯一行，如果调用all()则返回所有行:
+    user = session.query(User).filter(User.id=='5').one()
+    # 打印类型和对象的name属性:
+    print 'type:', type(user)
+    print 'name:', user.name
+
+    # 关闭session:
+    session.close()
+    #+end_src
+
+    /psycopg/ 是一个PostGreSql的python适配器，实现了Python DB API 2.0，类似于 /mysqlconnector/ .
+    可以被 /SqlAlchmy/ 调用。其基本用法如下面代码所示：
+
+    #+begin_src python
+    import psycopg2
+
+    ##连接到一个存在的数据库
+    ##connect（）建立一个新的数据库会话，并返回一个connect实例
+    conn = psycopg2.connect(“dbname=test user=postgres”)
+
+    ##打开一个光标，用来执行数据库操作
+    cur = conn.cursor()
+
+    ##执行命令：建立一个新表
+    cur.execute("CREATE TABLE test (id serial PRIMARY KEY, num integer, data varchar);")
+
+    ##传递数据用来填充查询占位符， 让Psycopg执行正确的转换（不再有SQL注入）
+    cur.execute("INSERT INTO test (num, data) VALUES (%s, %s)", (100, "abcdef"))
+
+    ##查询数据库，取得数据作为python对象
+    cur.execute(“SELECT * FROM test;”)
+    cur.fetchone()
+
+    ##使改变永久存入数据库
+    conn.commit()
+
+    ##关闭到数据库的通信
+    cur.close()
+    conn.close()
+    #+end_src
+
+** C/C++
+   #+begin_example
+   /usr/bin/ld: getinfos.o: undefined reference to symbol 'dlclose@@GLIBC_2.2.5'
+   //lib/x86_64-linux-gnu/libdl.so.2: error adding symbols: DSO missing from command line
+   #+end_example
+   在链接时加入 `-ldl` 即可解决问题。
+
+** Firefox插件
+   创建一个HTML文件，mime-type为：application/x-my-extension" ，用于加载你的插件。
+
+   #+begin_src html
+   <embed type="application/x-my-extension" id="pluginId">
+   <script>
+   var plugin = document.getElementById("pluginId");
+   var result = plugin.myPluginMethod();  // call a method in your plugin
+   console.log("my plugin returned: " + result);
+   </script>
+   #+end_src
+
+** 安全
+   =PKCS#11= 是RSA提供的通用接口。隔离了设备的差异性，方便开发者使用USBKEY这类加
+
+   PAM is _Pluggable Authentication Modules_.
+
+   简单的加密算法对信息进行简单的乱序或替换。这种加密方式要求加密算法是保密的。
+   现代的加密算法往往把算法公开，需要保密的仅仅是密钥。
+   对称加密算法，加密与解密的密钥是相同的。算法是公开的，重点是保护密钥的安全。
+   PKI = Public Key Infrastruction.
+
+   公开密钥的算法速度比对称加密算法的速度慢很多，而且因为公钥公开可能导致信息被恶意截获，所以不适于数据传输，通常使用PKI和对称加密算法结合的方式传送数据。
+
+*** SSL握手
+
+*** openssl，非对称加解密
+    好文推荐: [[SSL/TLS原理][https://segmentfault.com/a/1190000002554673]]
+    openssl includes libcrypto, libssl and command utility /openssl/.
+
+    =/etc/pki/CA= 目录下, newcerts存放CA签署过的数字证书, private用于存放CA的私钥, crl用于存放吊销的证书.
+    =/etc/pki/tls= 目录下:
+    + openssl.cnf, openssl的CA主配置文件
+    + private目录存放证书密钥
+    + certs目录放置自己的证书和内置证书
+    + certs/ca-bundle.crt *内置信任的证书*
+    + cert.pem 到 certs/ca-bundle.crt 的软链接
+
+    TLS = transfer layer security.
+    公钥用来加密，私钥用来解密。
+    私钥用来签名，公钥用来验签。
+    生成私钥: =openssl genrsa -out test.key 1024=, 密钥的长度为1024 bit.
+    需要注意的是这个文件包含了公钥和密钥两部分，也就是说这个文件即可用来加密也可以用来解密。
+    生成公钥, 从刚才的密钥文件中提取:
+    : openssl rsa -in test.key -pubout -out test_pub.key
+    用公钥加密文件 =hello.txt=:
+    : openssl rsautl -encrypt -in hello.txt -inkey test_pub.key -pubin -out hello.en
+    用私钥解密文件:
+    : openssl rsautl -decrypt -in hello.en -inkey test.key -out hello.de
+    生成证书。要生成正式的证书，需要向CA申请，为此要创建一个证书申请Certificate Signing Request (CSR)。
+    : openssl req -new -key test.key -out cert.csr
+    我们把cert.csr发给CA认证中心。CA认证中心通过后，会反馈（通常是邮件）回来认证的信息，再导入即可。
+    关于导出CSR以及导入CA认证信息，可以参看文档：http://docs.oracle.com/javase/1.4.2/docs/tooldocs/windows/keytool.html
+    如果只是自己玩玩，可以创建自签名的证书
+    : openssl req -new -x509 -key test.key -out cacert.pem -days 1095
+    后面的参数"-days 1095"表示授权天数为1095天。
+*** 证书
+    讲解数字 *证书工作原理* 的好文章: http://www.cnblogs.com/JeffreySun/archive/2010/06/24/1627247.html
+    基于OpenSSL自建CA和颁发SSL证书: https://segmentfault.com/a/1190000002569859
+    *签名* 就是在信息的后面再加上一段内容，可以证明信息没有被修改过.一般是对信息做一个hash计算得到一个hash值。在把信息发送出去时，把这个hash值 *加密* 后做为一个签名和信息一起发出去。接收方在收到信息后，会重新计算信息的hash值，并和信息所附带的hash值(解密后)进行对比，如果一致，就说明信息的内容没有被修改过。
+    对内容的hash值进行加密解密，就是为了防止不怀好意的人在修改信息内容的同时也修改hash值。hash值的加解密涉及到数字证书等概念。
+
+    证书的第一个作用是客户端认证服务器。通过证书客户端拿到服务器的公钥。服务器要向客户端证明自己的身份，就向客户端发送一段明文 =xyz=, 并用私钥加密 =xyz=, 明文和密文一起发送给客户端。客户端用公钥解密密文，和明文对比。如果匹配则认为服务器是安全的，因为只有服务器拥有 *私钥* 。
+
+    /不能用公私钥对通信加密/, 因为如果服务器向客户端发送的私密信息用 *私钥* 加密，所有拥有 *公钥* 的人截获信息后都可以解密。
+
+    可以使用对称加密算法来对通信加密。看下面的过程就明白了。
+    #+begin_example
+    “客户”->“服务器”：你好
+    “服务器”->“客户”：你好，我是服务器
+
+    “客户”->“服务器”：向我证明你就是服务器
+    “服务器”->“客户”：你好，我是服务器 {你好，我是服务器}[私钥|RSA]
+
+    “客户”->“服务器”：{我们后面的通信过程，用对称加密来进行，这里是对称加密算法和密钥}[公钥|
+    “服务器”->“客户”：{OK，收到！}[密钥|对称加密算法]
+    “客户”->“服务器”：{我的帐号是aaa，密码是123，把我的余额的信息发给我看看}[密钥|对称加密算法]
+    “服务器”->“客户”：{你的余额是100元}[密钥|对称加密算法]
+    #+end_example
+
+    证书的作用是把公钥发给客户端，并且能证明这个公钥是谁的。
+    一个加密通信的完整过程是这样的:
+    #+begin_example
+    “客户”->“服务器”：你好
+    “服务器”->“客户”：你好，我是服务器，这里是我的数字证书
+    “客户”->“服务器”：向我证明你就是服务器，这是一个随机字
+    “服务器”->“客户”：{一个随机字符串}[私钥|RSA]
+    “客户->“服务器”：{这是我的密钥和对称加密算法}[公钥|RSA]
+    “服务器”->“客户”：{OK，已经收到你发来的对称加密算法和密钥！有什么可以帮到你的？}[密钥|对称加密算法]
+    “客户”->“服务器”：{我的帐号是aaa，密码是123，把我的余额的信息发给我看看}[密钥|对称加密算法]
+    “服务器”->“客户”：{你好，你的余额是100元}[密钥|对称加密算法]
+    #+end_example
+
+    证书的主要内容包括:
+    + Issuer (证书的发布机构)
+    + Valid from , Valid to (证书的有效期)
+    + Public key (公钥)
+    + Subject (主题): 这个证书是发布给谁的，或者说证书的所有者，一般是某个人或者某个公司名称、机构的名称、公司网站的网址等。
+    + Signature algorithm (签名所使用的算法): 就是指的这个数字证书的数字签名所使用的加密算法，这样就可以使用证书发布机构的证书里面的公钥，根据这个算法对指纹进行解密。
+    + Thumbprint, Thumbprint algorithm (指纹以及指纹算法): 用来保证证书的完整性。指纹使用机构的私钥，通过签名算法进行加密，放在证书中。接收到的人，可用公钥和签名算法对指纹进行解密，然后验签。
+
+    客户端如何检查从服务器接收到的证书的有效性？
+
+    1. 服务器在通信过程开始时会把证书发给客户端。
+    2. 客户端(对方通信用的程序，例如IE、OUTLook等)读取证书中的Issuer(发布机构)为"SecureTrust CA" ，然后会在操作系统中受信任的发布机构的证书中去找"SecureTrust CA"的证书，如果找不到，那说明证书的发布机构是个水货发布机构，证书可能有问题，程序会给出一个错误信息。
+    3. 如果在系统中找到了"SecureTrust CA"的证书，那么应用程序就会从证书中取出"SecureTrust CA"的公钥，然后对我们"ABC Company"公司的证书里面的指纹和指纹算法用这个公钥进行解密，然后使用这个指纹算法计算"ABC Company"证书的指纹，将这个计算的指纹与放在证书中的指纹对比，如果一致，说明"ABC Company"的证书肯定没有被修改过并且证书是"SecureTrust CA" 发布的，证书中的公钥肯定是"ABC Company"的。
+    4. 对方客户端就可以放心的使用这个公钥和服务器通信了。
+
+*** 使用openssl生成CA证书
+
+1. 生成密钥对
+   : openssl genrsa -out cs2c-ca.key 1024
+2. 生成CA证书
+   : openssl req -new -x509 -key catest.key -out cs2c-ca.crt
+   cs2c-ca.crt 就是CA证书，可以用它为其它证书请求签发证书。
+3. 假设要为你的usbkey生成一个证书，假设该Ukey的Token name是 =secure2=. 先生成一个密钥对。
+   : openssl genrsa -out secure2.key 1024
+4. 生成CSR (证书签发请求)文件
+   : openssl req -new -key secure2.key –out secure2.csr
+5. CSR文件必须有CA的签名才可形成证书，利用上面生成的CA证书对该csr文件进行签名生成证书
+   : openssl x509 -req -in secure2.csr –out secure2.crt -CA cs2c-ca.crt –CAkey cs2c-ca.key -days 365 –CAcreateserial
+   secure2.crt就是你可以导入到ukey中去的证书.
+** web 游戏设计
+*** 存储
+    html5 storage, window.localstorage.
+
+    #+begin_src js
+    //结合JSON.stringify使用更强大
+    var person = {'name': 'rainman', 'age': 24};
+    localStorage.setItem("me", JSON.stringify(person));
+    JSON.parse(localStorage.getItem('me')).name;	// 'rainman'
+
+    /**
+    * JSON.stringify，将JSON数据转化为字符串
+    *     JSON.stringify({'name': 'fred', 'age': 24});   // '{"name":"fred","age":24}'
+    *     JSON.stringify(['a', 'b', 'c']);               // '["a","b","c"]'
+    * JSON.parse，反解JSON.stringify
+    *     JSON.parse('["a","b","c"]')                    // ["a","b","c"]
+    */
+    #+end_src
+
+
+* 投资
+** 缠论笔记
+   每年的春节前后，高送转是市场必炒的题材。
+   那么怎么辨别领涨股票呢? 并不是涨的多就是领涨股票，而是在形态上比较。在大盘形态上还没有完成突破的时候，该股已经完成了大形态的突破。节奏上领先于大盘。这样的股票才是领涨股票。
+
+   为了大家理解，再总结一下我们的操作步骤:
+   1、研判大盘 有大资金进入，会有一波中线行情.
+   2、确定大盘后，选择领涨股票，在突破，回调，转升点买入
+   3、形成上涨趋势，耐心持有
+   4、在上涨趋势完结后的反弹相对高点卖出
+
+   最近研究缠论，缠中之禅说：对我而言，股市就是提款机。时机到了，就去提款。时机未到，就让钱搁在那。
+   在牛市里，跌就是爹。
+
+   如果跟盘技术不行,有一种方式是最简单的,就是盯着所有放量突破上市首日最高价的新股,以及放量突破年线然后缩量回调年线的老股,这都是以后的黑马。特别那些年线走平后向上出现拐点的股票,一定要看好了。至于还在年线下面的股票,先别看了,等他们上年线再说。其实,这就是在牛市中最简单可靠的找所谓牛股的方法。——缠中说禅
+
+   牛市中,最终所有股票都会有表现的机会,只是掌握了节奏,资金的利用率就高,一个牛市下来,挣的钱如果不超出指数最终涨幅的几倍, 指数长一倍,不挣个 4、5 倍,那就算废物点心了。——缠中说禅
+
+   先把房子、车子买好,把几十年生活费用、养孩子的费用等等留出来买国债,还有一些基本的保险。把这些所有问题都处理好了,如果还有闲钱,就继续炒股票。有空来本博客看看《论语》,看看“缠中说禅”。人生不悟道,才是真正的白活。炒股票也是可以悟道的,边炒边悟吧。实业就不要干了,炒股票的人干实业,基本很难成功。干实业太累,风险比股票大多了。股票的风险,一个人就可以控制,实业的风险,谁都控制不了。
+
+   别恨银行股,哪天它们真见顶了,市场也好不了,它们是红旗,各位只要看着红旗还在打,各根据地就可以继续轮动大干了。
