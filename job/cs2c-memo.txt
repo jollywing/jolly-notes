@@ -1,0 +1,18 @@
+
+* Network
+IP: 10.1.30.154-156;
+netmask: 255.255.255.0;
+gateway: 10.1.30.254;
+DNS: 202.106.0.20;
+
+phone: 3087
+
+printer: 10.1.20.99
+
+cs2c-network: 51659955
+* Mail
+mail.cs2c.com.cn
+jiqing.wu@cs2c.com.cn; ~o*h8*5~
+
+* Finance report
+10.2.50.249; 00647; ~o*h~

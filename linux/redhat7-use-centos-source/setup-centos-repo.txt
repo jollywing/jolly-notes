@@ -1,0 +1,49 @@
+1. 看看安装了哪些有关yum的包
+[root@localhost ~]# rpm -qa | grep yum
+yum-utils-1.1.31-24.el7.noarch
+yum-langpacks-0.4.2-3.el7.noarch
+yum-metadata-parser-1.1.4-10.el7.x86_64
+yum-rhn-plugin-2.0.1-4.el7.noarch
+PackageKit-yum-0.8.9-11.el7.x86_64
+yum-3.4.3-118.el7.noarch
+
+
+2. 把系统已经安装的yum的包全部卸载，比如
+[root@localhost ~]# rpm -e yum-3.4.3-118.el7.noarch --nodeps
+[root@localhost ~]# rpm -e yum-utils-1.1.31-24.el7.noarch --nodeps
+[root@localhost ~]# rpm -e yum-rhn-plugin-2.0.1-4.el7.noarch --nodeps
+[root@localhost ~]# rpm -e yum-metadata-parser-1.1.4-10.el7.x86_64 --nodeps
+[root@localhost ~]# rpm -e yum-langpacks-0.4.2-3.el7.noarch --nodeps
+[root@localhost ~]# rpm -e PackageKit-yum-0.8.9-11.el7.x86_64 --nodeps
+
+
+3. 确保联通到互联网
+[root@localhost ~]# ping 8.8.8.8
+PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+64 bytes from 8.8.8.8: icmp_seq=1 ttl=48 time=51.3 ms
+64 bytes from 8.8.8.8: icmp_seq=2 ttl=48 time=49.5 ms
+
+
+
+4. 下载下列软件包
+[root@localhost ~]# wget http://centos.ustc.edu.cn/centos/7/os/x86_64/Packages/yum-3.4.3-132.el7.centos.0.1.noarch.rpm
+[root@localhost ~]# wget http://centos.ustc.edu.cn/centos/7/os/x86_64/Packages/yum-metadata-parser-1.1.4-10.el7.x86_64.rpm
+[root@localhost ~]# wget http://centos.ustc.edu.cn/centos/7/os/x86_64/Packages/yum-utils-1.1.31-34.el7.noarch.rpm
+[root@localhost ~]# wget http://centos.ustc.edu.cn/centos/7/os/x86_64/Packages/yum-updateonboot-1.1.31-34.el7.noarch.rpm
+[root@localhost ~]# wget http://centos.ustc.edu.cn/centos/7/os/x86_64/Packages/yum-plugin-fastestmirror-1.1.31-34.el7.noarch.rpm
+
+
+6. 安装下载到的包
+
+[root@localhost ~]# rpm -ivh yum-*.rpm
+
+warning: yum-3.4.3-118.el7.centos.noarch.rpm: Header V3 RSA/SHA256 Signature, key ID f4a80eb5: NOKEY
+Preparing...                          ################################# [100%]
+Updating / installing...
+   1:yum-metadata-parser-1.1.4-10.el7 ################################# [ 20%]
+   2:yum-plugin-fastestmirror-1.1.31-2################################# [ 40%]
+   3:yum-3.4.3-118.el7.centos         ################################# [ 60%]
+   4:yum-updateonboot-1.1.31-24.el7   ################################# [ 80%]
+   5:yum-utils-1.1.31-24.el7          ################################# [100%
+
+7. 这时候再用yum命令，就可以使用centos7的源了。
