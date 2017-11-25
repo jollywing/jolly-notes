@@ -1,7 +1,7 @@
-﻿ 柒尅编程之家-编程天空、编程世界http://www.cnblogs.com/bcsky
-博客园社区首页新随笔联系管理订阅 随笔- 5  文章- 36  评论- 6  使用命令行方式开发Android应用 一般来说Android应用开发的标准工具组合是JDK + Android SDK + ADT (Android Development Tools) + Eclipse，大家基本上是通过IDE GUI进行开发操作的。不过我个人更喜欢命令行，所以这次我也尝试探索了一下使用命令行方式开发Android应用的方法。
+﻿
+> ref: dev.android.commandline
 
-入门的第一步就是搭建开发环境。关于Android开发环境搭建的资料早已汗牛充栋，不过我也看了一下这些资料多是关于如何在Windows下使用Eclipse搭建环境的，而在Linux环境下不用Eclipse的手工搭建环境的资料甚少。而我用的是Ubuntu 10.04，所以在这里我想说说Ubuntu下搭建Android开发环境的过程，以及在此过程中遇到的诸多问题的解决。
+> ref: dev.android.commandline.old
 
 Android应用主要用Java语言开发，所以JDK是不可缺少的，这是一个前提条件。关于JDK的安装以及环境变量配置，这里就不赘述了。我在Ubuntu下安装的是Oracle（原Sun）提供的JDK 1.6版本。
 
@@ -135,12 +135,9 @@ Build该工程： ant release（注意对于2.3的SDK，ant要使用1.8以上版
 
 如果系统有多个AVD在运行，那么我们同样可以通过adb命令来选择一个device安装我们的应用，如果一个device的名字是emulator-5554(通过adb devices查看)，那么我们可以先执行ant debug，生成bin/helloandroid-debug.apk，然后通过"adb -s emulator-5554 install bin/helloandroid-debug.apk"将应用安装到emulator-5554上去。
 
- 
-分类: Android开发
-绿色通道：好文要顶关注我收藏该文与我联系  柒尅
-关注 - 0
-粉丝 - 1+加关注00(请您对文章做出评价)« 博主前一篇：C#中Dictionary的用法及用途实例
+## Android 新命令行 ##
 
-posted @ 2011-05-25 10:32 柒尅 阅读(1520) 评论(3) 编辑 收藏 
+> ref: dev.android.commandline.new
 
-发表评论
+- tools/bin/sdkmanager
+- tools/bin/avdmanager
