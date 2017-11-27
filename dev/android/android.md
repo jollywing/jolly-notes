@@ -2,6 +2,8 @@
 
 >都是构建应用的积木，方便自己查询，保持更新
 
+> dev.android.environment
+
 ## 环境 ##
 
 1. 安装 *JDK*.
@@ -11,7 +13,11 @@
 5. [可选] 为Emacs安装 *android-mode*.
 6. 因为GFW，安装SDK时总是失败怎么办。启动 *free gate*，为 *android sdk and avd manager* 设置代理。
 
-## 命令行 ##
+-------------------------------------------------------------------------------
+
+> dev.android.commands
+
+## Android 命令行 ##
 
 1. 创建工程. `android create project --name <your_project_name> --package <your_package_name> --activity <main_activity_name> --path <your_project_dir_path> --target <target_id>`
 2. 查看有哪些 *target* 可用： `android list target`
@@ -31,13 +37,90 @@
 16. 启动avd. `emulator -avd <avd_name>`
 17. 查看logcat: `adb logcat`
 
-## 模拟器常用快捷键： ##
+- android list 会同时列出target和AVD.
+- android list avd 列出可用的虚拟设备
+- android list target 列出可用的API.
 
-- Alt-Enter 全屏
-- Home: Home
-- Esc: 返回
-- F2: Menu
-- Ctrl-F11: 在横屏竖屏之间切换。
+-------------------------------------------------------------------------------
+
+> dev.android.commands.new
+
+### The android command is deprecated ###
+
+新版的SDK tools中的android命令已经不支持 `android create project`，用起来很不顺手。
+
+    The “android” command is deprecated.
+    For manual SDK, AVD, and project management, please use Android Studio.
+    For command-line tools, use tools/bin/sdkmanager and tools/bin/avdmanager
+
+原来，在Android Studio官网的sdkmanager页面中,明确提到了在Android SDK Tools25.2.3及以后提供了sdkmanager command-line tools 以及舍弃android命令.
+
+为了继续用Emacs开发Android程序，我们使用版本低于25.2.3的android SDK Tools。
+我们可以从[AndroidStudio中文社区](http://www.android-studio.org/index.php)下载旧版的SDK Tools。比如 [这里](http://dl.google.com/android/android-sdk_r24.2-windows.zip) 下载24.2版本。
+
+下载完成后解压，复制其中的tools目录，覆盖原来的tools目录即可。
+
+2017-11-18 周六
+
+-------------------------------------------------------------------------------
+
+> dev.android.emulator
+
+### dev.android.emulator.keys ###
+
+启动模拟器：`emulator -avd <avd_name>`
+
+`emulator -help`可以查看帮助。
+`emulator -help-keys`会显示模拟器的快捷键。
+可惜没有快捷键来挂起和结束模拟器。
+
+    Home                    Home button
+    F2, PageUp              Menu (Soft-Left) button
+    Shift-F2, PageDown      Star (Soft-Right) button
+    Escape                  Back button
+    F3                      Call/Dial button
+    F4                      Hangup/EndCall button
+    F7                      Power button
+    F5                      Search button
+    Keypad_Plus, Ctrl-F5    Volume up button
+    Keypad_Minus, Ctrl-F6   Volume down button
+    Ctrl-Keypad_5, Ctrl-F3  Camera button
+    Keypad_7, Ctrl-F11      Switch to previous layout
+    Keypad_9, Ctrl-F12      Switch to next layout
+    F8                      Toggle cell network on/off
+    F9                      Toggle fullscreen mode
+    F6                      Toggle trackball mode
+    Delete                  Show trackball
+    Keypad_5                DPad center
+    Keypad_4                DPad left
+    Keypad_6                DPad right
+    Keypad_8                DPad up
+    Keypad_2                DPad down
+    Keypad_Multiply         Increase onion alpha
+    Keypad_Divide           Decrease onion alpha
+
+-------------------------------------------------------------------------------
+
+> dev.android.emulator.haxm
+
+运行`emulator -avd xxx`来启动名为xxx的模拟器，但报如下错误：
+
+    emulator: ERROR: x86 emulation currently requires hardware acceleration!
+    Please ensure Intel HAXM is properly installed and usable.
+    CPU acceleration status: HAX kernel module is not installed!
+
+HAXM= Hardware Accelerated Execution Manager。现在Intel上运行android x86镜像需要硬件支持的虚拟化，需要安装HAXM。
+
+可以在SDK manager中的extras分类下面找到HAXM的包，但是可能安装不了，因为显示`Not compatible with Windows`。
+
+如果出现这种情况，可以去Intel官网下载HAXM：
+<https://software.intel.com/en-us/android/articles/intel-hardware-accelerated-execution-manager-end-user-license-agreement>
+
+安装HAXM，需要CPU支持vt和nx。下来的安装包里有个命令行程序`haxm_check.exe`，可以检查是否满足。
+
+成功安装后，再运行`emulator -avd xxx`就可以成功启动xxx了。
+
+-------------------------------------------------------------------------------
 
 ## Emacs android模式 ##
 - `M-x android-mode`，启动`android mode`.
@@ -91,10 +174,6 @@
 
 2015-02-28 周六
 
-## android命令 ##
-- android list 会同时列出target和AVD.
-- android list avd 列出可用的虚拟设备
-- android list target 列出可用的API.
 
 ## Android TDD ##
 <http://www.cnblogs.com/jacktu/archive/2009/04/17/1438270.html>
