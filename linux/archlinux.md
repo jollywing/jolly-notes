@@ -1,10 +1,10 @@
-# 用Grub4dos引导，硬盘安装ArchLinux #
+# archlinux.install.grub4dos #
 
-本来在工作机上用winXP，最近想深入Linux开发，于是决定装个Linux。家里的archLinux + awesome用得很好，
-于是决定在工作机上也装一套。
+> 用Grub4dos引导，硬盘安装ArchLinux
 
-不想刻盘，也不想用U盘，通过Grub引导吧。从网上搜了一下，这方面的经验分享很多，我参考的是这一篇。
-http://blog.csdn.net/xiaoyanghuaban/article/details/22613987
+本来在工作机上用winXP，最近想深入Linux开发，于是决定装个Linux。家里的archLinux + awesome用得很好，于是决定在工作机上也装一套。
+
+不想刻盘，也不想用U盘，通过Grub引导吧。从网上搜了一下，这方面的经验分享很多，我参考的是这一篇。http://blog.csdn.net/xiaoyanghuaban/article/details/22613987
 
 ## 准备grub4dos
 
@@ -178,3 +178,28 @@ ntfs-3g
 
 
 [ArchWiki上关于默认应用的文章](https://wiki.archlinux.org/index.php/Default_applications)
+
+## archlinux.pacman.help ##
+
+> ArchLinux的包管理系统Pacman常用法
+
++ pacman -Sy abc #和源同步后安装名为abc的包
++ pacman -S abc #从本地数据库中得到abc的信息，下载安装abc包
++ pacman -Sf abc #强制安装包abc
++ pacman -Ss abc #搜索有关abc信息的包
++ pacman -Si abc #从数据库中搜索包abc的信息
++ pacman -Qi abc #列出已安装的包abc的详细信息
++ pacman -Ql abc #列出abc安装的所有文件
++ pacman -Qo /path/to/abc.txt 查找abc.txt属于哪个软件包。
++ pacman -Syu #同步源，并更新系统
++ pacman -Sy #仅同步源
++ pacman -Su #更新系统
++ pacman -R abc #删除abc包
++ pacman -Rc abc #删除abc包和依赖abc的包
++ pacman -Rsc abc #删除abc包和abc依赖的包
++ pacman -Sc #清理/var/cache/pacman/pkg目录下的旧包
++ pacman -Scc #清除所有下载的包和数据库
++ pacman -U abc #安装下载的abs包，或新编译的abc包
++ pacman -Sd abc #忽略依赖性问题，安装包abc
++ pacman pacman -Su –ignore foo #升级时不升级包foo
++ pacman -Sg abc #查询abc这个包组包含的软件包

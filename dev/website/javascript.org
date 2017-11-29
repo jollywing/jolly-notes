@@ -2,6 +2,22 @@
 #+AUTHOR: JollyWing(jiqing_wu@126.com)
 
 * Javascript
+** include
+1. outter js link
+   #+BEGIN_SRC
+        <script type="text/javascript" src="jquery.js"></script>
+   #+END_SRC
+2. inner js
+   #+BEGIN_SRC
+        <script type="text/javascript">
+        $(document).ready(function(){
+          $("button").click(function(){
+             $("p").hide();
+           });
+          });
+        </script>
+   #+END_SRC
+
 ** System Object
 1. process
 2. console

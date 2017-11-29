@@ -2,9 +2,9 @@
 
 >都是构建应用的积木，方便自己查询，保持更新
 
-> dev.android.environment
+## dev.android.environment ##
 
-## 环境 ##
+> 开发环境搭建
 
 1. 安装 *JDK*.
 2. 安装 *Apache Ant*.
@@ -13,11 +13,30 @@
 5. [可选] 为Emacs安装 *android-mode*.
 6. 因为GFW，安装SDK时总是失败怎么办。启动 *free gate*，为 *android sdk and avd manager* 设置代理。
 
+## android.environment.linux ##
+
+> Linux下Android命令行开发环境的搭建
+
+1. 从[AndroidStudio中文社区](http://www.android-studio.org/index.php)下载SDK压缩包，<http://dl.google.com/android/android-sdk_r24.2-linux.tgz>.
+2. 解压到某个目录，比如我的`~/pkgs/android-sdk-linux`，打开下面的tools目录，运行`android`。会出现图形界面，可以选择要下载的SDK。选择好后，下载。注意，除了安装SDK Platform之外，还要安装一个system image。否则无法运行模拟器。
+3. SDK下载完之后，通过菜单`Tools-->Manage Avds`打开AVD的管理界面，创建一个AVD，取个名字，比如`oldPhone`。
+4. 把tools目录和platform目录加入PATH。可以通过~/.profile或~/.bashrc添加PATH变量。
+
+   ```
+   android_sdk_home="$HOME/pkgs/android-sdk-linux"
+   if [ -d ${android_sdk_home} ]; then
+     PATH=${android_sdk_home}/tools:${android_sdk_home}/platform-tools:$PATH
+   fi
+   ```
+5. `emulator -avd oldPhone，测试模拟器启动是否正常。因为下载的压缩包是32位程序，如果你的Linux是64位操作系统，可能出现问题。`bash: /home/jollywing/pkgs/android-sdk-linux/tools/emulator: /lib/ld-linux.so.2: bad ELF interpreter: No such file or directory`，你需要安装32位的glibc，我的是Fedora，运行`dnf install glibc.i686`来安装。再运行`emulator -avd oldPhone`，还是报错：`emulator: error while loading shared libraries: libstdc++.so.6: cannot open shared object file: No such file or directory`。安装32位的libstdc++来解决，`dnf install libstdc++.i686`。再运行`emulator -avd oldPhone`，成功启动。
+6. 至此，Android程序开发环境基本完成，你可以通过`android create project`, `ant debug`等命令来新建和编译工程了。你再有一个喜欢的编辑器就可以开工了。
+
+
 -------------------------------------------------------------------------------
 
-> dev.android.commands
+## dev.android.commands ##
 
-## Android 命令行 ##
+> Android 命令行
 
 1. 创建工程. `android create project --name <your_project_name> --package <your_package_name> --activity <main_activity_name> --path <your_project_dir_path> --target <target_id>`
 2. 查看有哪些 *target* 可用： `android list target`

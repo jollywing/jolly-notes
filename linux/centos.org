@@ -70,6 +70,10 @@ source:
 
 rpm -ivh http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
 yum install --enablerepo=rpmforge-extras xyz
+** rpm
+- rpm -qa 列出所有已经安装的包
+- rpm -ql <package> 查询这个包安装了哪些文件
+- rpm -qf <file_path> 文件属于哪个包
 
 * service
 |                                       | RHEL/CentOS                  | Ubuntu                                 |

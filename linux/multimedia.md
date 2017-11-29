@@ -3,8 +3,9 @@
 # 2013年的Linux Blog #
 
 ## Linux声音系统 ##
-> TAG: linux, alsa, oss, pulseaudio, esd, aRts  
+> TAG: linux, alsa, oss, pulseaudio, esd, aRts
 > DATE: 2013-08-13
+> path: linux.multimedia.sound
 
 Linux声音系统有些混乱，它有三套音频驱动:
 *OSS* (Open Sound System),
@@ -42,8 +43,8 @@ Linux都是通过设备文件访问外部设备，
     +----------+--------------+--------------------+---------+
     |控制文件  |   N/A        | /dev/snd/controlC0 |         |
     +----------+--------------+--------------------+---------+
-     
-     
+
+
 *ALSA*提供了和*OSS*不同的API，因此如果你使用*ALSA*做音频驱动，
 一些通过*OSS*操作声音的程序将不能正常发声。
 
@@ -65,13 +66,13 @@ Linux都是通过设备文件访问外部设备，
 基于*ESD*开发音频程序的好处有：（1）简化开发。（2）即使底层驱动不支持多线程，
 通过声音服务器也能实现多个应用程序同时发声。（3）有更好的音效。
 
-1. *ESD*  
+1. *ESD*
    *ESD* 一直是 Gnome 桌面环境的声音服务器，
    Gnome 应用多是通过 *ESD* 处理声音的。
-2. *aRts*  
+2. *aRts*
    和 *ESD* 对应，*aRts* 是 KDE 桌面环境的声音服务器，
    底层通过 *ALSA* 驱动声卡。KDE 应用多通过 *aRts* 处理声音。
-3. *PulseAudio*  
+3. *PulseAudio*
    *PulseAudio*是新一代声音服务器，能提供更好的音效，
    已经有越来越多的应用通过*PulseAudio*处理声音。
    为了让使用*ESD*的程序能继续在 *PulseAudio* 上工作，
@@ -101,8 +102,9 @@ Linux从应用程序到声音驱动的结构如下图所示。
        +----------------------------------------------+
 
 ## 自制原声大碟 ##
-> TAG: ffmpeg, mp3  
+> TAG: ffmpeg, mp3
 > DATE: 2013-11-11 Mon
+> path: linux.multimedia.ffmpeg
 
 ### 一、动机 ###
 
@@ -152,7 +154,7 @@ FFMPEG是一个能和经典播放器 MPLAYER 的媲美的多媒体开源项目�
    接下来我把它分成4段，每段半个多小时。
 
    先截取第一段：
-    
+
         ffmpeg -i shawshank.mp3 -ss 00:00:15 -t 00:33:42 -acodec copy shawshank-01.mp3
 
     `-i shawshank.mp3` 指明处理的源文件；
@@ -165,15 +167,15 @@ FFMPEG是一个能和经典播放器 MPLAYER 的媲美的多媒体开源项目�
     其实用这个方法自制彩铃也很不错的。
 
     剩下几段的制作和第一段类似。最后一段要截取到片尾，就不用指明结束时间了。
-    
+
         ffmpeg -i shawshank.mp3 -ss 00:33:42 -t 01:10:23 -acodec copy shawshank-02.mp3
         ffmpeg -i shawshank.mp3 -ss 01:10:23 -t 01:45:11 -acodec copy shawshank-03.mp3
         ffmpeg -i shawshank.mp3 -ss 01:45:11 -acodec copy shawshank-04.mp3
 
     至此我们的原声大碟制作完成了。
-    
+
     需要注意的是，截取之前用播放器看一下，记录一下截取的起止时间，免得在对话中间截断。
-    
+
 ### 四、后记 ###
 
 好了，听力资料制作好了，接下来就是每天听一段。
