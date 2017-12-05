@@ -115,6 +115,8 @@ hd0表示第一个硬盘，如果你只有一个硬盘，它一定是`hd0`。
 
 你可以 `lspci -v`看一下，发现所有的设备都已经被驱动起来。这就是ArchLinux爽的地方。
 
+`pacman -S xorg-server`
+
 为xserver安装显示驱动: `# pacman -S xf86-video-ati xf86-video-intel`。
 Ati驱动独立显卡，intel驱动GPU。
 
@@ -203,3 +205,7 @@ ntfs-3g
 + pacman -Sd abc #忽略依赖性问题，安装包abc
 + pacman pacman -Su –ignore foo #升级时不升级包foo
 + pacman -Sg abc #查询abc这个包组包含的软件包
+
+### archlinux.pacman.cache ###
+
+`/var/cache/pacman/pkg` 下载的包都在这里
